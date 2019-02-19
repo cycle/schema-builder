@@ -9,8 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Map;
 
-
-class ColumnMap
+final class RelMap
 {
 
 }

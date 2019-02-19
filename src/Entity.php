@@ -13,6 +13,8 @@ use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
+use Cycle\Schema\Map\FieldMap;
+use Cycle\Schema\Map\RelMap;
 
 /**
  * Contains information about specific entity definition.
@@ -26,12 +28,6 @@ final class Entity
     private $class;
 
     /** @var string|null */
-    private $database;
-
-    /** @var string */
-    private $table;
-
-    /** @var string|null */
     private $mapper;
 
     /** @var string|null */
@@ -42,6 +38,21 @@ final class Entity
 
     /** @var string|null */
     private $repository;
+
+    /** @var FieldMap */
+    private $fields;
+
+    /** @var RelMap */
+    private $relMap;
+
+    /**
+     * Entity constructor.
+     */
+    public function __construct()
+    {
+        $this->fields = new FieldMap();
+        $this->relMap = new RelMap();
+    }
 
     /**
      * @param string $role
@@ -79,46 +90,6 @@ final class Entity
     public function getClass(): ?string
     {
         return $this->class;
-    }
-
-    /**
-     * @param string|null $database
-     * @return Entity
-     */
-    public function setDatabase(?string $database): self
-    {
-        $this->database = $database;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDatabase(): ?string
-    {
-        return $this->database;
-    }
-
-    /**
-     * @param string $table
-     * @return Entity
-     */
-    public function setTable(string $table): self
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * Get the name of associated table.
-     *
-     * @return string
-     */
-    public function getTable(): string
-    {
-        return $this->table;
     }
 
     /**
@@ -197,18 +168,41 @@ final class Entity
         return $this->repository ?? Repository::class;
     }
 
+    /**
+     * @return FieldMap
+     */
+    public function getFields(): FieldMap
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @return RelMap
+     */
+    public function getRelations(): RelMap
+    {
+        return $this->relMap;
+    }
+
+    /**
+     * Pack entity schema into internal representation.
+     *
+     * @return array
+     */
     public function packSchema(): array
     {
-        // todo: child entities (alias based)?
-
         $schema = [
             Schema::MAPPER     => $this->getMapper(),
             Schema::SOURCE     => $this->getSource(),
-            Schema::DATABASE   => $this->getDatabase(),
-            Schema::TABLE      => $this->getTable(),
             Schema::REPOSITORY => $this->getRepository(),
-            Schema::CONSTRAIN  => $this->getConstrain()
+            Schema::CONSTRAIN  => $this->getConstrain(),
+            Schema::COLUMNS    => $this->fields->packColumns(),
+            Schema::TYPECAST   => $this->fields->packTypecast()
         ];
+
+        // todo: additional schema
+        // todo: pack the relation map
+        // todo: where to glue table and database information
 
         if (isset($this->class)) {
             $schema[Schema::ENTITY] = $this->getClass();
