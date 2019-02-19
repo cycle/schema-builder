@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\ORM\Mapper\Mapper;
+use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 
@@ -196,46 +197,23 @@ final class Entity
         return $this->repository ?? Repository::class;
     }
 
-    //    /**
-    //     * Entity specific column declarations (if any).
-    //     *
-    //     * @return ColumnInterface[]
-    //     */
-    //    public function getColumns(): array;
-    //
-    //    /**
-    //     * Entity specific index declaration (if any).
-    //     *
-    //     * @return IndexInterface[]
-    //     */
-    //    public function getIndexes(): array;
-    //
-    //    /**
-    //     * Entity specific foreign key declarations.
-    //     *
-    //     * @return ForeignKeyInterface[]
-    //     */
-    //    public function getForeignKeys(): array;
-    //
-    //    /**
-    //     * Get field to column associations. Each field will be automatically associated with
-    //     * specific column while schema compilation.
-    //     *
-    //     * @return FieldInterface[]
-    //     */
-    //    public function getFields(): array;
-    //
-    //    /**
-    //     * Get all declared relations.
-    //     *
-    //     * @return RelationInterface[]
-    //     */
-    //    public function getRelations(): array;
-    //
-    //    /**
-    //     * Get class name of the source class.
-    //     *
-    //     * @return string
-    //     */
-    //    public function getSource(): string;
+    public function packSchema(): array
+    {
+        // todo: child entities (alias based)?
+
+        $schema = [
+            Schema::MAPPER     => $this->getMapper(),
+            Schema::SOURCE     => $this->getSource(),
+            Schema::DATABASE   => $this->getDatabase(),
+            Schema::TABLE      => $this->getTable(),
+            Schema::REPOSITORY => $this->getRepository(),
+            Schema::CONSTRAIN  => $this->getConstrain()
+        ];
+
+        if (isset($this->class)) {
+            $schema[Schema::ENTITY] = $this->getClass();
+        }
+
+        return $schema;
+    }
 }
