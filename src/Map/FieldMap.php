@@ -88,11 +88,7 @@ final class FieldMap
                 }
 
             } catch (FieldException $e) {
-                throw new BuilderException(
-                    "Unable to pack field `{$name}`",
-                    $e->getCode(),
-                    $e->getMessage()
-                );
+                throw new BuilderException("Unable to pack field `{$name}`", $e->getCode(), $e);
             }
         }
 
