@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests\Fixtures;
 
 use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Definition\Field;
 
 class Dummy
 {
@@ -17,6 +18,11 @@ class Dummy
     {
         $entity = new Entity();
         $entity->setRole('dummy');
+
+        $id = new Field();
+        $id->setType('primary')->setColumn('id');
+
+        $entity->getFields()->set('id', $id);
 
         return $entity;
     }
