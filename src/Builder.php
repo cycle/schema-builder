@@ -45,13 +45,16 @@ final class Builder implements \IteratorAggregate
 
     /**
      * @param Entity $entity
+     * @return Builder
      */
-    public function register(Entity $entity)
+    public function register(Entity $entity): Builder
     {
         $this->entities[] = $entity;
         $this->tables[$entity] = null;
         $this->children[$entity] = [];
         $this->relations[$entity] = [];
+
+        return $this;
     }
 
     /**
@@ -102,7 +105,7 @@ final class Builder implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->entities;
+        return new \ArrayIterator($this->entities);
     }
 
     /**
@@ -146,17 +149,20 @@ final class Builder implements \IteratorAggregate
      * @param Entity      $entity
      * @param string|null $database
      * @param string      $table
+     * @return Builder
      *
      * @throws BuilderException
      * @throws DBALException
      */
-    public function linkTable(Entity $entity, ?string $database, string $table)
+    public function linkTable(Entity $entity, ?string $database, string $table): Builder
     {
         if (!$this->hasEntity($entity)) {
             throw new BuilderException("Undefined entity `{$entity->getRole()}`");
         }
 
         $this->tables[$entity] = $this->dbal->database($database)->table($table)->getSchema();
+
+        return $this;
     }
 
     /**

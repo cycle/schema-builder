@@ -60,6 +60,6 @@ class RelationMap implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->fields;
+        return new \ArrayIterator($this->fields);
     }
 }

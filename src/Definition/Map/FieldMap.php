@@ -63,6 +63,6 @@ final class FieldMap implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->fields;
+        return new \ArrayIterator($this->fields);
     }
 }
