@@ -17,6 +17,8 @@ use Cycle\Schema\Definition\Map\RelationMap;
 
 /**
  * Contains information about specific entity definition.
+ *
+ * @todo: options?
  */
 final class Entity
 {

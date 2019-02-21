@@ -13,8 +13,9 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Spiral\Database\DatabaseManager;
 use Spiral\Database\Exception\DBALException;
+use Spiral\Database\Schema\AbstractTable;
 
-class Builder
+final class Builder implements \IteratorAggregate
 {
     /** @var DatabaseManager */
     private $dbal;
@@ -28,7 +29,7 @@ class Builder
     /** @var \SplObjectStorage */
     private $children;
 
-
+    /** @var \SplObjectStorage */
     private $relations;
 
     /**
@@ -39,6 +40,7 @@ class Builder
         $this->dbal = $dbal;
         $this->tables = new \SplObjectStorage();
         $this->children = new \SplObjectStorage();
+        $this->relations = new \SplObjectStorage();
     }
 
     /**
@@ -47,6 +49,9 @@ class Builder
     public function register(Entity $entity)
     {
         $this->entities[] = $entity;
+        $this->tables[$entity] = null;
+        $this->children[$entity] = [];
+        $this->relations[$entity] = [];
     }
 
     /**
@@ -93,6 +98,14 @@ class Builder
     }
 
     /**
+     * @return Entity[]|\Traversable
+     */
+    public function getIterator()
+    {
+        return $this->entities;
+    }
+
+    /**
      * Assign child entity to parent entity.
      *
      * @param Entity $parent
@@ -104,10 +117,6 @@ class Builder
     {
         if (!$this->hasEntity($parent)) {
             throw new BuilderException("Undefined entity `{$parent->getRole()}`");
-        }
-
-        if (!$this->children->contains($parent)) {
-            $this->children[$parent] = [];
         }
 
         $this->children[$parent][] = $child;
@@ -126,10 +135,6 @@ class Builder
     {
         if (!$this->hasEntity($entity)) {
             throw new BuilderException("Undefined entity `{$entity->getRole()}`");
-        }
-
-        if (!$this->children->contains($entity)) {
-            return [];
         }
 
         return $this->children[$entity];
@@ -154,7 +159,118 @@ class Builder
         $this->tables[$entity] = $this->dbal->database($database)->table($table)->getSchema();
     }
 
-    public function getEntities()
+    /**
+     * @param Entity $entity
+     * @return bool
+     *
+     * @throws BuilderException
+     */
+    public function hasTable(Entity $entity): bool
+    {
+        if (!$this->hasEntity($entity)) {
+            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+        }
+
+        return $this->tables[$entity] !== null;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return AbstractTable
+     *
+     * @throws BuilderException
+     */
+    public function getTable(Entity $entity): AbstractTable
+    {
+        if (!$this->hasTable($entity)) {
+            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+        }
+
+        return $this->tables[$entity];
+    }
+
+    /**
+     * Create entity relation.
+     *
+     * @param Entity            $entity
+     * @param string            $name
+     * @param RelationInterface $relation
+     *
+     * @throws BuilderException
+     */
+    public function registerRelation(Entity $entity, string $name, RelationInterface $relation)
+    {
+        if (!$this->hasEntity($entity)) {
+            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+        }
+
+        $this->relations[$entity][$name] = $relation;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param string $name
+     * @return bool
+     *
+     * @throws BuilderException
+     */
+    public function hasRelation(Entity $entity, string $name): bool
+    {
+        if (!$this->hasEntity($entity)) {
+            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+        }
+
+        return isset($this->relations[$entity][$name]);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param string $name
+     * @return RelationInterface
+     */
+    public function getRelation(Entity $entity, string $name): RelationInterface
+    {
+        if (!$this->hasRelation($entity, $name)) {
+            throw new BuilderException("Undefined relation `{$entity->getRole()}`.`{$name}`");
+        }
+
+        return $this->relations[$entity][$name];
+    }
+
+    /**
+     * Get all relations assigned with given entity.
+     *
+     * @param Entity $entity
+     * @return array
+     */
+    public function getRelations(Entity $entity): array
+    {
+        if (!$this->hasEntity($entity)) {
+            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+        }
+
+        return $this->relations[$entity];
+    }
+
+    /**
+     * Iterate over all entities in order to fill missed data,
+     * inverse relations and do other pre-calculations.
+     *
+     * @param VisitorInterface $visitor
+     */
+    public function compute(VisitorInterface $visitor)
+    {
+        foreach ($this->entities as $entity) {
+            $visitor->compute($this, $entity);
+        }
+    }
+
+    /**
+     * Compile entity schema into packed schema representation.
+     *
+     * @return array
+     */
+    public function compile(): array
     {
 
     }
