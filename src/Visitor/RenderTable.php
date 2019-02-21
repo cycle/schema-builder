@@ -35,7 +35,7 @@ class RenderTable implements VisitorInterface
         foreach ($entity->getFields() as $field) {
             $type = $this->parse($table->getName(), $field->getColumn(), $field->getType());
 
-            if ($this->hasFlag($type, 'primary')) {
+            if ($this->hasFlag($type, 'primary') || $this->hasFlag($type, 'bigPrimary')) {
                 $primaryKeys[] = $field->getColumn();
             }
 
