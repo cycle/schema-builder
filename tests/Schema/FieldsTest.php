@@ -14,7 +14,7 @@ use Cycle\Schema\Field;
 use Cycle\Schema\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
-class FieldMapTest extends TestCase
+class FieldsTest extends TestCase
 {
     /**
      * @expectedException \Cycle\Schema\Exception\FieldException
