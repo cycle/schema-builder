@@ -182,4 +182,24 @@ final class Entity
     {
         return $this->relations;
     }
+
+    /**
+     * Merge entity relations and fields.
+     *
+     * @param Entity $entity
+     */
+    public function merge(Entity $entity)
+    {
+        foreach ($entity->getRelations() as $name => $relation) {
+            if (!$this->relations->has($name)) {
+                $this->relations->set($name, $relation);
+            }
+        }
+
+        foreach ($entity->getFields() as $name => $field) {
+            if (!$this->fields->has($name)) {
+                $this->fields->set($name, $field);
+            }
+        }
+    }
 }

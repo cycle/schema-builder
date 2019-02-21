@@ -33,7 +33,7 @@ class FieldsTest extends TestCase
         $this->assertTrue($m->has('id'));
         $this->assertSame($f, $m->get('id'));
 
-        $this->assertSame(['id' => $f], $m->getAll());
+        $this->assertSame(['id' => $f], $m->getIterator());
     }
 
     /**

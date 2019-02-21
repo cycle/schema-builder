@@ -12,7 +12,7 @@ namespace Cycle\Schema\Definition\Map;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\RelationException;
 
-class RelationMap
+class RelationMap implements \IteratorAggregate
 {
     /** @var Relation[] */
     private $fields = [];
@@ -56,11 +56,9 @@ class RelationMap
     }
 
     /**
-     * Get named list of all fields.
-     *
-     * @return array
+     * @return Relation[]|\Traversable
      */
-    public function getAll(): array
+    public function getIterator()
     {
         return $this->fields;
     }

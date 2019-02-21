@@ -15,7 +15,7 @@ use Cycle\Schema\Exception\FieldException;
 /**
  * Manage the set of fields associated with the entity.
  */
-final class FieldMap
+final class FieldMap implements \IteratorAggregate
 {
     /** @var Field[] */
     private $fields = [];
@@ -59,11 +59,9 @@ final class FieldMap
     }
 
     /**
-     * Get named list of all fields.
-     *
-     * @return array
+     * @return Field[]|\Traversable
      */
-    public function getAll(): array
+    public function getIterator()
     {
         return $this->fields;
     }
