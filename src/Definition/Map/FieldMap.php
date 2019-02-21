@@ -7,12 +7,10 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Map;
+namespace Cycle\Schema\Definition\Map;
 
-use Cycle\ORM\Schema;
-use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\FieldException;
-use Cycle\Schema\Field;
 
 /**
  * Manage the set of fields associated with the entity.
@@ -61,37 +59,12 @@ final class FieldMap
     }
 
     /**
-     * Pack fields schema.
+     * Get named list of all fields.
      *
      * @return array
-     *
-     * @throws BuilderException
      */
-    public function packSchema(): array
+    public function getAll(): array
     {
-        $schema = [
-            Schema::COLUMNS      => [],
-            Schema::TYPECAST     => [],
-            Schema::FIND_BY_KEYS => []
-        ];
-
-        foreach ($this->fields as $name => $field) {
-            try {
-                $schema[Schema::COLUMNS][$name] = $field->getColumn();
-
-                if ($field->hasTypecast()) {
-                    $schema[Schema::TYPECAST][$name] = $field->getTypecast();
-                }
-
-                if ($field->isReferenced()) {
-                    $schema[Schema::FIND_BY_KEYS][] = $name;
-                }
-
-            } catch (FieldException $e) {
-                throw new BuilderException("Unable to pack field `{$name}`", $e->getCode(), $e);
-            }
-        }
-
-        return $schema;
+        return $this->fields;
     }
 }

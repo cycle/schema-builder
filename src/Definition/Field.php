@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema;
+namespace Cycle\Schema\Definition;
 
 use Cycle\Schema\Exception\FieldException;
 

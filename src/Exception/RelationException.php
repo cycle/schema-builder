@@ -7,9 +7,9 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Map;
+namespace Cycle\Schema\Exception;
 
-final class RelMap
+class RelationException extends BuilderException
 {
 
 }

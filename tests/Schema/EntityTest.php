@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
 
-use Cycle\Schema\Entity;
+use Cycle\Schema\Definition\Entity;
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase

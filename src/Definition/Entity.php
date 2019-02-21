@@ -7,14 +7,13 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema;
+namespace Cycle\Schema\Definition;
 
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
-use Cycle\Schema\Map\FieldMap;
-use Cycle\Schema\Map\RelMap;
+use Cycle\Schema\Definition\Map\FieldMap;
+use Cycle\Schema\Definition\Map\RelationMap;
 
 /**
  * Contains information about specific entity definition.
@@ -42,8 +41,8 @@ final class Entity
     /** @var FieldMap */
     private $fields;
 
-    /** @var RelMap */
-    private $relMap;
+    /** @var RelationMap */
+    private $relations;
 
     /**
      * Entity constructor.
@@ -51,7 +50,7 @@ final class Entity
     public function __construct()
     {
         $this->fields = new FieldMap();
-        $this->relMap = new RelMap();
+        $this->relations = new RelationMap();
     }
 
     /**
@@ -177,37 +176,10 @@ final class Entity
     }
 
     /**
-     * @return RelMap
+     * @return RelationMap
      */
-    public function getRelations(): RelMap
+    public function getRelations(): RelationMap
     {
-        return $this->relMap;
-    }
-
-    /**
-     * Pack entity schema into internal representation.
-     *
-     * @return array
-     */
-    public function packSchema(): array
-    {
-        $schema = [
-            Schema::MAPPER     => $this->getMapper(),
-            Schema::SOURCE     => $this->getSource(),
-            Schema::REPOSITORY => $this->getRepository(),
-            Schema::CONSTRAIN  => $this->getConstrain(),
-            Schema::COLUMNS    => $this->fields->packColumns(),
-            Schema::TYPECAST   => $this->fields->packTypecast()
-        ];
-
-        // todo: additional schema
-        // todo: pack the relation map
-        // todo: where to glue table and database information
-
-        if (isset($this->class)) {
-            $schema[Schema::ENTITY] = $this->getClass();
-        }
-
-        return $schema;
+        return $this->relations;
     }
 }
