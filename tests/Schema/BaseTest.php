@@ -10,14 +10,8 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
-use Cycle\ORM\Heap\Node;
 use Cycle\ORM\ORM;
-use Cycle\ORM\Promise\Collection\CollectionPromise;
-use Cycle\ORM\Promise\PromiseInterface;
-use Cycle\ORM\Relation\Pivoted\PivotedCollectionInterface;
-use Cycle\ORM\Relation\Pivoted\PivotedStorage;
 use Cycle\ORM\SchemaInterface;
-use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
@@ -52,12 +46,6 @@ abstract class BaseTest extends TestCase
 
     /** @var TestLogger */
     protected $logger;
-
-    /** @var int */
-    protected $numWrites;
-
-    /** @var int */
-    protected $numReads;
 
     /**
      * Init all we need.
@@ -98,8 +86,6 @@ abstract class BaseTest extends TestCase
      */
     public function tearDown()
     {
-        $this->assertClearState($this->orm);
-
         $this->disableProfiling();
         $this->dropDatabase($this->dbal->database('default'));
         $this->orm = null;
@@ -142,54 +128,6 @@ abstract class BaseTest extends TestCase
         $this->driver->setProfiling(true);
 
         return static::$driverCache[static::DRIVER] = $this->driver;
-    }
-
-    /**
-     * Start counting update/insert/delete queries.
-     */
-    public function captureWriteQueries()
-    {
-        $this->numWrites = $this->logger->countWriteQueries();
-    }
-
-    /**
-     * @param int $numWrites
-     */
-    public function assertNumWrites(int $numWrites)
-    {
-        $queries = $this->logger->countWriteQueries() - $this->numWrites;
-
-        if (!empty(self::$config['strict'])) {
-            $this->assertSame(
-                $numWrites,
-                $queries,
-                "Number of write SQL queries do not match, expected {$numWrites} got {$queries}."
-            );
-        }
-    }
-
-    /**
-     * Start counting update/insert/delete queries.
-     */
-    public function captureReadQueries()
-    {
-        $this->numReads = $this->logger->countReadQueries();
-    }
-
-    /**
-     * @param int $numReads
-     */
-    public function assertNumReads(int $numReads)
-    {
-        $queries = $this->logger->countReadQueries() - $this->numReads;
-
-        if (!empty(self::$config['strict'])) {
-            $this->assertSame(
-                $numReads,
-                $queries,
-                "Number of write SQL queries do not match, expected {$numReads} got {$queries}."
-            );
-        }
     }
 
     /**
@@ -243,86 +181,6 @@ abstract class BaseTest extends TestCase
     {
         if (!is_null($this->logger)) {
             $this->logger->hide();
-        }
-    }
-
-    protected function assertSQL($expected, $given)
-    {
-        $expected = preg_replace("/[ \s\'\[\]\"]+/", ' ', $expected);
-        $given = preg_replace("/[ \s'\[\]\"]+/", ' ', $given);
-        $this->assertSame($expected, $given);
-    }
-
-    protected function assertClearState(ORM $orm)
-    {
-        $r = new \ReflectionClass(Node::class);
-
-        $rel = $r->getProperty('relations');
-        $rel->setAccessible(true);
-
-        $heap = $orm->getHeap();
-        foreach ($heap as $entity) {
-            $state = $heap->get($entity);
-            $this->assertNotNull($state);
-
-            $this->assertEntitySynced(
-                $r->getShortName(),
-                $orm->getMapper($entity)->extract($entity),
-                $state->getData(),
-                $rel->getValue($state)
-            );
-
-            // all the states must be closed
-            $this->assertNotEquals(Node::SCHEDULED_INSERT, $state);
-            $this->assertNotEquals(Node::SCHEDULED_UPDATE, $state);
-            $this->assertNotEquals(Node::SCHEDULED_DELETE, $state);
-        }
-    }
-
-    protected function assertEntitySynced(string $eName, array $entity, array $stateData, array $relations)
-    {
-        foreach ($entity as $name => $eValue) {
-            if (array_key_exists($name, $stateData)) {
-                $this->assertSame(
-                    $eValue,
-                    $stateData[$name],
-                    "Entity and State are not in sync `{$eName}`.`{$name}`"
-                );
-
-                continue;
-            }
-
-            if (!array_key_exists($name, $relations)) {
-                // something else
-                continue;
-            }
-
-            $rValue = $relations[$name];
-
-            if ($rValue instanceof PivotedStorage || $rValue instanceof \Cycle\ORM\Relation\Pivoted\PivotedPromise) {
-                continue;
-            }
-
-            if ($eValue instanceof CollectionPromise || $eValue instanceof PivotedCollectionInterface) {
-                if (!$eValue->isInitialized()) {
-                    $eValue = $eValue->getPromise();
-                } else {
-                    // normalizing
-                    if ($rValue instanceof PromiseInterface && $rValue->__loaded()) {
-                        $rValue = $rValue->__resolve();
-                    }
-                }
-            }
-
-            if ($eValue instanceof Collection) {
-                $eValue = $eValue->toArray();
-            }
-
-            $this->assertEquals(
-                $rValue,
-                $eValue,
-                "Entity and State are not in sync `{$eName}`.`{$name}`"
-            );
         }
     }
 }
