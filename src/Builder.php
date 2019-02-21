@@ -257,12 +257,15 @@ final class Builder implements \IteratorAggregate
      * inverse relations and do other pre-calculations.
      *
      * @param VisitorInterface $visitor
+     * @return Builder
      */
-    public function compute(VisitorInterface $visitor)
+    public function compute(VisitorInterface $visitor): Builder
     {
         foreach ($this->entities as $entity) {
             $visitor->compute($this, $entity);
         }
+
+        return $this;
     }
 
     /**
@@ -272,6 +275,6 @@ final class Builder implements \IteratorAggregate
      */
     public function compile(): array
     {
-
+        return [];
     }
 }

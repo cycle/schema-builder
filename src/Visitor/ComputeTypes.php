@@ -14,7 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\VisitorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class CalculateTypes implements VisitorInterface
+class ComputeTypes implements VisitorInterface
 {
     /**
      * Automatically clarify column types based on table column types.
