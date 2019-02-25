@@ -7,18 +7,18 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Compiler;
+namespace Cycle\Schema\Processor;
 
 use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
-use Cycle\Schema\CompilerInterface;
+use Cycle\Schema\ProcessorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
 /**
  * Generate table columns based on entity definition.
  */
-class RenderTable implements CompilerInterface
+class RenderTable implements ProcessorInterface
 {
     /**
      * Generate table schema based on given entity definition.

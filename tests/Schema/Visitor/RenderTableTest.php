@@ -12,7 +12,7 @@ namespace Cycle\Schema\Tests\Visitor;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Dummy;
-use Cycle\Schema\Compiler\RenderTable;
+use Cycle\Schema\Processor\RenderTable;
 
 abstract class RenderTableTest extends BaseTest
 {

@@ -7,13 +7,13 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Compiler;
+namespace Cycle\Schema\Processor;
 
 use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\CompilerInterface;
+use Cycle\Schema\ProcessorInterface;
 
-class InverseRelations implements CompilerInterface
+class InverseRelations implements ProcessorInterface
 {
     /**
      * Inverse entity relations.

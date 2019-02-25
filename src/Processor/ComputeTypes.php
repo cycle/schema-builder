@@ -7,14 +7,14 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Compiler;
+namespace Cycle\Schema\Processor;
 
 use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\CompilerInterface;
+use Cycle\Schema\ProcessorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class ComputeTypes implements CompilerInterface
+class ComputeTypes implements ProcessorInterface
 {
     /**
      * Automatically clarify column types based on table column types.
