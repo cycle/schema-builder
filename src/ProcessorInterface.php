@@ -16,8 +16,8 @@ interface ProcessorInterface
     /**
      * Perform schema clarification/computation for given entity.
      *
-     * @param Registry $builder
+     * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $builder, Entity $entity);
+    public function compute(Registry $registry, Entity $entity);
 }

@@ -19,12 +19,12 @@ class ComputeTypes implements ProcessorInterface
     /**
      * Automatically clarify column types based on table column types.
      *
-     * @param Registry $builder
+     * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $builder, Entity $entity)
+    public function compute(Registry $registry, Entity $entity)
     {
-        $table = $builder->getTable($entity);
+        $table = $registry->getTable($entity);
 
         foreach ($entity->getFields() as $field) {
             if ($field->hasTypecast() || !$table->hasColumn($field->getColumn())) {

@@ -23,17 +23,17 @@ class RenderTable implements ProcessorInterface
     /**
      * Generate table schema based on given entity definition.
      *
-     * @param Registry $builder
+     * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $builder, Entity $entity)
+    public function compute(Registry $registry, Entity $entity)
     {
-        if (!$builder->hasTable($entity)) {
+        if (!$registry->hasTable($entity)) {
             return;
         }
 
         // todo: readonly
-        $table = $builder->getTable($entity);
+        $table = $registry->getTable($entity);
 
         $primaryKeys = [];
         foreach ($entity->getFields() as $field) {

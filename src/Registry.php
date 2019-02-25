@@ -132,7 +132,7 @@ final class Registry implements \IteratorAggregate
      * Get all assigned children entities.
      *
      * @param Entity $entity
-     * @return array
+     * @return Entity[]
      */
     public function getChildren(Entity $entity): array
     {

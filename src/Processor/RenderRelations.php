@@ -18,13 +18,13 @@ use Cycle\Schema\ProcessorInterface;
  */
 class RenderRelations implements ProcessorInterface
 {
-    public function compute(Registry $builder, Entity $entity)
+    public function compute(Registry $registry, Entity $entity)
     {
-        if (!$builder->hasTable($entity)) {
+        if (!$registry->hasTable($entity)) {
             return;
         }
 
-        foreach ($builder->getRelations($entity) as $name => $relation) {
+        foreach ($registry->getRelations($entity) as $name => $relation) {
             dump($relation);
         }
     }
