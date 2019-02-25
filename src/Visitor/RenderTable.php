@@ -28,6 +28,10 @@ class RenderTable implements VisitorInterface
      */
     public function compute(Builder $builder, Entity $entity)
     {
+        if (!$builder->hasTable($entity)) {
+            return;
+        }
+
         // todo: readonly
         $table = $builder->getTable($entity);
 
