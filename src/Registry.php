@@ -160,7 +160,11 @@ final class Registry implements \IteratorAggregate
             throw new BuilderException("Undefined entity `{$entity->getRole()}`");
         }
 
-        $this->tables[$entity] = $this->dbal->database($database)->table($table)->getSchema();
+        $this->tables[$entity] = [
+            'database' => $database,
+            'table'    => $table,
+            'schema'   => $this->dbal->database($database)->table($table)->getSchema()
+        ];
 
         return $this;
     }
@@ -182,17 +186,47 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return AbstractTable
+     * @return string
      *
      * @throws BuilderException
      */
-    public function getTable(Entity $entity): AbstractTable
+    public function getDatabase(Entity $entity): string
     {
         if (!$this->hasTable($entity)) {
             throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
         }
 
-        return $this->tables[$entity];
+        return $this->tables[$entity]['database'];
+    }
+
+    /**
+     * @param Entity $entity
+     * @return string
+     *
+     * @throws BuilderException
+     */
+    public function getTable(Entity $entity): string
+    {
+        if (!$this->hasTable($entity)) {
+            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+        }
+
+        return $this->tables[$entity]['table'];
+    }
+
+    /**
+     * @param Entity $entity
+     * @return AbstractTable
+     *
+     * @throws BuilderException
+     */
+    public function getTableSchema(Entity $entity): AbstractTable
+    {
+        if (!$this->hasTable($entity)) {
+            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+        }
+
+        return $this->tables[$entity]['schema'];
     }
 
     /**
@@ -265,7 +299,7 @@ final class Registry implements \IteratorAggregate
      * @param ProcessorInterface $visitor
      * @return Registry
      */
-    public function compute(ProcessorInterface $visitor): Registry
+    public function run(ProcessorInterface $visitor): Registry
     {
         foreach ($this->entities as $entity) {
             $visitor->compute($this, $entity);

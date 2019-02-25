@@ -24,7 +24,7 @@ class ComputeTypes implements ProcessorInterface
      */
     public function compute(Registry $registry, Entity $entity)
     {
-        $table = $registry->getTable($entity);
+        $table = $registry->getTableSchema($entity);
 
         foreach ($entity->getFields() as $field) {
             if ($field->hasTypecast() || !$table->hasColumn($field->getColumn())) {

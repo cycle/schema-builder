@@ -33,7 +33,7 @@ class RenderTable implements ProcessorInterface
         }
 
         // todo: readonly
-        $table = $registry->getTable($entity);
+        $table = $registry->getTableSchema($entity);
 
         $primaryKeys = [];
         foreach ($entity->getFields() as $field) {

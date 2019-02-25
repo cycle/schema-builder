@@ -12,12 +12,13 @@ namespace Cycle\Schema\Tests\Fixtures;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 
-class Dummy
+class Plain
 {
-    public static function makeEntity(): Entity
+    public static function define(): Entity
     {
         $entity = new Entity();
-        $entity->setRole('dummy');
+        $entity->setRole('plain');
+        $entity->setClass(self::class);
 
         $id = new Field();
         $id->setType('primary')->setColumn('id');
