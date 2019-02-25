@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\Postgres; 
 
-class RenderTableTest extends \Cycle\Schema\Tests\Visitor\RenderTableTest 
+class RenderTableTest extends \Cycle\Schema\Tests\Compiler\RenderTableTest
 { 
     const DRIVER = "postgres"; 
 }

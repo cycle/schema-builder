@@ -7,12 +7,12 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Tests\Visitor;
+namespace Cycle\Schema\Tests\Compiler;
 
+use Cycle\Schema\Processor\RenderTable;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Dummy;
-use Cycle\Schema\Processor\RenderTable;
 
 abstract class RenderTableTest extends BaseTest
 {
@@ -20,10 +20,10 @@ abstract class RenderTableTest extends BaseTest
     {
         $e = Dummy::makeEntity();
 
-        $builder = new Registry($this->dbal);
-        $builder->register($e)->linkTable($e, 'default', 'dummy')->compute(new RenderTable());
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'dummy')->compute(new RenderTable());
 
-        $table = $builder->getTable($e);
+        $table = $r->getTable($e);
 
         $this->assertSame('dummy', $table->getName());
         $this->assertSame(['id'], $table->getPrimaryKeys());
