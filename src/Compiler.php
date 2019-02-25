@@ -37,12 +37,15 @@ final class Compiler implements ProcessorInterface
     public function compute(Registry $registry, Entity $entity)
     {
         $schema = [
-            Schema::ENTITY     => $entity->getClass(),
-            Schema::SOURCE     => $entity->getSource(),
-            Schema::MAPPER     => $entity->getMapper(),
-            Schema::REPOSITORY => $entity->getRepository(),
-            Schema::CONSTRAIN  => $entity->getConstrain(),
-            Schema::RELATIONS  => []
+            Schema::ENTITY       => $entity->getClass(),
+            Schema::SOURCE       => $entity->getSource(),
+            Schema::MAPPER       => $entity->getMapper(),
+            Schema::REPOSITORY   => $entity->getRepository(),
+            Schema::CONSTRAIN    => $entity->getConstrain(),
+            Schema::COLUMNS      => $this->renderColumns($entity),
+            Schema::FIND_BY_KEYS => $this->renderReferences($entity),
+            Schema::TYPECAST     => $this->renderTypecast($entity),
+            Schema::RELATIONS    => $this->renderRelations($registry, $entity)
         ];
 
         if ($registry->hasTable($entity)) {
@@ -56,12 +59,8 @@ final class Compiler implements ProcessorInterface
             $schema[Schema::PRIMARY_KEY] = current($primaryKeys);
         }
 
-        $schema += $this->computeFields($entity);
-
-        // todo: relations
-
+        // table inheritance
         foreach ($registry->getChildren($entity) as $child) {
-            // alias
             $this->result[$child->getClass()] = [Schema::ROLE => $entity->getRole()];
             $schema[Schema::CHILDREN][] = $child->getClass();
         }
@@ -74,26 +73,55 @@ final class Compiler implements ProcessorInterface
      * @param Entity $entity
      * @return array
      */
-    protected function computeFields(Entity $entity): array
+    protected function renderColumns(Entity $entity): array
     {
-        $schema = [
-            Schema::COLUMNS      => [],
-            Schema::TYPECAST     => [],
-            Schema::FIND_BY_KEYS => []
-        ];
-
+        $schema = [];
         foreach ($entity->getFields() as $name => $field) {
-            $schema[Schema::COLUMNS][$name] = $field->getColumn();
+            $schema[$name] = $field->getColumn();
+        }
 
+        return $schema;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return array
+     */
+    protected function renderTypecast(Entity $entity): array
+    {
+        $schema = [];
+        foreach ($entity->getFields() as $name => $field) {
             if ($field->hasTypecast()) {
-                $schema[Schema::TYPECAST][$name] = $field->getTypecast();
-            }
-
-            if ($field->isReferenced()) {
-                $schema[Schema::FIND_BY_KEYS][] = $name;
+                $schema[$name] = $field->getTypecast();
             }
         }
 
         return $schema;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return array
+     */
+    protected function renderReferences(Entity $entity): array
+    {
+        $schema = [];
+        foreach ($entity->getFields() as $name => $field) {
+            if ($field->isReferenced()) {
+                $schema[] = $name;
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * @param Registry $registry
+     * @param Entity   $entity
+     * @return array
+     */
+    protected function renderRelations(Registry $registry, Entity $entity): array
+    {
+        return [];
     }
 }
