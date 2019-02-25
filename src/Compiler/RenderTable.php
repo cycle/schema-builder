@@ -7,26 +7,26 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Visitor;
+namespace Cycle\Schema\Compiler;
 
-use Cycle\Schema\Builder;
+use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
-use Cycle\Schema\VisitorInterface;
+use Cycle\Schema\CompilerInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
 /**
  * Generate table columns based on entity definition.
  */
-class RenderTable implements VisitorInterface
+class RenderTable implements CompilerInterface
 {
     /**
      * Generate table schema based on given entity definition.
      *
-     * @param Builder $builder
-     * @param Entity  $entity
+     * @param Registry $builder
+     * @param Entity   $entity
      */
-    public function compute(Builder $builder, Entity $entity)
+    public function compute(Registry $builder, Entity $entity)
     {
         if (!$builder->hasTable($entity)) {
             return;

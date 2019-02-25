@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Visitor;
 
-use Cycle\Schema\Builder;
+use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Dummy;
-use Cycle\Schema\Visitor\RenderTable;
+use Cycle\Schema\Compiler\RenderTable;
 
 abstract class RenderTableTest extends BaseTest
 {
@@ -20,7 +20,7 @@ abstract class RenderTableTest extends BaseTest
     {
         $e = Dummy::makeEntity();
 
-        $builder = new Builder($this->dbal);
+        $builder = new Registry($this->dbal);
         $builder->register($e)->linkTable($e, 'default', 'dummy')->compute(new RenderTable());
 
         $table = $builder->getTable($e);

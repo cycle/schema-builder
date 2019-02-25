@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Visitor;
+namespace Cycle\Schema\Compiler;
 
 
 class ComputeRelations

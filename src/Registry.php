@@ -15,7 +15,7 @@ use Spiral\Database\DatabaseManager;
 use Spiral\Database\Exception\DBALException;
 use Spiral\Database\Schema\AbstractTable;
 
-final class Builder implements \IteratorAggregate
+final class Registry implements \IteratorAggregate
 {
     /** @var DatabaseManager */
     private $dbal;
@@ -45,9 +45,9 @@ final class Builder implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return Builder
+     * @return Registry
      */
-    public function register(Entity $entity): Builder
+    public function register(Entity $entity): Registry
     {
         $this->entities[] = $entity;
         $this->tables[$entity] = null;
@@ -149,12 +149,12 @@ final class Builder implements \IteratorAggregate
      * @param Entity      $entity
      * @param string|null $database
      * @param string      $table
-     * @return Builder
+     * @return Registry
      *
      * @throws BuilderException
      * @throws DBALException
      */
-    public function linkTable(Entity $entity, ?string $database, string $table): Builder
+    public function linkTable(Entity $entity, ?string $database, string $table): Registry
     {
         if (!$this->hasEntity($entity)) {
             throw new BuilderException("Undefined entity `{$entity->getRole()}`");
@@ -247,7 +247,7 @@ final class Builder implements \IteratorAggregate
      * Get all relations assigned with given entity.
      *
      * @param Entity $entity
-     * @return array
+     * @return RelationInterface[]
      */
     public function getRelations(Entity $entity): array
     {
@@ -262,25 +262,15 @@ final class Builder implements \IteratorAggregate
      * Iterate over all entities in order to fill missed data,
      * inverse relations and do other pre-calculations.
      *
-     * @param VisitorInterface $visitor
-     * @return Builder
+     * @param CompilerInterface $visitor
+     * @return Registry
      */
-    public function compute(VisitorInterface $visitor): Builder
+    public function compute(CompilerInterface $visitor): Registry
     {
         foreach ($this->entities as $entity) {
             $visitor->compute($this, $entity);
         }
 
         return $this;
-    }
-
-    /**
-     * Compile entity schema into packed schema representation.
-     *
-     * @return array
-     */
-    public function compile(): array
-    {
-        return [];
     }
 }

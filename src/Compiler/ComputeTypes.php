@@ -7,22 +7,22 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Visitor;
+namespace Cycle\Schema\Compiler;
 
-use Cycle\Schema\Builder;
+use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\VisitorInterface;
+use Cycle\Schema\CompilerInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class ComputeTypes implements VisitorInterface
+class ComputeTypes implements CompilerInterface
 {
     /**
      * Automatically clarify column types based on table column types.
      *
-     * @param Builder $builder
-     * @param Entity  $entity
+     * @param Registry $builder
+     * @param Entity   $entity
      */
-    public function compute(Builder $builder, Entity $entity)
+    public function compute(Registry $builder, Entity $entity)
     {
         $table = $builder->getTable($entity);
 

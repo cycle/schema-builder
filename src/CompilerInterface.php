@@ -11,13 +11,13 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Definition\Entity;
 
-interface VisitorInterface
+interface CompilerInterface
 {
     /**
      * Perform schema clarification/computation for given entity.
      *
-     * @param Builder $builder
-     * @param Entity  $entity
+     * @param Registry $builder
+     * @param Entity   $entity
      */
-    public function compute(Builder $builder, Entity $entity);
+    public function compute(Registry $builder, Entity $entity);
 }
