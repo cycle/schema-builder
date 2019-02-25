@@ -26,6 +26,7 @@ abstract class RenderTableTest extends BaseTest
         $table = $builder->getTable($e);
 
         $this->assertSame('dummy', $table->getName());
+        $this->assertSame(['id'], $table->getPrimaryKeys());
         $this->assertTrue($table->hasColumn('id'));
         $this->assertSame('primary', $table->column('id')->getAbstractType());
     }
