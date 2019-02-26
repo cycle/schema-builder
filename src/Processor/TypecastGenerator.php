@@ -14,7 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\ProcessorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class ComputeTypes implements ProcessorInterface
+class TypecastGenerator implements ProcessorInterface
 {
     /**
      * Automatically clarify column types based on table column types.

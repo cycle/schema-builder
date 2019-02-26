@@ -17,7 +17,7 @@ use Cycle\Schema\Registry;
 /**
  * Generate table columns based on entity definition.
  */
-class TableRenderer implements ProcessorInterface
+class TableGenerator implements ProcessorInterface
 {
     /**
      * Generate table schema based on given entity definition.

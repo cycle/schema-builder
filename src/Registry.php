@@ -84,7 +84,7 @@ final class Registry implements \IteratorAggregate
     /**
      * Get entity by it's role.
      *
-     * @param string $role
+     * @param string $role Entity role or class name.
      * @return Entity
      *
      * @throws BuilderException

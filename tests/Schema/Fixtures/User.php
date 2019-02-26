@@ -11,6 +11,7 @@ namespace Cycle\Schema\Tests\Fixtures;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Relation;
 
 class User
 {
@@ -22,6 +23,11 @@ class User
 
         $entity->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
         $entity->getFields()->set('name', (new Field())->setType('string(32)')->setColumn('user_name'));
+
+        $entity->getRelations()->set(
+            'plain',
+            (new Relation())->setTarget('plain')->setType('hasOne')
+        );
 
         return $entity;
     }

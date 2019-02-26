@@ -10,9 +10,12 @@ declare(strict_types=1);
 namespace Cycle\Schema\Definition;
 
 use Cycle\Schema\Definition\Map\OptionMap;
+use Cycle\Schema\Definition\Traits\OptionsTrait;
 
 final class Relation
 {
+    use OptionsTrait;
+
     /** @var string */
     private $type;
 
@@ -69,14 +72,6 @@ final class Relation
     public function getTarget(): string
     {
         return $this->target;
-    }
-
-    /**
-     * @return OptionMap
-     */
-    public function getOptions(): OptionMap
-    {
-        return $this->options;
     }
 
     /**
