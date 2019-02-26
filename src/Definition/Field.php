@@ -26,6 +26,9 @@ final class Field
     /** @var string */
     private $type;
 
+    /** @var bool */
+    private $primary = false;
+
     /** @var array|string */
     private $typecast;
 
@@ -61,6 +64,25 @@ final class Field
         $this->type = $type;
 
         return $this;
+    }
+
+    /**
+     * @param bool $primary
+     * @return Field
+     */
+    public function setPrimary(bool $primary): Field
+    {
+        $this->primary = $primary;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrimary(): bool
+    {
+        return $this->primary;
     }
 
     /**

@@ -13,5 +13,9 @@ use Cycle\Schema\RelationInterface;
 
 abstract class AbstractRelation implements RelationInterface
 {
+    protected $source;
 
+    protected $target;
+
+    protected $options = [];
 }

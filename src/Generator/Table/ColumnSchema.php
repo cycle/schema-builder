@@ -20,9 +20,6 @@ use Spiral\Database\Schema\AbstractColumn;
  */
 final class ColumnSchema
 {
-    // indicates that column must be treated as primary
-    public const OPT_PRIMARY = 'primary';
-
     // default column value
     public const OPT_DEFAULT = 'default';
 
@@ -67,7 +64,7 @@ final class ColumnSchema
      */
     public function isPrimary(): bool
     {
-        return in_array($this->type, ['primary', 'bigPrimary']) || $this->hasOption(self::OPT_PRIMARY);
+        return $this->field->isPrimary() || in_array($this->type, ['primary', 'bigPrimary']);
     }
 
     /**

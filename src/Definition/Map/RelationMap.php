@@ -12,7 +12,7 @@ namespace Cycle\Schema\Definition\Map;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\RelationException;
 
-class RelationMap implements \IteratorAggregate
+final class RelationMap implements \IteratorAggregate
 {
     /** @var Relation[] */
     private $fields = [];

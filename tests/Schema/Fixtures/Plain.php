@@ -20,7 +20,10 @@ class Plain
         $entity->setRole('plain');
         $entity->setClass(self::class);
 
-        $entity->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
+        $entity->getFields()->set(
+            'id',
+            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+        );
 
         return $entity;
     }

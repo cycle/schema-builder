@@ -21,7 +21,10 @@ class User
         $entity->setRole('user');
         $entity->setClass(self::class);;
 
-        $entity->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
+        $entity->getFields()->set(
+            'id', (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+        );
+
         $entity->getFields()->set('name', (new Field())->setType('string(32)')->setColumn('user_name'));
 
         $entity->getRelations()->set(
