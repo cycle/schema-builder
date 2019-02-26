@@ -7,9 +7,9 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Processor;
+namespace Cycle\Schema\Exception;
 
-class ComputeRelations
+class OptionException extends BuilderException
 {
 
 }

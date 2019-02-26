@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
+use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Exception\FieldException;
 
 /**
@@ -16,23 +17,36 @@ use Cycle\Schema\Exception\FieldException;
  */
 final class Field
 {
+    /** @var OptionMap */
+    private $options;
+
     /** @var string */
     private $column;
 
     /** @var string */
     private $type;
 
-    /** @var mixed */
-    private $default;
-
-    /** @var bool */
-    private $nullable = false;
-
     /** @var array|string */
     private $typecast;
 
     /** @var bool */
     private $referenced = false;
+
+    /**
+     * Field constructor.
+     */
+    public function __construct()
+    {
+        $this->options = new OptionMap();
+    }
+
+    /**
+     * @return OptionMap
+     */
+    public function getOptions(): OptionMap
+    {
+        return $this->options;
+    }
 
     /**
      * @return string
@@ -56,45 +70,6 @@ final class Field
 
         return $this;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getDefault()
-    {
-        return $this->default;
-    }
-
-    /**
-     * @param mixed $default
-     * @return Field
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNullable(): bool
-    {
-        return $this->nullable;
-    }
-
-    /**
-     * @param bool $nullable
-     * @return Field
-     */
-    public function setNullable(bool $nullable): Field
-    {
-        $this->nullable = $nullable;
-
-        return $this;
-    }
-
 
     /**
      * @param string $column

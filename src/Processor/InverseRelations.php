@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Processor;
 
-use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\ProcessorInterface;
+use Cycle\Schema\Registry;
 
 class InverseRelations implements ProcessorInterface
 {

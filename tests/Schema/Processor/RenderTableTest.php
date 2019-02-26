@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Tests\Compiler;
+namespace Cycle\Schema\Tests\Processor;
 
 use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
