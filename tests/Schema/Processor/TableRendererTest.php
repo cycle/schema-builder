@@ -14,19 +14,21 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Processor\RenderTable;
+use Cycle\Schema\Processor\TableRenderer;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
 
-abstract class RenderTableTest extends BaseTest
+abstract class TableRendererTest extends BaseTest
 {
     public function testRenderTable()
     {
         $e = Plain::define();
 
         $r = new Registry($this->dbal);
-        $r->register($e)->linkTable($e, 'default', 'plain')->run(new RenderTable());
+        $r->register($e)->linkTable($e, 'default', 'plain');
+
+        $r->run(new TableRenderer());
 
         $table = $r->getTableSchema($e);
 
@@ -44,7 +46,7 @@ abstract class RenderTableTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
 
         $c = new Compiler();
-        $r->run(new RenderTable())->run($c);
+        $r->run(new TableRenderer())->run($c);
 
         $this->assertSame([
             'plain' => [

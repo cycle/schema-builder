@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\SQLServer; 
 
-class RenderTableTest extends \Cycle\Schema\Tests\Processor\RenderTableTest
+class TableRendererTest extends \Cycle\Schema\Tests\Processor\TableRendererTest
 { 
     const DRIVER = "sqlserver"; 
 }
