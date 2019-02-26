@@ -46,6 +46,9 @@ final class Entity
     /** @var RelationMap */
     private $relations;
 
+    /** @var array */
+    private $schema = [];
+
     /**
      * Entity constructor.
      */
@@ -183,6 +186,25 @@ final class Entity
     public function getRelations(): RelationMap
     {
         return $this->relations;
+    }
+
+    /**
+     * @param array $schema
+     * @return Entity
+     */
+    public function setSchema(array $schema): Entity
+    {
+        $this->schema = $schema;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSchema(): array
+    {
+        return $this->schema;
     }
 
     /**
