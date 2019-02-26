@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
+use Cycle\Schema\Definition\Map\OptionMap;
+
 final class Relation
 {
     /** @var string */
@@ -17,11 +19,19 @@ final class Relation
     /** @var string */
     private $target;
 
-    /** @var array */
-    private $options = [];
+    /** @var OptionMap */
+    private $options;
 
     /** @var bool */
     private $inverse = false;
+
+    /**
+     * Relation constructor.
+     */
+    public function __construct()
+    {
+        $this->options = new OptionMap();
+    }
 
     /**
      * @param string $type
@@ -62,19 +72,9 @@ final class Relation
     }
 
     /**
-     * @param array $options
-     * @return Relation
+     * @return OptionMap
      */
-    public function setOptions(array $options): Relation
-    {
-        $this->options = $options;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions(): array
+    public function getOptions(): OptionMap
     {
         return $this->options;
     }
