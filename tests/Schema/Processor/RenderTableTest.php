@@ -60,7 +60,7 @@ abstract class RenderTableTest extends BaseTest
                 Schema::RELATIONS    => [],
                 Schema::CONSTRAIN    => null,
                 Schema::TYPECAST     => [],
-
+                Schema::SCHEMA       => []
             ],
         ], $c->getResult());
     }

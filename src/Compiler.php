@@ -45,7 +45,8 @@ final class Compiler implements ProcessorInterface
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
-            Schema::RELATIONS    => $this->renderRelations($registry, $entity)
+            Schema::RELATIONS    => $this->renderRelations($registry, $entity),
+            Schema::SCHEMA       => []
         ];
 
         if ($registry->hasTable($entity)) {
