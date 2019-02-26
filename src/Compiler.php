@@ -13,7 +13,7 @@ use Cycle\ORM\Schema;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 
-final class Compiler implements ProcessorInterface
+final class Compiler implements GeneratorInterface
 {
     /** @var array */
     private $result = [];

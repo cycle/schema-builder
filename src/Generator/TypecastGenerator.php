@@ -7,14 +7,14 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Processor;
+namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\ProcessorInterface;
+use Cycle\Schema\GeneratorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class TypecastGenerator implements ProcessorInterface
+class TypecastGenerator implements GeneratorInterface
 {
     /**
      * Automatically clarify column types based on table column types.

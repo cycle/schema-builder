@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\MySQL; 
 
-class TableGeneratorTest extends \Cycle\Schema\Tests\Processor\TableGeneratorTest 
+class TableGeneratorTest extends \Cycle\Schema\Tests\Generator\TableGeneratorTest 
 { 
     const DRIVER = "mysql"; 
 }

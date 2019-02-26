@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Processor\Table;
+namespace Cycle\Schema\Generator\Table;
 
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\ColumnException;

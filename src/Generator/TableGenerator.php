@@ -7,17 +7,17 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Processor;
+namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Processor\Table\ColumnSchema;
-use Cycle\Schema\ProcessorInterface;
+use Cycle\Schema\Generator\Table\ColumnSchema;
+use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 
 /**
  * Generate table columns based on entity definition.
  */
-class TableGenerator implements ProcessorInterface
+class TableGenerator implements GeneratorInterface
 {
     /**
      * Generate table schema based on given entity definition.

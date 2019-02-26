@@ -9,9 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
 
-use Cycle\Schema\RelationInterface;
-
-class HasOne implements RelationInterface
+class HasOne extends AbstractRelation
 {
 
 }

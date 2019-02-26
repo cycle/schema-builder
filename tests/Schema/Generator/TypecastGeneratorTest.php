@@ -7,15 +7,15 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Tests\Processor;
+namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Processor\TableGenerator;
-use Cycle\Schema\Processor\TypecastGenerator;
+use Cycle\Schema\Generator\TableGenerator;
+use Cycle\Schema\Generator\TypecastGenerator;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\User;

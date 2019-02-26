@@ -11,7 +11,7 @@ namespace Cycle\Schema\Definition\Map;
 
 use Cycle\Schema\Exception\OptionException;
 
-final class OptionMap
+final class OptionMap implements \IteratorAggregate
 {
     /** @var array */
     private $options = [];

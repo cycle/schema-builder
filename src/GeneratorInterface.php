@@ -11,7 +11,7 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Definition\Entity;
 
-interface ProcessorInterface
+interface GeneratorInterface
 {
     /**
      * Perform schema clarification/computation for given entity.

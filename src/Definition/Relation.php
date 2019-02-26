@@ -11,6 +11,7 @@ namespace Cycle\Schema\Definition;
 
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Traits\OptionsTrait;
+use Cycle\Schema\Exception\RelationException;
 
 final class Relation
 {
@@ -52,6 +53,10 @@ final class Relation
      */
     public function getType(): string
     {
+        if ($this->type === null) {
+            throw new RelationException("Relation type must be set");
+        }
+
         return $this->type;
     }
 
@@ -71,6 +76,10 @@ final class Relation
      */
     public function getTarget(): string
     {
+        if ($this->target === null) {
+            throw new RelationException("Relation target must be set");
+        }
+
         return $this->target;
     }
 

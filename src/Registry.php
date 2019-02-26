@@ -296,10 +296,10 @@ final class Registry implements \IteratorAggregate
      * Iterate over all entities in order to fill missed data,
      * inverse relations and do other pre-calculations.
      *
-     * @param ProcessorInterface $visitor
+     * @param GeneratorInterface $visitor
      * @return Registry
      */
-    public function run(ProcessorInterface $visitor): Registry
+    public function run(GeneratorInterface $visitor): Registry
     {
         foreach ($this->entities as $entity) {
             $visitor->compute($this, $entity);
