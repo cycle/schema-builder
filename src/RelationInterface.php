@@ -28,4 +28,15 @@ interface RelationInterface
      * @throws RelationException
      */
     public function withContext(string $source, string $target, array $options): RelationInterface;
+
+    /**
+     * Compute relation schema in a context of specific registry.
+     *
+     * @param Registry $registry
+     *
+     * @throws RelationException
+     */
+    public function compute(Registry $registry);
+
+    //public function render(Registry $registry);
 }

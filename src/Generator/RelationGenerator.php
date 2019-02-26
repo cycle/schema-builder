@@ -70,6 +70,9 @@ class RelationGenerator implements GeneratorInterface
                 $this->optionMapper->map($r->getOptions())
             );
 
+            // compute relation columns and dependencies
+            $schema->compute($registry); // todo: do i like it?
+
             $registry->registerRelation($entity, $name, $schema);
         }
     }
