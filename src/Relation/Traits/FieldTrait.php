@@ -39,10 +39,10 @@ trait FieldTrait
 
     /**
      * @param Entity $target
-     * @param Field  $source
      * @param string $name
+     * @param Field  $outer
      */
-    protected function ensureField(Entity $target, Field $source, string $name)
+    protected function ensureField(Entity $target, string $name, Field $outer)
     {
         if ($target->getFields()->has($name)) {
             // field already exists and defined by the user
@@ -51,9 +51,9 @@ trait FieldTrait
 
         $field = new Field();
         $field->setColumn($name);
-        $field->setTypecast($source->getTypecast());
+        $field->setTypecast($outer->getTypecast());
 
-        switch ($source->getType()) {
+        switch ($outer->getType()) {
             case 'primary':
                 $field->setType('int');
                 break;
@@ -61,7 +61,7 @@ trait FieldTrait
                 $field->setType('bigint');
                 break;
             default:
-                $field->setType($source->getType());
+                $field->setType($outer->getType());
         }
 
         if ($this->getOptions()->get(Relation::NULLABLE)) {

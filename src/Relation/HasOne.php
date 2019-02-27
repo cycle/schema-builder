@@ -49,8 +49,8 @@ class HasOne extends AbstractSchema
         // create target outer field
         $this->ensureField(
             $target,
-            $this->getField($source, Relation::INNER_KEY),
-            $this->options->get(Relation::OUTER_KEY)
+            $this->options->get(Relation::OUTER_KEY),
+            $this->getField($source, Relation::INNER_KEY)
         );
     }
 }
