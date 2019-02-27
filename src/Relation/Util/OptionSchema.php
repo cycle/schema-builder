@@ -14,7 +14,7 @@ use Cycle\Schema\Exception\OptionException;
 /**
  * Calculate missing option values using template and relation context.
  */
-final class OptionRouter
+final class OptionSchema
 {
     /** @var array */
     private $aliases = [];
@@ -40,7 +40,7 @@ final class OptionRouter
      * Create new option set with user provided options.
      *
      * @param iterable $options
-     * @return OptionRouter
+     * @return OptionSchema
      */
     public function withOptions(iterable $options): self
     {
@@ -61,7 +61,7 @@ final class OptionRouter
      * relation options only in a integer constants.
      *
      * @param array $template
-     * @return OptionRouter
+     * @return OptionSchema
      */
     public function withTemplate(array $template): self
     {
@@ -75,7 +75,7 @@ final class OptionRouter
      * Create new option set with relation context values (i.e. relation name, target name and etc).
      *
      * @param array $context
-     * @return OptionRouter
+     * @return OptionSchema
      */
     public function withContext(array $context): self
     {

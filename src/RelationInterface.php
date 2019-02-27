@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\Schema\Exception\RelationException;
-use Cycle\Schema\Relation\Util\OptionRouter;
+use Cycle\Schema\Relation\Util\OptionSchema;
 
 /**
  * Carries information about particular relation and table declaration required to properly
@@ -24,12 +24,12 @@ interface RelationInterface
      * @param string       $name
      * @param string       $source
      * @param string       $target
-     * @param OptionRouter $options
+     * @param OptionSchema $options
      * @return RelationInterface
      *
      * @throws RelationException
      */
-    public function withContext(string $name, string $source, string $target, OptionRouter $options): RelationInterface;
+    public function withContext(string $name, string $source, string $target, OptionSchema $options): RelationInterface;
 
     /**
      * Compute relation references (column names and etc).

@@ -45,9 +45,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator([
-            'hasOne' => new HasOne()
-        ]));
+        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
 
         $c = new Compiler();
         $r->iterate($c);

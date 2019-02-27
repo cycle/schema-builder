@@ -13,7 +13,7 @@ use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Relation\Util\OptionRouter;
+use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
 abstract class AbstractSchema implements RelationInterface
@@ -24,7 +24,8 @@ abstract class AbstractSchema implements RelationInterface
     // name of all required relation options
     protected const OPTION_SCHEMA = [];
 
-    // todo: exportable schema
+    // options to be excluded from generated schema
+    protected const EXCLUDE = [];
 
     /** @var string */
     protected $source;
@@ -32,13 +33,13 @@ abstract class AbstractSchema implements RelationInterface
     /** @var string */
     protected $target;
 
-    /** @var OptionRouter */
+    /** @var OptionSchema */
     protected $options;
 
     /**
      * @inheritdoc
      */
-    public function withContext(string $name, string $source, string $target, OptionRouter $options): RelationInterface
+    public function withContext(string $name, string $source, string $target, OptionSchema $options): RelationInterface
     {
         $relation = clone $this;
         $relation->source = $source;
@@ -74,10 +75,20 @@ abstract class AbstractSchema implements RelationInterface
      */
     public function packSchema(): array
     {
+        $schema = [];
+
+        foreach (static::OPTION_SCHEMA as $option => $template) {
+            if (in_array($option, static::EXCLUDE)) {
+                continue;
+            }
+
+            $schema[$option] = $this->options->get($option);
+        }
+
         return [
             Relation::TYPE   => static::RELATION_TYPE,
             Relation::TARGET => $this->target,
-            Relation::SCHEMA => []
+            Relation::SCHEMA => $schema
         ];
     }
 

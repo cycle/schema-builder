@@ -14,7 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Relation\Util\OptionRouter;
+use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
 /**
@@ -38,7 +38,7 @@ class RelationGenerator implements GeneratorInterface
         'where'           => Relation::WHERE,
     ];
 
-    /** @var OptionRouter */
+    /** @var OptionSchema */
     private $options;
 
     /** @var RelationInterface[] */
@@ -49,7 +49,7 @@ class RelationGenerator implements GeneratorInterface
      */
     public function __construct(array $relations)
     {
-        $this->options = new OptionRouter(self::OPTION_MAP);
+        $this->options = new OptionSchema(self::OPTION_MAP);
 
         foreach ($relations as $id => $relation) {
             if (!$relation instanceof RelationInterface) {
