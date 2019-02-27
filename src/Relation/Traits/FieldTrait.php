@@ -42,8 +42,13 @@ trait FieldTrait
      * @param Field  $source
      * @param string $name
      */
-    protected function createField(Entity $target, Field $source, string $name)
+    protected function ensureField(Entity $target, Field $source, string $name)
     {
+        if ($target->getFields()->has($name)) {
+            // field already exists and defined by the user
+            return;
+        }
+
         $field = new Field();
         $field->setColumn($name);
         $field->setTypecast($source->getTypecast());

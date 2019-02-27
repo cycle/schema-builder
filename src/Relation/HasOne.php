@@ -43,16 +43,14 @@ class HasOne extends AbstractSchema
     {
         parent::compute($registry);
 
-        // generate external field
+        $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        if (!$this->hasField($target, Relation::OUTER_KEY)) {
-            // create target outer field
-            $this->createField(
-                $target,
-                $this->getField($registry->getEntity($this->source), Relation::INNER_KEY),
-                $this->options->get(Relation::OUTER_KEY)
-            );
-        }
+        // create target outer field
+        $this->ensureField(
+            $target,
+            $this->getField($source, Relation::INNER_KEY),
+            $this->options->get(Relation::OUTER_KEY)
+        );
     }
 }
