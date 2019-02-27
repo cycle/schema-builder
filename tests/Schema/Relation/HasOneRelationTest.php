@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
-
 use Cycle\Schema\Generator\RelationGenerator;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\HasOne;
@@ -28,8 +27,10 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->run(new RelationGenerator([
+        $r->iterate(new RelationGenerator([
             'hasOne' => new HasOne()
         ]));
+
+        $this->assertInstanceOf(HasOne::class, $r->getRelation($u, 'plain'));
     }
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\Registry;
@@ -17,8 +18,13 @@ use Cycle\Schema\RelationInterface;
 
 abstract class AbstractSchema implements RelationInterface
 {
+    // exported relation type
+    protected const RELATION_TYPE = null;
+
     // name of all required relation options
     protected const OPTION_SCHEMA = [];
+
+    // todo: exportable schema
 
     /** @var string */
     protected $source;
@@ -64,12 +70,24 @@ abstract class AbstractSchema implements RelationInterface
     }
 
     /**
+     * @return array
+     */
+    public function packSchema(): array
+    {
+        return [
+            Relation::TYPE   => static::RELATION_TYPE,
+            Relation::TARGET => $this->target,
+            Relation::SCHEMA => []
+        ];
+    }
+
+    /**
      * @param Entity $entity
      * @return string
      *
      * @throws BuilderException
      */
-    private function getPrimary(Entity $entity): string
+    protected function getPrimary(Entity $entity): string
     {
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isPrimary()) {

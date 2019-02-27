@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\Registry;
 
 class HasOne extends AbstractSchema
 {
@@ -33,14 +32,4 @@ class HasOne extends AbstractSchema
         // default field name for inner key
         Relation::OUTER_KEY => '{source:role}_{innerKey}',
     ];
-
-    public function compute(Registry $registry)
-    {
-        parent::compute($registry);
-
-        dump($this->options);
-
-        dump($this->options->get(Relation::CONSTRAIN));
-        dump($this->options->get(Relation::OUTER_KEY));
-    }
 }

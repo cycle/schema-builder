@@ -39,4 +39,14 @@ interface RelationInterface
      * @throws RelationException
      */
     public function compute(Registry $registry);
+
+    /**
+     * @return array
+     */
+    public function packSchema(): array;
+
+    // todo: packSchema
+    // todo: renderTable
+    // todo: constrain options
+    // todo: inverse relation
 }

@@ -30,7 +30,7 @@ abstract class TypecastGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $r->run(new TableGenerator())->run(new TypecastGenerator())->run($c);
+        $r->iterate(new TableGenerator())->iterate(new TypecastGenerator())->iterate($c);
 
         $this->assertSame([
             'user' => [
