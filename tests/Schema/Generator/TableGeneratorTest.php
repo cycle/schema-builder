@@ -65,7 +65,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST     => [],
                 Schema::SCHEMA       => []
             ],
-        ], $c->getResult());
+        ], $c->getSchema());
     }
 
     public function testRenderUserTable()
@@ -116,6 +116,6 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST     => [],
                 Schema::SCHEMA       => []
             ],
-        ], $c->getResult());
+        ], $c->getSchema());
     }
 }

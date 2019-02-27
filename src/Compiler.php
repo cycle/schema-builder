@@ -11,7 +11,7 @@ namespace Cycle\Schema;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\BuilderException;
+use Spiral\Database\Exception\CompilerException;
 
 final class Compiler implements GeneratorInterface
 {
@@ -23,7 +23,7 @@ final class Compiler implements GeneratorInterface
      *
      * @return array
      */
-    public function getResult(): array
+    public function getSchema(): array
     {
         return $this->result;
     }
@@ -42,6 +42,7 @@ final class Compiler implements GeneratorInterface
             Schema::MAPPER       => $entity->getMapper(),
             Schema::REPOSITORY   => $entity->getRepository(),
             Schema::CONSTRAIN    => $entity->getConstrain(),
+            Schema::PRIMARY_KEY  => $this->getPrimary($entity),
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
@@ -50,14 +51,8 @@ final class Compiler implements GeneratorInterface
         ];
 
         if ($registry->hasTable($entity)) {
-            $primaryKeys = $registry->getTableSchema($entity)->getPrimaryKeys();
-            if (count($primaryKeys) !== 1) {
-                throw new BuilderException("Entity `{$entity->getRole()}` must define exactly one primary key");
-            }
-
             $schema[Schema::DATABASE] = $registry->getDatabase($entity);
             $schema[Schema::TABLE] = $registry->getTable($entity);
-            $schema[Schema::PRIMARY_KEY] = current($primaryKeys);
         }
 
         // table inheritance
@@ -123,6 +118,28 @@ final class Compiler implements GeneratorInterface
      */
     protected function renderRelations(Registry $registry, Entity $entity): array
     {
-        return [];
+        $result = [];
+        foreach ($registry->getRelations($entity) as $name => $relation) {
+            $result[$name] = $relation->packSchema();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return string
+     *
+     * @throws CompilerException
+     */
+    protected function getPrimary(Entity $entity): string
+    {
+        foreach ($entity->getFields() as $name => $field) {
+            if ($field->isPrimary()) {
+                return $name;
+            }
+        }
+
+        throw new CompilerException("Entity `{$entity->getRole()}` must have defined primary key");
     }
 }

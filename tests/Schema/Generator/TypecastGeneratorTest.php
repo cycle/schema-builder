@@ -48,6 +48,6 @@ abstract class TypecastGeneratorTest extends BaseTest
                 Schema::TYPECAST     => ['id' => 'int'],
                 Schema::SCHEMA       => []
             ],
-        ], $c->getResult());
+        ], $c->getSchema());
     }
 }

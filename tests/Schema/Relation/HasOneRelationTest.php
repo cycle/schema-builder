@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
+use Cycle\ORM\Schema;
+use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\RelationGenerator;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\HasOne;
@@ -32,5 +34,27 @@ abstract class HasOneRelationTest extends BaseTest
         ]));
 
         $this->assertInstanceOf(HasOne::class, $r->getRelation($u, 'plain'));
+    }
+
+    public function testPackSchema()
+    {
+        $e = Plain::define();
+        $u = User::define();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        $r->iterate(new RelationGenerator([
+            'hasOne' => new HasOne()
+        ]));
+
+        $c = new Compiler();
+        $r->iterate($c);
+
+        $schema = $c->getSchema();
+
+        $this->assertArrayHasKey('user', $schema);
+        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
     }
 }

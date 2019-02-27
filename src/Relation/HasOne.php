@@ -13,9 +13,8 @@ use Cycle\ORM\Relation;
 
 class HasOne extends AbstractSchema
 {
-    /**
-     * {@inheritdoc}
-     */
+    protected const RELATION_TYPE = Relation::HAS_ONE;
+
     protected const OPTION_SCHEMA = [
         // save with parent
         Relation::CASCADE   => true,
