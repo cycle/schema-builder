@@ -37,15 +37,14 @@ interface RelationInterface
     ): RelationInterface;
 
     /**
-     * Compute relation references (column names and etc).
+     * Compute relation references (column names and etc). Also ensures existence of fields in every
+     * related object.
      *
      * @param Registry $registry
      *
      * @throws RelationException
      */
     public function compute(Registry $registry);
-
-    // public function renderFields(Registry $registry);
 
     /**
      * @return array
