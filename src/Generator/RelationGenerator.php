@@ -12,9 +12,9 @@ namespace Cycle\Schema\Generator;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
-use Cycle\Schema\Generator\Relation\OptionMapper;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\Util\OptionRouter;
 use Cycle\Schema\RelationInterface;
 
 /**
@@ -22,24 +22,34 @@ use Cycle\Schema\RelationInterface;
  */
 class RelationGenerator implements GeneratorInterface
 {
-    // default option mapping
-    protected const OPTION_MAP = [
-        'innerKey' => Relation::INNER_KEY,
+    // aliases between option names and their internal IDs
+    public const OPTION_MAP = [
+        'cascade'         => Relation::CASCADE,
+        'nullable'        => Relation::NULLABLE,
+        'innerKey'        => Relation::INNER_KEY,
+        'outerKey'        => Relation::OUTER_KEY,
+        'morphKey'        => Relation::MORPH_KEY,
+        'thought'         => Relation::THOUGHT_ENTITY,
+        'thoughInnerKey'  => Relation::THOUGHT_INNER_KEY,
+        'thoughOuterKey'  => Relation::THOUGHT_OUTER_KEY,
+        'thoughtWhere'    => Relation::THOUGHT_WHERE,
+        'thoughConstrain' => Relation::THOUGHT_CONSTRAIN,
+        'constrain'       => Relation::CONSTRAIN,
+        'where'           => Relation::WHERE,
     ];
 
-    /** @var OptionMapper */
-    private $optionMapper;
+    /** @var OptionRouter */
+    private $options;
 
     /** @var RelationInterface[] */
     private $relations = [];
 
     /**
      * @param array $relations
-     * @param array $optionMap
      */
-    public function __construct(array $relations, array $optionMap = [])
+    public function __construct(array $relations)
     {
-        $this->optionMapper = new OptionMapper($optionMap ?? self::OPTION_MAP);
+        $this->options = new OptionRouter(self::OPTION_MAP);
 
         foreach ($relations as $id => $relation) {
             if (!$relation instanceof RelationInterface) {
@@ -65,13 +75,14 @@ class RelationGenerator implements GeneratorInterface
             }
 
             $schema = $this->relations[$r->getType()]->withContext(
+                $name,
                 $entity->getRole(),
                 $r->getTarget(),
-                $this->optionMapper->map($r->getOptions())
+                $this->options->withOptions($r->getOptions())
             );
 
-            // compute relation columns and dependencies
-            $schema->compute($registry); // todo: do i like it?
+            // compute relation values (field names, related entities and etc)
+            $schema->compute($registry);
 
             $registry->registerRelation($entity, $name, $schema);
         }

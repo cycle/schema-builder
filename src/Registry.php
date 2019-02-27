@@ -11,6 +11,7 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Exception\RelationException;
 use Spiral\Database\DatabaseManager;
 use Spiral\Database\Exception\DBALException;
 use Spiral\Database\Schema\AbstractTable;
@@ -122,7 +123,9 @@ final class Registry implements \IteratorAggregate
             throw new BuilderException("Undefined entity `{$parent->getRole()}`");
         }
 
-        $this->children[$parent][] = $child;
+        $children = $this->children[$parent];
+        $children[] = $child;
+        $this->children[$parent] = $children;
 
         // merge parent and child schema
         $parent->merge($child);
@@ -237,6 +240,7 @@ final class Registry implements \IteratorAggregate
      * @param RelationInterface $relation
      *
      * @throws BuilderException
+     * @throws RelationException
      */
     public function registerRelation(Entity $entity, string $name, RelationInterface $relation)
     {
@@ -244,7 +248,9 @@ final class Registry implements \IteratorAggregate
             throw new BuilderException("Undefined entity `{$entity->getRole()}`");
         }
 
-        $this->relations[$entity][$name] = $relation;
+        $relations = $this->relations[$entity];
+        $relations[$name] = $relation;
+        $this->relations[$entity] = $relations;
     }
 
     /**
