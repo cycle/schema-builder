@@ -16,8 +16,16 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
-abstract class AbstractSchema implements RelationInterface
+/**
+ * Defines relation options, renders needed columns and other options.
+ */
+abstract class RelationSchema implements RelationInterface
 {
+    // relation rendering options
+    public const FK_CREATE    = 1001;
+    public const FK_ACTION    = 1002;
+    public const INDEX_CREATE = 1003;
+
     // exported relation type
     protected const RELATION_TYPE = null;
 
@@ -25,7 +33,11 @@ abstract class AbstractSchema implements RelationInterface
     protected const OPTION_SCHEMA = [];
 
     // options to be excluded from generated schema
-    protected const EXCLUDE = [];
+    protected const EXCLUDE = [
+        self::FK_CREATE,
+        self::FK_ACTION,
+        self::INDEX_CREATE
+    ];
 
     /** @var string */
     protected $source;

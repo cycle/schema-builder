@@ -13,12 +13,24 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Generator\Table\ColumnSchema;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
+use Spiral\Database\Schema\Reflector;
 
 /**
  * Generate table columns based on entity definition.
  */
 class TableGenerator implements GeneratorInterface
 {
+    /** @var Reflector */
+    private $reflector;
+
+    /**
+     * TableGenerator constructor.
+     */
+    public function __construct()
+    {
+        $this->reflector = new Reflector();
+    }
+
     /**
      * Generate table schema based on given entity definition.
      *
@@ -48,5 +60,15 @@ class TableGenerator implements GeneratorInterface
         if (count($primaryKeys)) {
             $table->setPrimaryKeys($primaryKeys);
         }
+
+        $this->reflector->addTable($table);
+    }
+
+    /**
+     * @return Reflector
+     */
+    public function getReflector(): Reflector
+    {
+        return $this->reflector;
     }
 }

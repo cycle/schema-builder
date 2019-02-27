@@ -25,7 +25,10 @@ class User
             'id', (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
-        $entity->getFields()->set('name', (new Field())->setType('string(32)')->setColumn('user_name'));
+        $entity->getFields()->set(
+            'name',
+            (new Field())->setType('string(32)')->setColumn('user_name')
+        );
 
         $entity->getRelations()->set(
             'plain',

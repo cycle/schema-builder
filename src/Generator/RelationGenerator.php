@@ -14,6 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
@@ -36,6 +37,9 @@ class RelationGenerator implements GeneratorInterface
         'thoughConstrain' => Relation::THOUGHT_CONSTRAIN,
         'constrain'       => Relation::CONSTRAIN,
         'where'           => Relation::WHERE,
+        'fkCreate'        => RelationSchema::FK_CREATE,
+        'fkAction'        => RelationSchema::FK_ACTION,
+        'indexCreate'     => RelationSchema::INDEX_CREATE,
     ];
 
     /** @var OptionSchema */

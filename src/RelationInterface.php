@@ -11,6 +11,7 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\Util\OptionSchema;
+use Spiral\Database\Exception\DBALException;
 
 /**
  * Carries information about particular relation and table declaration required to properly
@@ -47,11 +48,19 @@ interface RelationInterface
     public function compute(Registry $registry);
 
     /**
+     * Render needed relation indexes and foreign keys into table.
+     *
+     * @param Registry $registry
+     *
+     * @throws RelationException
+     * @throws DBALException
+     */
+    public function render(Registry $registry);
+
+    /**
      * @return array
      */
     public function packSchema(): array;
 
-    // todo: renderTable
-    // todo: constrain options
     // todo: inverse relation
 }
