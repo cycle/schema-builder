@@ -117,6 +117,23 @@ final class OptionRouter
     }
 
     /**
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        $result = [];
+
+        foreach ($this->template as $option => $value) {
+            $value = $this->get($option);
+
+            $alias = array_search($option, $this->aliases, true);
+            $result[$alias] = $value;
+        }
+
+        return $result;
+    }
+
+    /**
      * Calculate option value using templating.
      *
      * @param int    $option
