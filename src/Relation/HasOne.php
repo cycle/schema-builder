@@ -12,10 +12,11 @@ namespace Cycle\Schema\Relation;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
+use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
 class HasOne extends RelationSchema
 {
-    use FieldTrait;
+    use FieldTrait, ForeignKeyTrait;
 
     protected const RELATION_TYPE = Relation::HAS_ONE;
 
@@ -77,14 +78,7 @@ class HasOne extends RelationSchema
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $fk = $table->foreignKey($outerField->getColumn());
-
-            // todo: what if database is different?
-
-            $fk->references($registry->getTable($source), $innerField->getColumn());
-
-            $fk->onUpdate($this->options->get(self::FK_ACTION));
-            $fk->onDelete($this->options->get(self::FK_ACTION));
+            $this->createForeignKey($registry, $source, $target, $innerField, $outerField);
         }
     }
 }

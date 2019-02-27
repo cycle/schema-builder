@@ -12,12 +12,13 @@ namespace Cycle\Schema\Relation;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
+use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
 class BelongsTo extends RelationSchema
 {
-    use FieldTrait;
+    use FieldTrait, ForeignKeyTrait;
 
-    protected const RELATION_TYPE = Relation::HAS_ONE;
+    protected const RELATION_TYPE = Relation::BELONGS_TO;
 
     protected const OPTION_SCHEMA = [
         // save with parent
@@ -57,5 +58,27 @@ class BelongsTo extends RelationSchema
             $this->options->get(Relation::INNER_KEY),
             $this->getField($target, Relation::OUTER_KEY)
         );
+    }
+
+    /**
+     * @param Registry $registry
+     */
+    public function render(Registry $registry)
+    {
+        $source = $registry->getEntity($this->source);
+        $target = $registry->getEntity($this->target);
+
+        $innerField = $this->getField($source, Relation::INNER_KEY);
+        $outerField = $this->getField($target, Relation::OUTER_KEY);
+
+        $table = $registry->getTableSchema($source);
+
+        if ($this->options->get(self::INDEX_CREATE)) {
+            $table->index([$innerField->getColumn()]);
+        }
+
+        if ($this->options->get(self::FK_CREATE)) {
+            $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
+        }
     }
 }
