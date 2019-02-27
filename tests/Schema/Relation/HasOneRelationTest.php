@@ -51,7 +51,6 @@ abstract class HasOneRelationTest extends BaseTest
         $r->iterate($c);
 
         $schema = $c->getSchema();
-        dump($schema);
 
         $this->assertArrayHasKey('user', $schema);
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
