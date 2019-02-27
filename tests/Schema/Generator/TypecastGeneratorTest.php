@@ -41,7 +41,7 @@ abstract class TypecastGeneratorTest extends BaseTest
                 Schema::DATABASE     => 'default',
                 Schema::TABLE        => 'user',
                 Schema::PRIMARY_KEY  => 'id',
-                Schema::FIND_BY_KEYS => [],
+                Schema::FIND_BY_KEYS => ['id'],
                 Schema::COLUMNS      => ['id' => 'id', 'name' => 'user_name'],
                 Schema::RELATIONS    => [],
                 Schema::CONSTRAIN    => null,

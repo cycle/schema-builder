@@ -29,7 +29,12 @@ interface RelationInterface
      *
      * @throws RelationException
      */
-    public function withContext(string $name, string $source, string $target, OptionSchema $options): RelationInterface;
+    public function withContext(
+        string $name,
+        string $source,
+        string $target,
+        OptionSchema $options
+    ): RelationInterface;
 
     /**
      * Compute relation references (column names and etc).
@@ -40,12 +45,13 @@ interface RelationInterface
      */
     public function compute(Registry $registry);
 
+    // public function renderFields(Registry $registry);
+
     /**
      * @return array
      */
     public function packSchema(): array;
 
-    // todo: packSchema
     // todo: renderTable
     // todo: constrain options
     // todo: inverse relation

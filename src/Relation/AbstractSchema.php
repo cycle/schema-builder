@@ -93,6 +93,14 @@ abstract class AbstractSchema implements RelationInterface
     }
 
     /**
+     * @return OptionSchema
+     */
+    protected function getOptions(): OptionSchema
+    {
+        return $this->options;
+    }
+
+    /**
      * @param Entity $entity
      * @return string
      *

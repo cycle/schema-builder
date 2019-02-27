@@ -101,14 +101,15 @@ final class Compiler implements GeneratorInterface
      */
     protected function renderReferences(Entity $entity): array
     {
-        $schema = [];
+        $schema = [$this->getPrimary($entity)];
+
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isReferenced()) {
                 $schema[] = $name;
             }
         }
 
-        return $schema;
+        return array_unique($schema);
     }
 
     /**
