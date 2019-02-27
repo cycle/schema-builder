@@ -12,6 +12,7 @@ namespace Cycle\Schema\Relation\Traits;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\Relation\Util\OptionSchema;
 
 trait ForeignKeyTrait
@@ -40,8 +41,8 @@ trait ForeignKeyTrait
         $registry->getTableSchema($target)
             ->foreignKey($outerField->getColumn())
             ->references($registry->getTable($source), $innerField->getColumn())
-            ->onUpdate($this->getOptions()->get(self::FK_ACTION))
-            ->onDelete($this->getOptions()->get(self::FK_ACTION));
+            ->onUpdate($this->getOptions()->get(RelationSchema::FK_ACTION))
+            ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
     }
 
     /**
