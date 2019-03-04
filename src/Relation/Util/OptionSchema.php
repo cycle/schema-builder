@@ -113,6 +113,12 @@ final class OptionSchema
             return $value;
         }
 
+        foreach ($this->aliases as $alias => $targetOption) {
+            if ($targetOption === $option && isset($this->options[$alias])) {
+                return $this->options[$alias];
+            }
+        }
+
         return $this->calculate($option, $value);
     }
 

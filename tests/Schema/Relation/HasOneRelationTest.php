@@ -61,6 +61,32 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
     }
 
+
+    public function testCustomKey()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->getOptions()->set('outerKey', 'parent_id');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate($c);
+
+        $schema = $c->getSchema();
+
+        $this->assertArrayHasKey('user', $schema);
+        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+
+        $this->assertArrayHasKey('plain', $schema);
+        $this->assertArrayHasKey('parent_id', $schema['plain'][Schema::COLUMNS]);
+    }
+
     public function testRenderTable()
     {
         $t = new TableGenerator();
