@@ -53,6 +53,24 @@ class OptionSchemaTest extends TestCase
         ]);
     }
 
+    /**
+     * @expectedException \Cycle\Schema\Exception\OptionException
+     */
+    public function testInvalidAlias2()
+    {
+        $options = new OptionSchema([
+            'alias' => RelationSchema::BIND_INTERFACE
+        ]);
+
+        $options = $options->withTemplate([
+            RelationSchema::BIND_INTERFACE => 200
+        ])->withOptions([
+            'alias' => 100
+        ]);
+
+        $options->get(RelationSchema::FK_ACTION);
+    }
+
     public function testDebugInfo()
     {
         $options = new OptionSchema([
