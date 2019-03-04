@@ -10,21 +10,18 @@ declare(strict_types=1);
 namespace Cycle\Schema\Definition;
 
 use Cycle\Schema\Definition\Map\OptionMap;
-use Cycle\Schema\Definition\Traits\OptionsTrait;
 use Cycle\Schema\Exception\RelationException;
 
 final class Relation
 {
-    use OptionsTrait;
+    /** @var OptionMap */
+    private $options;
 
     /** @var string */
     private $type;
 
     /** @var string */
     private $target;
-
-    /** @var OptionMap */
-    private $options;
 
     /** @var bool */
     private $inverse = false;
@@ -35,6 +32,14 @@ final class Relation
     public function __construct()
     {
         $this->options = new OptionMap();
+    }
+
+    /**
+     * @return OptionMap
+     */
+    public function getOptions(): OptionMap
+    {
+        return $this->options;
     }
 
     /**

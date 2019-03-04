@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Definition;
 
 use Cycle\Schema\Definition\Map\OptionMap;
-use Cycle\Schema\Definition\Traits\OptionsTrait;
 use Cycle\Schema\Exception\FieldException;
 
 /**
@@ -18,7 +17,8 @@ use Cycle\Schema\Exception\FieldException;
  */
 final class Field
 {
-    use OptionsTrait;
+    /** @var OptionMap */
+    private $options;
 
     /** @var string */
     private $column;
@@ -41,6 +41,14 @@ final class Field
     public function __construct()
     {
         $this->options = new OptionMap();
+    }
+
+    /**
+     * @return OptionMap
+     */
+    public function getOptions(): OptionMap
+    {
+        return $this->options;
     }
 
     /**
