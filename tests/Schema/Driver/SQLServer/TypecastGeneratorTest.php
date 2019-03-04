@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLServer; 
+namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-class TypecastGeneratorTest extends \Cycle\Schema\Tests\Generator\TypecastGeneratorTest 
+class TypecastGeneratorTest extends \Cycle\Schema\Tests\Generator\TypecastGeneratorTest
 { 
     const DRIVER = "sqlserver"; 
 }
