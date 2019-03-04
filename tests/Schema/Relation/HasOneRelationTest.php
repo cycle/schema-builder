@@ -77,9 +77,11 @@ abstract class HasOneRelationTest extends BaseTest
         $r->iterate($t);
         $r->iterate($l);
 
-        $this->enableProfiling();
-
         // RENDER!
         $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('plain');
+        $this->assertTrue($table->exists());
+        $this->assertTrue($table->hasForeignKey('user_id'));
     }
 }
