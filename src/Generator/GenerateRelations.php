@@ -24,7 +24,6 @@ use Cycle\Schema\RelationInterface;
 class GenerateRelations implements GeneratorInterface
 {
     // aliases between option names and their internal IDs
-    // todo: throw an exception when no option found
     public const OPTION_MAP = [
         'cascade'         => Relation::CASCADE,
         'nullable'        => Relation::NULLABLE,
