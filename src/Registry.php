@@ -65,7 +65,7 @@ final class Registry implements \IteratorAggregate
     public function hasRole(string $role): bool
     {
         foreach ($this->entities as $entity) {
-            if ($entity->getRole() == $role) {
+            if ($entity->getRole() === $role || $entity->getClass() === $role) {
                 return true;
             }
         }
