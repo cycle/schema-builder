@@ -39,9 +39,9 @@ final class HasOne extends RelationSchema
         Relation::OUTER_KEY            => '{source:role}_{innerKey}',
 
         // rendering options
+        RelationSchema::INDEX_CREATE   => true,
         RelationSchema::FK_CREATE      => true,
         RelationSchema::FK_ACTION      => 'CASCADE',
-        RelationSchema::INDEX_CREATE   => true,
         RelationSchema::BIND_INTERFACE => false
     ];
 

@@ -39,9 +39,9 @@ final class BelongsTo extends RelationSchema
         Relation::OUTER_KEY            => '{target:primaryKey}',
 
         // rendering options
+        RelationSchema::INDEX_CREATE   => true,
         RelationSchema::FK_CREATE      => true,
         RelationSchema::FK_ACTION      => 'CASCADE',
-        RelationSchema::INDEX_CREATE   => true,
         RelationSchema::BIND_INTERFACE => false
     ];
 

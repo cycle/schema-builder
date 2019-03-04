@@ -21,9 +21,9 @@ use Cycle\Schema\RelationInterface;
 abstract class RelationSchema implements RelationInterface
 {
     // relation rendering options
-    public const FK_CREATE      = 1001;
-    public const FK_ACTION      = 1002;
-    public const INDEX_CREATE   = 1003;
+    public const INDEX_CREATE   = 1001;
+    public const FK_CREATE      = 1002;
+    public const FK_ACTION      = 1003;
     public const BIND_INTERFACE = 1004;
 
     // exported relation type
