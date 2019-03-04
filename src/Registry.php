@@ -59,7 +59,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param string $role
+     * @param string $role Entity role of class.
      * @return bool
      */
     public function hasRole(string $role): bool
