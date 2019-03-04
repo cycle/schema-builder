@@ -20,16 +20,6 @@ trait FieldTrait
     /**
      * @param Entity $entity
      * @param int    $field
-     * @return bool
-     */
-    protected function hasField(Entity $entity, int $field): bool
-    {
-        return $entity->getFields()->has($this->getOptions()->get($field));
-    }
-
-    /**
-     * @param Entity $entity
-     * @param int    $field
      * @return Field
      */
     protected function getField(Entity $entity, int $field): Field
