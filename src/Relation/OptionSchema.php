@@ -46,7 +46,7 @@ final class OptionSchema
     {
         $r = clone $this;
         foreach ($options as $name => $value) {
-            if (isset($r->aliases[$name]) && isset($r->template[$name])) {
+            if (!isset($r->aliases[$name]) && !isset($r->template[$name])) {
                 throw new OptionException("Undefined relation option `{$name}`");
             }
 
