@@ -10,13 +10,27 @@ declare(strict_types=1);
 namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Generator\Traits\GeneratorTrait;
+use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Spiral\Database\Schema\AbstractColumn;
 
-class FetchTypecast
+/**
+ * Must be run after RenderTable.
+ */
+final class GenerateTypecast implements GeneratorInterface
 {
-    use GeneratorTrait;
+    /**
+     * @param Registry $registry
+     * @return Registry
+     */
+    public function run(Registry $registry): Registry
+    {
+        foreach ($registry as $entity) {
+            $this->compute($registry, $entity);
+        }
+
+        return $registry;
+    }
 
     /**
      * Automatically clarify column types based on table column types.

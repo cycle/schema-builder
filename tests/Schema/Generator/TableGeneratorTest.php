@@ -98,7 +98,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $c->compile((new RenderTable())->run($r));
+        $c->compile($r, [new RenderTable()]);
 
         $this->assertSame([
             'user' => [

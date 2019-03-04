@@ -32,15 +32,13 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
+        (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
 
         $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
     }
 
     public function testPackSchema()
     {
-        $c = new Compiler();
-
         $e = Post::define();
         $u = Author::define();
 
@@ -48,10 +46,9 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
-        $r->iterate($c);
-
-        $schema = $c->getSchema();
+        $schema = (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()])
+        ]);
 
         $this->assertArrayHasKey('post', $schema);
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
@@ -62,8 +59,6 @@ abstract class BelongsToRelationTest extends BaseTest
 
     public function testCustomKey()
     {
-        $c = new Compiler();
-
         $e = Post::define();
         $u = Author::define();
 
@@ -73,10 +68,9 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
-        $r->iterate($c);
-
-        $schema = $c->getSchema();
+        $schema = (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()])
+        ]);
 
         $this->assertArrayHasKey('post', $schema);
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
@@ -87,9 +81,6 @@ abstract class BelongsToRelationTest extends BaseTest
 
     public function testRenderTable()
     {
-        $t = new RenderTable();
-        $l = new RenderRelations();
-
         $e = Post::define();
         $u = Author::define();
 
@@ -97,9 +88,11 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
-        $r->iterate($t);
-        $r->iterate($l);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
+            $t = new RenderTable(),
+            new RenderRelations()
+        ]);
 
         // RENDER!
         $t->getReflector()->run();
@@ -111,9 +104,6 @@ abstract class BelongsToRelationTest extends BaseTest
 
     public function testRenderTableRedefined()
     {
-        $t = new RenderTable();
-        $l = new RenderRelations();
-
         $e = Post::define();
         $u = Author::define();
 
@@ -124,9 +114,11 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
-        $r->iterate($t);
-        $r->iterate($l);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
+            $t = new RenderTable(),
+            new RenderRelations()
+        ]);
 
         // RENDER!
         $t->getReflector()->run();

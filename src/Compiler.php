@@ -18,17 +18,28 @@ final class Compiler
     /** @var array */
     private $result = [];
 
-    // todo: add pipeline (!)
-
     /**
      * Compile the registry schema.
      *
-     * @param Registry $registry
+     * @param Registry             $registry
+     * @param GeneratorInterface[] $generators
      * @return array
      */
-    public function compile(Registry $registry): array
+    public function compile(Registry $registry, array $generators = []): array
     {
         $this->result = [];
+
+        foreach ($generators as $generator) {
+            if (!$generator instanceof GeneratorInterface) {
+                throw new CompilerException(sprintf(
+                    "Invalid generator `%s`",
+                    is_object($generator) ? get_class($generator) : gettype($generator)
+                ));
+            }
+
+            $registry = $generator->run($registry);
+        }
+
         foreach ($registry->getIterator() as $entity) {
             $this->compute($registry, $entity);
         }
@@ -45,7 +56,6 @@ final class Compiler
     {
         return $this->result;
     }
-
 
     /**
      * Compile entity and relation definitions into packed ORM schema.

@@ -60,8 +60,6 @@ abstract class HasOneRelationTest extends BaseTest
 
     public function testCustomKey()
     {
-        $c = new Compiler();
-
         $e = Plain::define();
         $u = User::define();
 
@@ -71,8 +69,9 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
-        $schema = $c->compile($r);
+        $schema = (new Compiler())->compile($r, [
+            new GenerateRelations(['hasOne' => new HasOne()])
+        ]);
 
         $this->assertArrayHasKey('user', $schema);
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
@@ -83,9 +82,6 @@ abstract class HasOneRelationTest extends BaseTest
 
     public function testRenderTable()
     {
-        $t = new RenderTable();
-        $l = new RenderRelations();
-
         $e = Plain::define();
         $u = User::define();
 
@@ -93,9 +89,11 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
-        $r->iterate($t);
-        $r->iterate($l);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['hasOne' => new HasOne()]),
+            $t = new RenderTable(),
+            new RenderRelations()
+        ]);
 
         // RENDER!
         $t->getReflector()->run();
@@ -107,9 +105,6 @@ abstract class HasOneRelationTest extends BaseTest
 
     public function testRenderTableRedefined()
     {
-        $t = new RenderTable();
-        $l = new RenderRelations();
-
         $e = Plain::define();
         $u = User::define();
 
@@ -120,9 +115,11 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
-        $r->iterate($t);
-        $r->iterate($l);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['hasOne' => new HasOne()]),
+            $t = new RenderTable(),
+            new RenderRelations()
+        ]);
 
         // RENDER!
         $t->getReflector()->run();

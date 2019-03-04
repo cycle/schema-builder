@@ -12,7 +12,7 @@ namespace Cycle\Schema\Generator;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
-use Cycle\Schema\Generator\Traits\GeneratorTrait;
+use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
@@ -21,10 +21,8 @@ use Cycle\Schema\RelationInterface;
 /**
  * Generate relations based on their schematic definitions.
  */
-class GenerateRelations
+final class GenerateRelations implements GeneratorInterface
 {
-    use GeneratorTrait;
-
     // aliases between option names and their internal IDs
     public const OPTION_MAP = [
         'cascade'         => Relation::CASCADE,
@@ -69,6 +67,19 @@ class GenerateRelations
 
             $this->relations[$id] = $relation;
         }
+    }
+
+    /**
+     * @param Registry $registry
+     * @return Registry
+     */
+    public function run(Registry $registry): Registry
+    {
+        foreach ($registry as $entity) {
+            $this->compute($registry, $entity);
+        }
+
+        return $registry;
     }
 
     /**
