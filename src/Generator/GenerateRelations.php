@@ -14,16 +14,17 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
-use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
 /**
  * Generate relations based on their schematic definitions.
  */
-class RelationGenerator implements GeneratorInterface
+class GenerateRelations implements GeneratorInterface
 {
     // aliases between option names and their internal IDs
+    // todo: throw an exception when no option found
     public const OPTION_MAP = [
         'cascade'         => Relation::CASCADE,
         'nullable'        => Relation::NULLABLE,
@@ -40,6 +41,7 @@ class RelationGenerator implements GeneratorInterface
         'fkCreate'        => RelationSchema::FK_CREATE,
         'fkAction'        => RelationSchema::FK_ACTION,
         'indexCreate'     => RelationSchema::INDEX_CREATE,
+        'bindInterface'   => RelationSchema::BIND_INTERFACE
     ];
 
     /** @var OptionSchema */
@@ -49,11 +51,12 @@ class RelationGenerator implements GeneratorInterface
     private $relations = [];
 
     /**
-     * @param array $relations
+     * @param array             $relations
+     * @param OptionSchema|null $optionSchema
      */
-    public function __construct(array $relations)
+    public function __construct(array $relations, OptionSchema $optionSchema = null)
     {
-        $this->options = new OptionSchema(self::OPTION_MAP);
+        $this->options = $optionSchema ?? new OptionSchema(self::OPTION_MAP);
 
         foreach ($relations as $id => $relation) {
             if (!$relation instanceof RelationInterface) {

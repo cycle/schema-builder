@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Cycle\Schema\Relation\Util;
+namespace Cycle\Schema\Relation;
 
 use Cycle\Schema\Exception\OptionException;
 

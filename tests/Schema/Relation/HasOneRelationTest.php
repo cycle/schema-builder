@@ -11,9 +11,9 @@ namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\RelationGenerator;
-use Cycle\Schema\Generator\RelationReflector;
-use Cycle\Schema\Generator\TableGenerator;
+use Cycle\Schema\Generator\GenerateRelations;
+use Cycle\Schema\Generator\RenderRelations;
+use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\HasOne;
 use Cycle\Schema\Tests\BaseTest;
@@ -31,7 +31,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
 
         $this->assertInstanceOf(HasOne::class, $r->getRelation($u, 'plain'));
     }
@@ -47,7 +47,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
         $r->iterate($c);
 
         $schema = $c->getSchema();
@@ -73,7 +73,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
         $r->iterate($c);
 
         $schema = $c->getSchema();
@@ -87,8 +87,8 @@ abstract class HasOneRelationTest extends BaseTest
 
     public function testRenderTable()
     {
-        $t = new TableGenerator();
-        $l = new RelationReflector();
+        $t = new RenderTable();
+        $l = new RenderRelations();
 
         $e = Plain::define();
         $u = User::define();
@@ -97,7 +97,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
         $r->iterate($t);
         $r->iterate($l);
 
@@ -111,8 +111,8 @@ abstract class HasOneRelationTest extends BaseTest
 
     public function testRenderTableRedefined()
     {
-        $t = new TableGenerator();
-        $l = new RelationReflector();
+        $t = new RenderTable();
+        $l = new RenderRelations();
 
         $e = Plain::define();
         $u = User::define();
@@ -124,7 +124,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
         $r->iterate($t);
         $r->iterate($l);
 

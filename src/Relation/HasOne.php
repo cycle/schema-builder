@@ -14,32 +14,35 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
-class HasOne extends RelationSchema
+final class HasOne extends RelationSchema
 {
     use FieldTrait, ForeignKeyTrait;
 
+    // internal relation type
     protected const RELATION_TYPE = Relation::HAS_ONE;
 
+    // relation schema options
     protected const OPTION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE              => true,
 
         // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
+        Relation::CONSTRAIN            => true,
 
         // not nullable by default
-        Relation::NULLABLE           => false,
+        Relation::NULLABLE             => false,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY          => '{source:primaryKey}',
+        Relation::INNER_KEY            => '{source:primaryKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY          => '{source:role}_{innerKey}',
+        Relation::OUTER_KEY            => '{source:role}_{innerKey}',
 
         // rendering options
-        RelationSchema::FK_CREATE    => true,
-        RelationSchema::FK_ACTION    => 'CASCADE',
-        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::FK_CREATE      => true,
+        RelationSchema::FK_ACTION      => 'CASCADE',
+        RelationSchema::INDEX_CREATE   => true,
+        RelationSchema::BIND_INTERFACE => false
     ];
 
     /**

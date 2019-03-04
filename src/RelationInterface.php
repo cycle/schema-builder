@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\Schema\Exception\RelationException;
-use Cycle\Schema\Relation\Util\OptionSchema;
+use Cycle\Schema\Relation\OptionSchema;
 use Spiral\Database\Exception\DBALException;
 
 /**

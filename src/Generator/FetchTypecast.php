@@ -14,7 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Spiral\Database\Schema\AbstractColumn;
 
-class TypecastGenerator implements GeneratorInterface
+class FetchTypecast implements GeneratorInterface
 {
     /**
      * Automatically clarify column types based on table column types.

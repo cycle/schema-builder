@@ -12,9 +12,9 @@ namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\RelationGenerator;
-use Cycle\Schema\Generator\RelationReflector;
-use Cycle\Schema\Generator\TableGenerator;
+use Cycle\Schema\Generator\GenerateRelations;
+use Cycle\Schema\Generator\RenderRelations;
+use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\BelongsTo;
 use Cycle\Schema\Tests\BaseTest;
@@ -32,7 +32,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new RelationGenerator(['belongsTo' => new BelongsTo()]));
+        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
 
         $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
     }
@@ -48,7 +48,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new RelationGenerator(['belongsTo' => new BelongsTo()]));
+        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
         $r->iterate($c);
 
         $schema = $c->getSchema();
@@ -73,7 +73,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new RelationGenerator(['belongsTo' => new BelongsTo()]));
+        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
         $r->iterate($c);
 
         $schema = $c->getSchema();
@@ -87,8 +87,8 @@ abstract class BelongsToRelationTest extends BaseTest
 
     public function testRenderTable()
     {
-        $t = new TableGenerator();
-        $l = new RelationReflector();
+        $t = new RenderTable();
+        $l = new RenderRelations();
 
         $e = Post::define();
         $u = Author::define();
@@ -97,7 +97,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new RelationGenerator(['belongsTo' => new BelongsTo()]));
+        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
         $r->iterate($t);
         $r->iterate($l);
 
@@ -111,8 +111,8 @@ abstract class BelongsToRelationTest extends BaseTest
 
     public function testRenderTableRedefined()
     {
-        $t = new TableGenerator();
-        $l = new RelationReflector();
+        $t = new RenderTable();
+        $l = new RenderRelations();
 
         $e = Post::define();
         $u = Author::define();
@@ -124,7 +124,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $r->iterate(new RelationGenerator(['belongsTo' => new BelongsTo()]));
+        $r->iterate(new GenerateRelations(['belongsTo' => new BelongsTo()]));
         $r->iterate($t);
         $r->iterate($l);
 

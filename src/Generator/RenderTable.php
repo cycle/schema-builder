@@ -10,15 +10,15 @@ declare(strict_types=1);
 namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Generator\Table\ColumnSchema;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Table\ColumnSchema;
 use Spiral\Database\Schema\Reflector;
 
 /**
  * Generate table columns based on entity definition.
  */
-class TableGenerator implements GeneratorInterface
+final class RenderTable implements GeneratorInterface
 {
     /** @var Reflector */
     private $reflector;

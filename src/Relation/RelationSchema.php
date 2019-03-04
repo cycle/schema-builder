@@ -13,7 +13,6 @@ use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\BuilderException;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Relation\Util\OptionSchema;
 use Cycle\Schema\RelationInterface;
 
 /**
@@ -22,9 +21,10 @@ use Cycle\Schema\RelationInterface;
 abstract class RelationSchema implements RelationInterface
 {
     // relation rendering options
-    public const FK_CREATE    = 1001;
-    public const FK_ACTION    = 1002;
-    public const INDEX_CREATE = 1003;
+    public const FK_CREATE      = 1001;
+    public const FK_ACTION      = 1002;
+    public const INDEX_CREATE   = 1003;
+    public const BIND_INTERFACE = 1004;
 
     // exported relation type
     protected const RELATION_TYPE = null;
@@ -33,11 +33,7 @@ abstract class RelationSchema implements RelationInterface
     protected const OPTION_SCHEMA = [];
 
     // options to be excluded from generated schema
-    protected const EXCLUDE = [
-        self::FK_CREATE,
-        self::FK_ACTION,
-        self::INDEX_CREATE
-    ];
+    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::INDEX_CREATE];
 
     /** @var string */
     protected $source;

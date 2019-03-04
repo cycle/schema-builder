@@ -14,32 +14,35 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
-class BelongsTo extends RelationSchema
+final class BelongsTo extends RelationSchema
 {
     use FieldTrait, ForeignKeyTrait;
 
+    // internal relation type
     protected const RELATION_TYPE = Relation::BELONGS_TO;
 
+    // relation schema options
     protected const OPTION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE              => true,
 
         // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
+        Relation::CONSTRAIN            => true,
 
         // nullable by default
-        Relation::NULLABLE           => true,
+        Relation::NULLABLE             => true,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY          => '{relation}_{outerKey}',
+        Relation::INNER_KEY            => '{relation}_{outerKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY          => '{target:primaryKey}',
+        Relation::OUTER_KEY            => '{target:primaryKey}',
 
         // rendering options
-        RelationSchema::FK_CREATE    => true,
-        RelationSchema::FK_ACTION    => 'CASCADE',
-        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::FK_CREATE      => true,
+        RelationSchema::FK_ACTION      => 'CASCADE',
+        RelationSchema::INDEX_CREATE   => true,
+        RelationSchema::BIND_INTERFACE => false
     ];
 
     /**

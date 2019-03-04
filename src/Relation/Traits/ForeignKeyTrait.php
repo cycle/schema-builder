@@ -13,7 +13,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\RelationSchema;
-use Cycle\Schema\Relation\Util\OptionSchema;
+use Cycle\Schema\Relation\OptionSchema;
 
 trait ForeignKeyTrait
 {

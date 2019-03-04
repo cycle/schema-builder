@@ -12,8 +12,8 @@ namespace Cycle\Schema\Relation\Traits;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
-use Cycle\Schema\Generator\Table\ColumnSchema;
-use Cycle\Schema\Relation\Util\OptionSchema;
+use Cycle\Schema\Relation\OptionSchema;
+use Cycle\Schema\Table\ColumnSchema;
 
 trait FieldTrait
 {

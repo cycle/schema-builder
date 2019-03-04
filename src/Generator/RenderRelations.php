@@ -13,7 +13,10 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 
-class RelationReflector implements GeneratorInterface
+/**
+ * Renders all required relations columns, indexes and foreign keys.
+ */
+final class RenderRelations implements GeneratorInterface
 {
     /**
      * @param Registry $registry

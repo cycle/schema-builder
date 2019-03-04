@@ -42,12 +42,12 @@ final class Compiler implements GeneratorInterface
             Schema::MAPPER       => $entity->getMapper(),
             Schema::REPOSITORY   => $entity->getRepository(),
             Schema::CONSTRAIN    => $entity->getConstrain(),
+            Schema::SCHEMA       => $entity->getSchema(),
             Schema::PRIMARY_KEY  => $this->getPrimary($entity),
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
-            Schema::RELATIONS    => $this->renderRelations($registry, $entity),
-            Schema::SCHEMA       => $entity->getSchema()
+            Schema::RELATIONS    => $this->renderRelations($registry, $entity)
         ];
 
         if ($registry->hasTable($entity)) {
