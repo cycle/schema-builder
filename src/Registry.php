@@ -297,20 +297,4 @@ final class Registry implements \IteratorAggregate
 
         return $this->relations[$entity];
     }
-
-    /**
-     * Iterate over all entities in order to fill missed data,
-     * inverse relations and do other pre-calculations.
-     *
-     * @param GeneratorInterface $generator
-     * @return Registry
-     */
-    public function iterate(GeneratorInterface $generator): Registry
-    {
-        foreach ($this->entities as $entity) {
-            $generator->compute($this, $entity);
-        }
-
-        return $this;
-    }
 }

@@ -31,7 +31,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
+        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
 
         $this->assertInstanceOf(HasOne::class, $r->getRelation($u, 'plain'));
     }
@@ -47,10 +47,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
-        $r->iterate($c);
-
-        $schema = $c->getSchema();
+        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
+        $schema = $c->compile($r);
 
         $this->assertArrayHasKey('user', $schema);
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
@@ -73,10 +71,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $r->iterate(new GenerateRelations(['hasOne' => new HasOne()]));
-        $r->iterate($c);
-
-        $schema = $c->getSchema();
+        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
+        $schema = $c->compile($r);
 
         $this->assertArrayHasKey('user', $schema);
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);

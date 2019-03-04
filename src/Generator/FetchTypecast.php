@@ -9,20 +9,22 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
-use Cycle\Schema\Registry;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\GeneratorInterface;
+use Cycle\Schema\Generator\Traits\GeneratorTrait;
+use Cycle\Schema\Registry;
 use Spiral\Database\Schema\AbstractColumn;
 
-class FetchTypecast implements GeneratorInterface
+class FetchTypecast
 {
+    use GeneratorTrait;
+
     /**
      * Automatically clarify column types based on table column types.
      *
      * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity)
     {
         $table = $registry->getTableSchema($entity);
 

@@ -15,7 +15,7 @@ use Cycle\Schema\Exception\RelationException;
 final class RelationMap implements \IteratorAggregate
 {
     /** @var Relation[] */
-    private $fields = [];
+    private $relations = [];
 
     /**
      * @param string $name
@@ -23,7 +23,7 @@ final class RelationMap implements \IteratorAggregate
      */
     public function has(string $name): bool
     {
-        return isset($this->fields[$name]);
+        return isset($this->relations[$name]);
     }
 
     /**
@@ -36,7 +36,7 @@ final class RelationMap implements \IteratorAggregate
             throw new RelationException("Undefined relation `{$name}`");
         }
 
-        return $this->fields[$name];
+        return $this->relations[$name];
     }
 
     /**
@@ -50,7 +50,7 @@ final class RelationMap implements \IteratorAggregate
             throw new RelationException("Relation `{$name}` already exists");
         }
 
-        $this->fields[$name] = $relation;
+        $this->relations[$name] = $relation;
 
         return $this;
     }
@@ -60,6 +60,6 @@ final class RelationMap implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->fields);
+        return new \ArrayIterator($this->relations);
     }
 }

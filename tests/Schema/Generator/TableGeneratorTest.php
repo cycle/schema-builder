@@ -29,7 +29,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'plain');
 
-        $r->iterate(new RenderTable());
+        (new RenderTable())->run($r);
 
         $table = $r->getTableSchema($e);
 
@@ -47,7 +47,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
 
         $c = new Compiler();
-        $r->iterate(new RenderTable())->iterate($c);
+        $schema = $c->compile((new RenderTable())->run($r));
 
         $this->assertSame([
             'plain' => [
@@ -65,7 +65,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST     => [],
                 Schema::SCHEMA       => []
             ],
-        ], $c->getSchema());
+        ], $schema);
     }
 
     public function testRenderUserTable()
@@ -75,7 +75,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'user');
 
-        $r->iterate(new RenderTable());
+        (new RenderTable())->run($r);
 
         $table = $r->getTableSchema($e);
 
@@ -98,7 +98,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $r->iterate(new RenderTable())->iterate($c);
+        $c->compile((new RenderTable())->run($r));
 
         $this->assertSame([
             'user' => [

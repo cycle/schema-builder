@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\GeneratorInterface;
+use Cycle\Schema\Generator\Traits\GeneratorTrait;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\ColumnSchema;
 use Spiral\Database\Schema\Reflector;
@@ -18,8 +18,10 @@ use Spiral\Database\Schema\Reflector;
 /**
  * Generate table columns based on entity definition.
  */
-final class RenderTable implements GeneratorInterface
+final class RenderTable
 {
+    use GeneratorTrait;
+
     /** @var Reflector */
     private $reflector;
 
@@ -37,7 +39,7 @@ final class RenderTable implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity)
     {
         if (!$registry->hasTable($entity)) {
             // do not render entities without associated table

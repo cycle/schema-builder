@@ -13,10 +13,28 @@ use Cycle\ORM\Schema;
 use Cycle\Schema\Definition\Entity;
 use Spiral\Database\Exception\CompilerException;
 
-final class Compiler implements GeneratorInterface
+final class Compiler
 {
     /** @var array */
     private $result = [];
+
+    // todo: add pipeline (!)
+
+    /**
+     * Compile the registry schema.
+     *
+     * @param Registry $registry
+     * @return array
+     */
+    public function compile(Registry $registry): array
+    {
+        $this->result = [];
+        foreach ($registry->getIterator() as $entity) {
+            $this->compute($registry, $entity);
+        }
+
+        return $this->result;
+    }
 
     /**
      * Get compiled schema result.
@@ -28,13 +46,14 @@ final class Compiler implements GeneratorInterface
         return $this->result;
     }
 
+
     /**
      * Compile entity and relation definitions into packed ORM schema.
      *
      * @param Registry $registry
      * @param Entity   $entity
      */
-    public function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity)
     {
         $schema = [
             Schema::ENTITY       => $entity->getClass(),

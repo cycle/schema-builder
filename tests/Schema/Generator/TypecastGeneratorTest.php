@@ -14,8 +14,8 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Generator\FetchTypecast;
+use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\User;
@@ -30,7 +30,11 @@ abstract class TypecastGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $r->iterate(new RenderTable())->iterate(new FetchTypecast())->iterate($c);
+        $c->compile(
+            (new RenderTable())->run(
+                (new FetchTypecast())->run($r)
+            )
+        );
 
         $this->assertSame([
             'user' => [
