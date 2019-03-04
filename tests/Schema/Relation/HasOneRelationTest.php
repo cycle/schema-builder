@@ -110,4 +110,32 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasForeignKey('user_id'));
     }
+
+    public function testRenderTableRedefined()
+    {
+        $t = new TableGenerator();
+        $l = new RelationReflector();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->getOptions()->set('outerKey', 'parent_id');
+        $u->getRelations()->get('plain')->getOptions()->set('fkCreate', false);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        $r->iterate(new RelationGenerator(['hasOne' => new HasOne()]));
+        $r->iterate($t);
+        $r->iterate($l);
+
+        // RENDER!
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('plain');
+        $this->assertTrue($table->exists());
+        $this->assertTrue($table->hasColumn('parent_id'));
+        $this->assertFalse($table->hasForeignKey('parent_id'));
+    }
 }

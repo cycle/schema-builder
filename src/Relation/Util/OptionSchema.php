@@ -108,15 +108,17 @@ final class OptionSchema
             throw new OptionException("Undefined relation option `{$option}`");
         }
 
-        $value = $this->template[$option];
-        if (!is_string($value)) {
-            return $value;
-        }
-
+        // user defined value
         foreach ($this->aliases as $alias => $targetOption) {
             if ($targetOption === $option && isset($this->options[$alias])) {
                 return $this->options[$alias];
             }
+        }
+
+        // non template value
+        $value = $this->template[$option];
+        if (!is_string($value)) {
+            return $value;
         }
 
         return $this->calculate($option, $value);
