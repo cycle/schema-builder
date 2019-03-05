@@ -33,19 +33,18 @@ class RefersTo extends RelationSchema
         Relation::CONSTRAIN            => true,
 
         // nullable by default
-        Relation::NULLABLE             => true,
+        Relation::NULLABLE           => true,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY            => '{relation}_{outerKey}',
+        Relation::INNER_KEY          => '{relation}_{outerKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY            => '{target:primaryKey}',
+        Relation::OUTER_KEY          => '{target:primaryKey}',
 
         // rendering options
-        RelationSchema::INDEX_CREATE   => true,
-        RelationSchema::FK_CREATE      => true,
-        RelationSchema::FK_ACTION      => 'SET NULL',
-        RelationSchema::BIND_INTERFACE => false
+        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::FK_CREATE    => true,
+        RelationSchema::FK_ACTION    => 'SET NULL'
     ];
 
     /**

@@ -30,19 +30,18 @@ final class HasOne extends RelationSchema
         Relation::CONSTRAIN            => true,
 
         // not nullable by default
-        Relation::NULLABLE             => false,
+        Relation::NULLABLE           => false,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY            => '{source:primaryKey}',
+        Relation::INNER_KEY          => '{source:primaryKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY            => '{source:role}_{innerKey}',
+        Relation::OUTER_KEY          => '{source:role}_{innerKey}',
 
         // rendering options
-        RelationSchema::INDEX_CREATE   => true,
-        RelationSchema::FK_CREATE      => true,
-        RelationSchema::FK_ACTION      => 'CASCADE',
-        RelationSchema::BIND_INTERFACE => false
+        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::FK_CREATE    => true,
+        RelationSchema::FK_ACTION    => 'CASCADE'
     ];
 
     /**

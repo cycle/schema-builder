@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use PHPUnit\Framework\TestCase;
@@ -18,20 +19,20 @@ class OptionSchemaTest extends TestCase
     public function testAliases()
     {
         $options = new OptionSchema([
-            'alias' => RelationSchema::BIND_INTERFACE
+            'alias' => Relation::TYPE
         ]);
 
         $options = $options->withTemplate([
-            RelationSchema::BIND_INTERFACE => 200
+            Relation::TYPE => 200
         ]);
 
-        $this->assertSame(200, $options->get(RelationSchema::BIND_INTERFACE));
+        $this->assertSame(200, $options->get(Relation::TYPE));
 
         $options = $options->withOptions([
             'alias' => 100
         ]);
 
-        $this->assertSame(100, $options->get(RelationSchema::BIND_INTERFACE));
+        $this->assertSame(100, $options->get(Relation::TYPE));
     }
 
     /**
@@ -40,11 +41,11 @@ class OptionSchemaTest extends TestCase
     public function testInvalidAlias()
     {
         $options = new OptionSchema([
-            'alias' => RelationSchema::BIND_INTERFACE
+            'alias' => Relation::TYPE
         ]);
 
         $options = $options->withTemplate([
-            RelationSchema::BIND_INTERFACE => 200
+            Relation::TYPE => 200
         ]);
 
         $options->withOptions([
@@ -58,11 +59,11 @@ class OptionSchemaTest extends TestCase
     public function testInvalidAlias2()
     {
         $options = new OptionSchema([
-            'alias' => RelationSchema::BIND_INTERFACE
+            'alias' => Relation::TYPE
         ]);
 
         $options = $options->withTemplate([
-            RelationSchema::BIND_INTERFACE => 200
+            Relation::TYPE => 200
         ])->withOptions([
             'alias' => 100
         ]);
@@ -73,11 +74,11 @@ class OptionSchemaTest extends TestCase
     public function testDebugInfo()
     {
         $options = new OptionSchema([
-            'alias' => RelationSchema::BIND_INTERFACE
+            'alias' => Relation::TYPE
         ]);
 
         $options = $options->withTemplate([
-            RelationSchema::BIND_INTERFACE => 200
+            Relation::TYPE => 200
         ])->withOptions([
             'alias' => 100
         ]);

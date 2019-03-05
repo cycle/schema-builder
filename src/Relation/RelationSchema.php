@@ -21,20 +21,13 @@ use Cycle\Schema\RelationInterface;
 abstract class RelationSchema implements RelationInterface
 {
     // relation rendering options
-    public const INDEX_CREATE   = 1001;
-    public const FK_CREATE      = 1002;
-    public const FK_ACTION      = 1003;
-    public const BIND_INTERFACE = 1004;
-    public const INVERSE        = 1005;
+    public const INDEX_CREATE = 1001;
+    public const FK_CREATE    = 1002;
+    public const FK_ACTION    = 1003;
+    public const INVERSE      = 1005;
 
     // options to be excluded from generated schema (helpers)
-    protected const EXCLUDE = [
-        self::FK_CREATE,
-        self::FK_ACTION,
-        self::INDEX_CREATE,
-        self::BIND_INTERFACE,
-        self::INVERSE
-    ];
+    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::INDEX_CREATE];
 
     // exported relation type
     protected const RELATION_TYPE = null;

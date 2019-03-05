@@ -39,8 +39,7 @@ final class GenerateRelations implements GeneratorInterface
         'where'           => Relation::WHERE,
         'fkCreate'        => RelationSchema::FK_CREATE,
         'fkAction'        => RelationSchema::FK_ACTION,
-        'indexCreate'     => RelationSchema::INDEX_CREATE,
-        'bindInterface'   => RelationSchema::BIND_INTERFACE
+        'indexCreate'     => RelationSchema::INDEX_CREATE
     ];
 
     /** @var OptionSchema */
