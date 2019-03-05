@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
@@ -77,6 +78,22 @@ class ManyToMany extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         $thought = $registry->getEntity($this->options->get(Relation::THOUGH_ENTITY));
+
+        if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
+            throw new RelationException(sprintf(
+                "Relation ManyToMany can only link entities from same database (%s, %s)",
+                $source->getRole(),
+                $target->getRole()
+            ));
+        }
+
+        if ($registry->getDatabase($source) !== $registry->getDatabase($thought)) {
+            throw new RelationException(sprintf(
+                "Relation ManyToMany can only link entities from same database (%s, %s)",
+                $source->getRole(),
+                $thought->getRole()
+            ));
+        }
 
         $this->ensureField(
             $thought,
