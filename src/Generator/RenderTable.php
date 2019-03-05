@@ -13,6 +13,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\ColumnSchema;
+use Spiral\Database\Schema\AbstractTable;
 use Spiral\Database\Schema\Reflector;
 
 /**
@@ -75,6 +76,16 @@ final class RenderTable implements GeneratorInterface
         }
 
         $this->reflector->addTable($table);
+    }
+
+    /**
+     * List of all involved tables sorted in order of their dependency.
+     *
+     * @return AbstractTable[]
+     */
+    public function getTables(): array
+    {
+        return $this->reflector->sortedTables();
     }
 
     /**

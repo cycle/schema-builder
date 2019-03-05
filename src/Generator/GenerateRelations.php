@@ -76,7 +76,11 @@ final class GenerateRelations implements GeneratorInterface
     public function run(Registry $registry): Registry
     {
         foreach ($registry as $entity) {
-            $this->compute($registry, $entity);
+            $this->register($registry, $entity);
+        }
+
+        foreach ($registry as $entity) {
+            $this->inverse($registry, $entity);
         }
 
         return $registry;
@@ -86,7 +90,7 @@ final class GenerateRelations implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity)
+    protected function register(Registry $registry, Entity $entity)
     {
         foreach ($entity->getRelations() as $name => $r) {
             if (!isset($this->relations[$r->getType()])) {
@@ -105,5 +109,14 @@ final class GenerateRelations implements GeneratorInterface
 
             $registry->registerRelation($entity, $name, $schema);
         }
+    }
+
+    /**
+     * @param Registry $registry
+     * @param Entity   $entity
+     */
+    protected function inverse(Registry $registry, Entity $entity)
+    {
+
     }
 }

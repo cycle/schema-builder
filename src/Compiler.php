@@ -27,8 +27,6 @@ final class Compiler
      */
     public function compile(Registry $registry, array $generators = []): array
     {
-        $this->result = [];
-
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
                 throw new CompilerException(sprintf(
