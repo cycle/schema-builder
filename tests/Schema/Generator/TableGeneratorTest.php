@@ -14,7 +14,7 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\RenderTable;
+use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
@@ -29,7 +29,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'plain');
 
-        (new RenderTable())->run($r);
+        (new RenderTables())->run($r);
 
         $table = $r->getTableSchema($e);
 
@@ -47,7 +47,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
 
         $c = new Compiler();
-        $schema = $c->compile((new RenderTable())->run($r));
+        $schema = $c->compile((new RenderTables())->run($r));
 
         $this->assertSame([
             'plain' => [
@@ -75,7 +75,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'user');
 
-        (new RenderTable())->run($r);
+        (new RenderTables())->run($r);
 
         $table = $r->getTableSchema($e);
 
@@ -98,7 +98,7 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $c->compile($r, [new RenderTable()]);
+        $c->compile($r, [new RenderTables()]);
 
         $this->assertSame([
             'user' => [

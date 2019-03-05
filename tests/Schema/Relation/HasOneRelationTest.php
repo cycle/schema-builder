@@ -14,7 +14,7 @@ use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
-use Cycle\Schema\Generator\RenderTable;
+use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\HasOne;
 use Cycle\Schema\Tests\BaseTest;
@@ -94,7 +94,7 @@ abstract class HasOneRelationTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasOne' => new HasOne()]),
-            $t = new RenderTable(),
+            $t = new RenderTables(),
             new RenderRelations()
         ]);
 
@@ -120,7 +120,7 @@ abstract class HasOneRelationTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasOne' => new HasOne()]),
-            $t = new RenderTable(),
+            $t = new RenderTables(),
             new RenderRelations()
         ]);
 

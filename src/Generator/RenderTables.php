@@ -19,7 +19,7 @@ use Spiral\Database\Schema\Reflector;
 /**
  * Generate table columns based on entity definition.
  */
-final class RenderTable implements GeneratorInterface
+final class RenderTables implements GeneratorInterface
 {
     /** @var Reflector */
     private $reflector;

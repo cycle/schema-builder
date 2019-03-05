@@ -93,7 +93,7 @@ final class OptionSchema
      */
     public function has(int $option): bool
     {
-        return isset($this->template[$option]);
+        return array_key_exists($option, $this->template);
     }
 
     /**

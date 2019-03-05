@@ -59,6 +59,16 @@ final class FieldMap implements \IteratorAggregate
     }
 
     /**
+     * @param string $name
+     * @return FieldMap
+     */
+    public function remove(string $name): self
+    {
+        unset($this->fields[$name]);
+        return $this;
+    }
+
+    /**
      * @return Field[]|\Traversable
      */
     public function getIterator()

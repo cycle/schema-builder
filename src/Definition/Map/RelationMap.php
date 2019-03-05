@@ -56,6 +56,16 @@ final class RelationMap implements \IteratorAggregate
     }
 
     /**
+     * @param string $name
+     * @return RelationMap
+     */
+    public function remove(string $name): self
+    {
+        unset($this->relations[$name]);
+        return $this;
+    }
+
+    /**
      * @return Relation[]|\Traversable
      */
     public function getIterator()

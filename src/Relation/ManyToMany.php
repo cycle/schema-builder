@@ -19,7 +19,7 @@ class ManyToMany extends RelationSchema
     use FieldTrait, ForeignKeyTrait;
 
     // internal relation type
-    protected const RELATION_TYPE = Relation::HAS_ONE;
+    protected const RELATION_TYPE = Relation::MANY_TO_MANY;
 
     // relation schema options
     protected const RELATION_SCHEMA = [
@@ -42,19 +42,22 @@ class ManyToMany extends RelationSchema
         // this is technically "inner" key of outer record, we will name it "outer key" for simplicity
         Relation::OUTER_KEY            => '{target:primaryKey}',
 
+        // thought entity role name
+        Relation::THOUGH_ENTITY        => null,
+
         // name field where parent record inner key will be stored in pivot table, role + innerKey
         // by default
-        Relation::THOUGHT_INNER_KEY    => '{source:role}_{innerKey}',
+        Relation::THOUGH_INNER_KEY     => '{source:role}_{innerKey}',
 
         // name field where inner key of outer record (outer key) will be stored in pivot table,
         // role + outerKey by default
-        Relation::THOUGHT_OUTER_KEY    => '{target:role}_{outerKey}',
+        Relation::THOUGH_OUTER_KEY     => '{target:role}_{outerKey}',
 
         // apply pivot constrain
-        Relation::THOUGHT_CONSTRAIN    => true,
+        Relation::THOUGH_CONSTRAIN     => true,
 
         // custom pivot where
-        Relation::THOUGHT_WHERE        => [],
+        Relation::THOUGH_WHERE         => [],
 
         // rendering options
         RelationSchema::INDEX_CREATE   => true,
@@ -73,18 +76,18 @@ class ManyToMany extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $thought = $registry->getEntity($this->options->get(Relation::THOUGHT_ENTITY));
+        $thought = $registry->getEntity($this->options->get(Relation::THOUGH_ENTITY));
 
         $this->ensureField(
             $thought,
-            $this->options->get(Relation::THOUGHT_INNER_KEY),
+            $this->options->get(Relation::THOUGH_INNER_KEY),
             $this->getField($source, Relation::INNER_KEY),
             $this->options->get(Relation::NULLABLE)
         );
 
         $this->ensureField(
             $thought,
-            $this->options->get(Relation::THOUGHT_OUTER_KEY),
+            $this->options->get(Relation::THOUGH_OUTER_KEY),
             $this->getField($target, Relation::OUTER_KEY),
             $this->options->get(Relation::NULLABLE)
         );
@@ -98,13 +101,13 @@ class ManyToMany extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $thought = $registry->getEntity($this->options->get(Relation::THOUGHT_ENTITY));
+        $thought = $registry->getEntity($this->options->get(Relation::THOUGH_ENTITY));
 
         $sourceField = $this->getField($source, Relation::INNER_KEY);
         $targetField = $this->getField($target, Relation::OUTER_KEY);
 
-        $thoughtSourceField = $this->getField($thought, Relation::THOUGHT_INNER_KEY);
-        $thoughtTargetField = $this->getField($thought, Relation::THOUGHT_OUTER_KEY);
+        $thoughtSourceField = $this->getField($thought, Relation::THOUGH_INNER_KEY);
+        $thoughtTargetField = $this->getField($thought, Relation::THOUGH_OUTER_KEY);
 
         $table = $registry->getTableSchema($thought);
 
