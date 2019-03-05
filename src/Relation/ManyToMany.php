@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
@@ -61,4 +62,62 @@ class ManyToMany extends RelationSchema
         RelationSchema::FK_ACTION      => 'CASCADE',
         RelationSchema::BIND_INTERFACE => false
     ];
+
+    /**
+     * @param Registry $registry
+     */
+    public function compute(Registry $registry)
+    {
+        parent::compute($registry);
+
+        $source = $registry->getEntity($this->source);
+        $target = $registry->getEntity($this->target);
+
+        $thought = $registry->getEntity($this->options->get(Relation::THOUGHT_ENTITY));
+
+        $this->ensureField(
+            $thought,
+            $this->options->get(Relation::THOUGHT_INNER_KEY),
+            $this->getField($source, Relation::INNER_KEY),
+            $this->options->get(Relation::NULLABLE)
+        );
+
+        $this->ensureField(
+            $thought,
+            $this->options->get(Relation::THOUGHT_OUTER_KEY),
+            $this->getField($target, Relation::OUTER_KEY),
+            $this->options->get(Relation::NULLABLE)
+        );
+    }
+
+    /**
+     * @param Registry $registry
+     */
+    public function render(Registry $registry)
+    {
+        $source = $registry->getEntity($this->source);
+        $target = $registry->getEntity($this->target);
+
+        $thought = $registry->getEntity($this->options->get(Relation::THOUGHT_ENTITY));
+
+        $sourceField = $this->getField($source, Relation::INNER_KEY);
+        $targetField = $this->getField($target, Relation::OUTER_KEY);
+
+        $thoughtSourceField = $this->getField($thought, Relation::THOUGHT_INNER_KEY);
+        $thoughtTargetField = $this->getField($thought, Relation::THOUGHT_OUTER_KEY);
+
+        $table = $registry->getTableSchema($thought);
+
+        if ($this->options->get(self::INDEX_CREATE)) {
+            $table->index([
+                $thoughtSourceField->getColumn(),
+                $thoughtTargetField->getColumn()
+            ])->unique(true);
+        }
+
+        if ($this->options->get(self::FK_CREATE)) {
+            $this->createForeignKey($registry, $source, $thought, $sourceField, $thoughtSourceField);
+            $this->createForeignKey($registry, $target, $thought, $targetField, $thoughtTargetField);
+        }
+    }
 }
