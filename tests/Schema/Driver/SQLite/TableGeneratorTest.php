@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLite;
+namespace Cycle\Schema\Tests\Driver\SQLite; 
 
-class TableGeneratorTest extends \Cycle\Schema\Tests\Generator\TableGeneratorTest
+class TableGeneratorTest extends \Cycle\Schema\Tests\Generator\TableGeneratorTest 
 { 
     const DRIVER = "sqlite"; 
 }

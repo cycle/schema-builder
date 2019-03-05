@@ -25,15 +25,22 @@ abstract class RelationSchema implements RelationInterface
     public const FK_CREATE      = 1002;
     public const FK_ACTION      = 1003;
     public const BIND_INTERFACE = 1004;
+    public const INVERSE        = 1005;
+
+    // options to be excluded from generated schema (helpers)
+    protected const EXCLUDE = [
+        self::FK_CREATE,
+        self::FK_ACTION,
+        self::INDEX_CREATE,
+        self::BIND_INTERFACE,
+        self::INVERSE
+    ];
 
     // exported relation type
     protected const RELATION_TYPE = null;
 
     // name of all required relation options
-    protected const OPTION_SCHEMA = [];
-
-    // options to be excluded from generated schema
-    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::INDEX_CREATE];
+    protected const RELATION_SCHEMA = [];
 
     /** @var string */
     protected $source;
@@ -53,7 +60,7 @@ abstract class RelationSchema implements RelationInterface
         $relation->source = $source;
         $relation->target = $target;
 
-        $relation->options = $options->withTemplate(static::OPTION_SCHEMA)->withContext([
+        $relation->options = $options->withTemplate(static::RELATION_SCHEMA)->withContext([
             'relation'    => $name,
             'source:role' => $source,
             'target:role' => $target
@@ -85,7 +92,7 @@ abstract class RelationSchema implements RelationInterface
     {
         $schema = [];
 
-        foreach (static::OPTION_SCHEMA as $option => $template) {
+        foreach (static::RELATION_SCHEMA as $option => $template) {
             if (in_array($option, static::EXCLUDE)) {
                 continue;
             }

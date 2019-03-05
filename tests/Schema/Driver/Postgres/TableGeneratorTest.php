@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\Postgres;
+namespace Cycle\Schema\Tests\Driver\Postgres; 
 
-class TableGeneratorTest extends \Cycle\Schema\Tests\Generator\TableGeneratorTest
+class TableGeneratorTest extends \Cycle\Schema\Tests\Generator\TableGeneratorTest 
 { 
     const DRIVER = "postgres"; 
 }

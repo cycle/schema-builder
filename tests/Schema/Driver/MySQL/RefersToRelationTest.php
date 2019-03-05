@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\MySQL; 
 
-class TypecastGeneratorTest extends \Cycle\Schema\Tests\Generator\TypecastGeneratorTest 
+class RefersToRelationTest extends \Cycle\Schema\Tests\Relation\RefersToRelationTest 
 { 
     const DRIVER = "mysql"; 
 }

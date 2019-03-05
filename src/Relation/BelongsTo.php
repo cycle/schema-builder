@@ -22,7 +22,7 @@ final class BelongsTo extends RelationSchema
     protected const RELATION_TYPE = Relation::BELONGS_TO;
 
     // relation schema options
-    protected const OPTION_SCHEMA = [
+    protected const RELATION_SCHEMA = [
         // save with parent
         Relation::CASCADE              => true,
 

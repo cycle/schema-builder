@@ -16,25 +16,27 @@ use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Relation\BelongsTo;
+use Cycle\Schema\Relation\RefersTo;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\Post;
 
-abstract class BelongsToRelationTest extends BaseTest
+abstract class RefersToRelationTest extends BaseTest
 {
     public function testGenerate()
     {
         $e = Post::define();
         $u = Author::define();
 
+        $e->getRelations()->get('author')->setType('refersTo');
+
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
+        (new GenerateRelations(['refersTo' => new RefersTo()]))->run($r);
 
-        $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
+        $this->assertInstanceOf(RefersTo::class, $r->getRelation($e, 'author'));
     }
 
     public function testPackSchema()
@@ -42,16 +44,18 @@ abstract class BelongsToRelationTest extends BaseTest
         $e = Post::define();
         $u = Author::define();
 
+        $e->getRelations()->get('author')->setType('refersTo');
+
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['refersTo' => new RefersTo()])
         ]);
 
         $this->assertArrayHasKey('post', $schema);
-        $this->assertSame(Relation::BELONGS_TO, $schema['post'][Schema::RELATIONS]['author'][Relation::TYPE]);
+        $this->assertSame(Relation::REFERS_TO, $schema['post'][Schema::RELATIONS]['author'][Relation::TYPE]);
 
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
@@ -64,6 +68,8 @@ abstract class BelongsToRelationTest extends BaseTest
         $e = Post::define();
         $u = Author::define();
 
+        $e->getRelations()->get('author')->setType('refersTo');
+
         $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
 
         $r = new Registry($this->dbal);
@@ -71,7 +77,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['refersTo' => new RefersTo()])
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -86,12 +92,14 @@ abstract class BelongsToRelationTest extends BaseTest
         $e = Post::define();
         $u = Author::define();
 
+        $e->getRelations()->get('author')->setType('refersTo');
+
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
         (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()]),
+            new GenerateRelations(['refersTo' => new RefersTo()]),
             $t = new RenderTable(),
             new RenderRelations()
         ]);
@@ -109,6 +117,8 @@ abstract class BelongsToRelationTest extends BaseTest
         $e = Post::define();
         $u = Author::define();
 
+        $e->getRelations()->get('author')->setType('refersTo');
+
         $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
         $e->getRelations()->get('author')->getOptions()->set('fkCreate', false);
 
@@ -117,7 +127,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()]),
+            new GenerateRelations(['refersTo' => new RefersTo()]),
             $t = new RenderTable(),
             new RenderRelations()
         ]);

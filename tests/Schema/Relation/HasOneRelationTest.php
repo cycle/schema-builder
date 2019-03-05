@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
+use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\GenerateRelations;
@@ -51,6 +52,8 @@ abstract class HasOneRelationTest extends BaseTest
         $schema = $c->compile($r);
 
         $this->assertArrayHasKey('user', $schema);
+        $this->assertSame(Relation::HAS_ONE, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
+
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);

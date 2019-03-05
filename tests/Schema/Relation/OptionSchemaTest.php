@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
-
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use PHPUnit\Framework\TestCase;

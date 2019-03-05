@@ -14,12 +14,15 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
-final class HasOne extends RelationSchema
+/**
+ * Similar to BelongsTo relation but does not force external object to always exists.
+ */
+class RefersTo extends RelationSchema
 {
     use FieldTrait, ForeignKeyTrait;
 
     // internal relation type
-    protected const RELATION_TYPE = Relation::HAS_ONE;
+    protected const RELATION_TYPE = Relation::REFERS_TO;
 
     // relation schema options
     protected const RELATION_SCHEMA = [
@@ -29,19 +32,19 @@ final class HasOne extends RelationSchema
         // use outer entity constrain by default
         Relation::CONSTRAIN            => true,
 
-        // not nullable by default
-        Relation::NULLABLE             => false,
+        // nullable by default
+        Relation::NULLABLE             => true,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY            => '{source:primaryKey}',
+        Relation::INNER_KEY            => '{relation}_{outerKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY            => '{source:role}_{innerKey}',
+        Relation::OUTER_KEY            => '{target:primaryKey}',
 
         // rendering options
         RelationSchema::INDEX_CREATE   => true,
         RelationSchema::FK_CREATE      => true,
-        RelationSchema::FK_ACTION      => 'CASCADE',
+        RelationSchema::FK_ACTION      => 'SET NULL',
         RelationSchema::BIND_INTERFACE => false
     ];
 
@@ -57,9 +60,9 @@ final class HasOne extends RelationSchema
 
         // create target outer field
         $this->ensureField(
-            $target,
-            $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY)
+            $source,
+            $this->options->get(Relation::INNER_KEY),
+            $this->getField($target, Relation::OUTER_KEY)
         );
     }
 
@@ -74,14 +77,14 @@ final class HasOne extends RelationSchema
         $innerField = $this->getField($source, Relation::INNER_KEY);
         $outerField = $this->getField($target, Relation::OUTER_KEY);
 
-        $table = $registry->getTableSchema($target);
+        $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$outerField->getColumn()]);
+            $table->index([$innerField->getColumn()]);
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $source, $target, $innerField, $outerField);
+            $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
         }
     }
 }
