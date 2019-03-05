@@ -17,7 +17,6 @@ use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTable;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\HasMany;
-use Cycle\Schema\Relation\HasOne;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
 use Cycle\Schema\Tests\Fixtures\User;
@@ -64,7 +63,6 @@ abstract class HasManyRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema);
         $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
     }
-
 
     public function testCustomKey()
     {

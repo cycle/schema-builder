@@ -59,7 +59,8 @@ final class HasOne extends RelationSchema
         $this->ensureField(
             $target,
             $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY)
+            $this->getField($source, Relation::INNER_KEY),
+            $this->options->get(Relation::NULLABLE)
         );
     }
 

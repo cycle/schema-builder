@@ -62,7 +62,8 @@ class RefersTo extends RelationSchema
         $this->ensureField(
             $source,
             $this->options->get(Relation::INNER_KEY),
-            $this->getField($target, Relation::OUTER_KEY)
+            $this->getField($target, Relation::OUTER_KEY),
+            $this->options->get(Relation::NULLABLE)
         );
     }
 

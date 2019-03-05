@@ -29,6 +29,9 @@ class HasMany extends RelationSchema
         // use outer entity constrain by default
         Relation::CONSTRAIN            => true,
 
+        // custom where condition
+        Relation::WHERE                => [],
+
         // not nullable by default
         Relation::NULLABLE             => false,
 
@@ -59,7 +62,8 @@ class HasMany extends RelationSchema
         $this->ensureField(
             $target,
             $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY)
+            $this->getField($source, Relation::INNER_KEY),
+            $this->options->get(Relation::NULLABLE)
         );
     }
 

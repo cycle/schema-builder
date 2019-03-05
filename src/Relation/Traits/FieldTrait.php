@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
-use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Relation\OptionSchema;
@@ -31,8 +30,9 @@ trait FieldTrait
      * @param Entity $target
      * @param string $name
      * @param Field  $outer
+     * @param bool   $nullable
      */
-    protected function ensureField(Entity $target, string $name, Field $outer)
+    protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false)
     {
         if ($target->getFields()->has($name)) {
             // field already exists and defined by the user
@@ -54,7 +54,7 @@ trait FieldTrait
                 $field->setType($outer->getType());
         }
 
-        if ($this->getOptions()->get(Relation::NULLABLE)) {
+        if ($nullable) {
             $field->getOptions()->set(ColumnSchema::OPT_NULLABLE, true);
         }
 
