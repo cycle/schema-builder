@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Exception;
 
-class BuilderException extends \RuntimeException
+class RegistryException extends \RuntimeException
 {
 
 }

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Spiral\Database\DatabaseManager;
 use Spiral\Database\Exception\DBALException;
@@ -88,7 +88,7 @@ final class Registry implements \IteratorAggregate
      * @param string $role Entity role or class name.
      * @return Entity
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function getEntity(string $role): Entity
     {
@@ -98,7 +98,7 @@ final class Registry implements \IteratorAggregate
             }
         }
 
-        throw new BuilderException("Undefined entity `{$role}`");
+        throw new RegistryException("Undefined entity `{$role}`");
     }
 
     /**
@@ -115,12 +115,12 @@ final class Registry implements \IteratorAggregate
      * @param Entity $parent
      * @param Entity $child
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function registerChild(Entity $parent, Entity $child)
     {
         if (!$this->hasEntity($parent)) {
-            throw new BuilderException("Undefined entity `{$parent->getRole()}`");
+            throw new RegistryException("Undefined entity `{$parent->getRole()}`");
         }
 
         $children = $this->children[$parent];
@@ -140,7 +140,7 @@ final class Registry implements \IteratorAggregate
     public function getChildren(Entity $entity): array
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         return $this->children[$entity];
@@ -154,13 +154,13 @@ final class Registry implements \IteratorAggregate
      * @param string      $table
      * @return Registry
      *
-     * @throws BuilderException
+     * @throws RegistryException
      * @throws DBALException
      */
     public function linkTable(Entity $entity, ?string $database, string $table): Registry
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         $this->tables[$entity] = [
@@ -176,12 +176,12 @@ final class Registry implements \IteratorAggregate
      * @param Entity $entity
      * @return bool
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function hasTable(Entity $entity): bool
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         return $this->tables[$entity] !== null;
@@ -191,12 +191,12 @@ final class Registry implements \IteratorAggregate
      * @param Entity $entity
      * @return string
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function getDatabase(Entity $entity): string
     {
         if (!$this->hasTable($entity)) {
-            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
         }
 
         return $this->tables[$entity]['database'];
@@ -206,12 +206,12 @@ final class Registry implements \IteratorAggregate
      * @param Entity $entity
      * @return string
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function getTable(Entity $entity): string
     {
         if (!$this->hasTable($entity)) {
-            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
         }
 
         return $this->tables[$entity]['table'];
@@ -221,12 +221,12 @@ final class Registry implements \IteratorAggregate
      * @param Entity $entity
      * @return AbstractTable
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function getTableSchema(Entity $entity): AbstractTable
     {
         if (!$this->hasTable($entity)) {
-            throw new BuilderException("Entity `{$entity->getRole()}` has no assigned table");
+            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
         }
 
         return $this->tables[$entity]['schema'];
@@ -239,13 +239,13 @@ final class Registry implements \IteratorAggregate
      * @param string            $name
      * @param RelationInterface $relation
      *
-     * @throws BuilderException
+     * @throws RegistryException
      * @throws RelationException
      */
     public function registerRelation(Entity $entity, string $name, RelationInterface $relation)
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         $relations = $this->relations[$entity];
@@ -258,12 +258,12 @@ final class Registry implements \IteratorAggregate
      * @param string $name
      * @return bool
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     public function hasRelation(Entity $entity, string $name): bool
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         return isset($this->relations[$entity][$name]);
@@ -277,7 +277,7 @@ final class Registry implements \IteratorAggregate
     public function getRelation(Entity $entity, string $name): RelationInterface
     {
         if (!$this->hasRelation($entity, $name)) {
-            throw new BuilderException("Undefined relation `{$entity->getRole()}`.`{$name}`");
+            throw new RegistryException("Undefined relation `{$entity->getRole()}`.`{$name}`");
         }
 
         return $this->relations[$entity][$name];
@@ -292,7 +292,7 @@ final class Registry implements \IteratorAggregate
     public function getRelations(Entity $entity): array
     {
         if (!$this->hasEntity($entity)) {
-            throw new BuilderException("Undefined entity `{$entity->getRole()}`");
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         return $this->relations[$entity];

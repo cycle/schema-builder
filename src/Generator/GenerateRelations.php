@@ -11,7 +11,7 @@ namespace Cycle\Schema\Generator;
 
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\OptionSchema;
@@ -93,7 +93,7 @@ final class GenerateRelations implements GeneratorInterface
     {
         foreach ($entity->getRelations() as $name => $r) {
             if (!isset($this->relations[$r->getType()])) {
-                throw new BuilderException("Undefined relation type `{$r->getType()}`");
+                throw new RegistryException("Undefined relation type `{$r->getType()}`");
             }
 
             $schema = $this->relations[$r->getType()]->withContext(

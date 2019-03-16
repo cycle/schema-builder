@@ -11,7 +11,7 @@ namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\RelationInterface;
 
@@ -112,7 +112,7 @@ abstract class RelationSchema implements RelationInterface
      * @param Entity $entity
      * @return string
      *
-     * @throws BuilderException
+     * @throws RegistryException
      */
     protected function getPrimary(Entity $entity): string
     {
@@ -122,6 +122,6 @@ abstract class RelationSchema implements RelationInterface
             }
         }
 
-        throw new BuilderException("Entity `{$entity->getRole()}` must have defined primary key");
+        throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
     }
 }

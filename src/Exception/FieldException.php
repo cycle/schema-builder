@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Exception;
 
-class FieldException extends BuilderException
+class FieldException extends RegistryException
 {
 
 }

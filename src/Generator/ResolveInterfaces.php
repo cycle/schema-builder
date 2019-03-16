@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Generator;
 
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\BuilderException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
@@ -77,7 +77,7 @@ class ResolveInterfaces implements GeneratorInterface
             try {
                 $candidate = new \ReflectionClass($entity->getClass());
             } catch (\ReflectionException $e) {
-                throw new BuilderException($e->getMessage(), $e->getCode(), $e);
+                throw new RegistryException($e->getMessage(), $e->getCode(), $e);
             }
 
             if ($candidate->isSubclassOf($target) || $candidate->implementsInterface($target)) {
