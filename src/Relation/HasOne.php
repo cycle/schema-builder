@@ -24,10 +24,10 @@ final class HasOne extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE              => true,
+        Relation::CASCADE            => true,
 
         // use outer entity constrain by default
-        Relation::CONSTRAIN            => true,
+        Relation::CONSTRAIN          => true,
 
         // not nullable by default
         Relation::NULLABLE           => false,

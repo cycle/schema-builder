@@ -24,13 +24,13 @@ class HasMany extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE              => true,
+        Relation::CASCADE            => true,
 
         // use outer entity constrain by default
-        Relation::CONSTRAIN            => true,
+        Relation::CONSTRAIN          => true,
 
         // custom where condition
-        Relation::WHERE                => [],
+        Relation::WHERE              => [],
 
         // not nullable by default
         Relation::NULLABLE           => false,

@@ -24,10 +24,10 @@ final class BelongsTo extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE              => true,
+        Relation::CASCADE            => true,
 
         // use outer entity constrain by default
-        Relation::CONSTRAIN            => true,
+        Relation::CONSTRAIN          => true,
 
         // nullable by default
         Relation::NULLABLE           => true,
