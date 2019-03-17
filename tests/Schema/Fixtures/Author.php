@@ -13,7 +13,7 @@ namespace Cycle\Schema\Tests\Fixtures;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 
-class Author
+class Author implements AuthorInterface
 {
     public static function define(): Entity
     {

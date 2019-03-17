@@ -53,7 +53,7 @@ class ResolveInterfaces implements GeneratorInterface
             }
 
             $relation->setTarget($this->resolve($registry, $target));
-
+            $relation->getOptions()->remove(self::STATIC_LINK);
         }
     }
 
@@ -64,7 +64,7 @@ class ResolveInterfaces implements GeneratorInterface
      */
     protected function resolve(Registry $registry, string $target): string
     {
-        if (!class_exists($target)) {
+        if (!interface_exists($target)) {
             throw new RelationException("Unable to resolve static link to non interface target `{$target}`");
         }
 

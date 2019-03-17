@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Morphed;
 
-class MorphedBelongsTo
+class BelongsToMorphed
 {
 
 }

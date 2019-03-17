@@ -13,7 +13,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 
-class User
+class User implements AuthorInterface
 {
     public static function define(): Entity
     {
