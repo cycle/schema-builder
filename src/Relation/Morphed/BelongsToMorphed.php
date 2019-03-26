@@ -94,6 +94,15 @@ class BelongsToMorphed extends RelationSchema implements InversableInterface
     }
 
     /**
+     * @param Registry $registry
+     * @return array
+     */
+    public function inverseTargets(Registry $registry): array
+    {
+        return iterator_to_array($this->findTargets($registry, $this->target));
+    }
+
+    /**
      * @param RelationInterface $relation
      * @param string            $into
      * @return RelationInterface

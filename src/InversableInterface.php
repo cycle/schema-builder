@@ -8,11 +8,21 @@
 
 namespace Cycle\Schema;
 
+use Cycle\Schema\Definition\Entity;
+
 /**
  * Gives ability for the relation to be inverted.
  */
 interface InversableInterface extends RelationInterface
 {
+    /**
+     * Return all targets to which relation must be inversed to.
+     *
+     * @param Registry $registry
+     * @return Entity[]
+     */
+    public function inverseTargets(Registry $registry): array;
+
     /**
      * Inverse relation options into given schema.
      *

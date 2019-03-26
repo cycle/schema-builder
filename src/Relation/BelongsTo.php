@@ -88,6 +88,17 @@ final class BelongsTo extends RelationSchema implements InversableInterface
     }
 
     /**
+     * @param Registry $registry
+     * @return array
+     */
+    public function inverseTargets(Registry $registry): array
+    {
+        return [
+            $registry->getEntity($this->target)
+        ];
+    }
+
+    /**
      * @param RelationInterface $relation
      * @param string            $into
      * @return RelationInterface

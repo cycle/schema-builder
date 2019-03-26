@@ -16,6 +16,7 @@ use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\BelongsTo;
 use Cycle\Schema\Relation\ManyToMany;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Post;
@@ -83,8 +84,13 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'tagContext',
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THOUGH_ENTITY]
+            'id',
+            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
@@ -137,5 +143,98 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
         $this->assertTrue($table->hasForeignKey('post_id'));
         $this->assertTrue($table->hasForeignKey('tag_id'));
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\SchemaException
+     */
+    public function testInverseInvalidType()
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->setInverse('posts', 'belongsTo')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new GenerateRelations([
+            'manyToMany' => new ManyToMany(),
+            'belongsTo'  => new BelongsTo()
+        ]))->run($r);
+    }
+
+    public function testInverse()
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->setInverse('posts', 'manyToMany')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new GenerateRelations([
+            'manyToMany' => new ManyToMany(),
+        ]))->run($r);
+
+        $schema = (new Compiler())->compile($r);
+
+        $this->assertArrayHasKey('post', $schema);
+        $this->assertArrayHasKey('tag', $schema);
+        $this->assertArrayHasKey('tagContext', $schema);
+
+        $this->assertArrayHasKey('posts', $schema['tag'][Schema::RELATIONS]);
+
+        $this->assertSame('post', $schema['tag'][Schema::RELATIONS]['posts'][Relation::TARGET]);
+        $this->assertSame(
+            Relation::MANY_TO_MANY,
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::TYPE]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'tag_id',
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THOUGH_INNER_KEY]
+        );
+
+        $this->assertSame(
+            'post_id',
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THOUGH_OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'tagContext',
+            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THOUGH_ENTITY]
+        );
     }
 }

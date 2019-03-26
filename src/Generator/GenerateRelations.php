@@ -8,11 +8,11 @@
 
 namespace Cycle\Schema\Generator;
 
-use Cycle\ORM\Exception\SchemaException;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -133,27 +133,21 @@ final class GenerateRelations implements GeneratorInterface
                 throw new SchemaException("Unable to inverse relation of type " . get_class($schema));
             }
 
-            if (!isset($this->relations[$r->getInverseType()])) {
-                throw new RegistryException("Undefined relation type `{$r->getType()}`");
-            }
+            foreach ($schema->inverseTargets($registry) as $target) {
+                try {
+                    $inversed = $schema->inverseRelation(
+                        $this->initRelation($r->getInverseType()),
+                        $r->getInverseName()
+                    );
 
-            try {
-                $inversed = $schema->inverseRelation(
-                    $this->initRelation($r->getInverseType()),
-                    $r->getInverseName()
-                );
-
-                $registry->registerRelation(
-                    $registry->getEntity($r->getTarget()),
-                    $r->getInverseName(),
-                    $inversed
-                );
-            } catch (RelationException $e) {
-                throw new SchemaException(
-                    "Unable to inverse relation `{$entity->getRole()}`.`{$name}`",
-                    $e->getCode(),
-                    $e
-                );
+                    $registry->registerRelation($target, $r->getInverseName(), $inversed);
+                } catch (RelationException $e) {
+                    throw new SchemaException(
+                        "Unable to inverse relation `{$entity->getRole()}`.`{$name}`",
+                        $e->getCode(),
+                        $e
+                    );
+                }
             }
         }
     }

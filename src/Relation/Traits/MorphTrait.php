@@ -19,6 +19,23 @@ trait MorphTrait
     /**
      * @param Registry $registry
      * @param string   $interface
+     * @return \Generator
+     */
+    protected function findTargets(Registry $registry, string $interface): \Generator
+    {
+        foreach ($registry as $entity) {
+            $class = $entity->getClass();
+            if ($class === null || !in_array($interface, class_implements($class))) {
+                continue;
+            }
+
+            yield $entity;
+        }
+    }
+
+    /**
+     * @param Registry $registry
+     * @param string   $interface
      * @return array Tuple [name, Field]
      *
      * @throws RelationException
@@ -29,12 +46,7 @@ trait MorphTrait
         $key = null;
         $field = null;
 
-        foreach ($registry as $entity) {
-            $class = $entity->getClass();
-            if ($class === null || !in_array($interface, class_implements($class))) {
-                continue;
-            }
-
+        foreach ($this->findTargets($registry, $interface) as $entity) {
             $primaryKey = $this->getPrimary($entity);
             $primaryField = $entity->getFields()->get($primaryKey);
 

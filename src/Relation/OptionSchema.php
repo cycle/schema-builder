@@ -107,6 +107,10 @@ final class OptionSchema
             throw new OptionException("Undefined relation option `{$option}`");
         }
 
+        if (isset($this->options[$option])) {
+            return $this->options[$option];
+        }
+
         // user defined value
         foreach ($this->aliases as $alias => $targetOption) {
             if ($targetOption === $option && isset($this->options[$alias])) {

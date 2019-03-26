@@ -15,7 +15,10 @@ use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\BelongsTo;
 use Cycle\Schema\Relation\HasOne;
+use Cycle\Schema\Relation\ManyToMany;
+use Cycle\Schema\Relation\RefersTo;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
 use Cycle\Schema\Tests\Fixtures\User;
@@ -130,5 +133,103 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('parent_id'));
         $this->assertFalse($table->hasForeignKey('parent_id'));
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\SchemaException
+     */
+    public function testInverseInvalidType()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setInverse('user', 'manyToMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations([
+            'hasOne'     => new HasOne(),
+            'manyToMany' => new ManyToMany()
+        ]))->run($r);
+    }
+
+    public function testInverseToBelongsTo()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setInverse('user', 'belongsTo');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations([
+            'hasOne'    => new HasOne(),
+            'belongsTo' => new BelongsTo()
+        ]))->run($r);
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
+        $this->assertSame(Relation::BELONGS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+
+        $this->assertSame(
+            'user',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'user_id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
+    }
+
+    public function testInverseToRefersTo()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setInverse('user', 'refersTo');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations([
+            'hasOne'   => new HasOne(),
+            'refersTo' => new RefersTo()
+        ]))->run($r);
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
+        $this->assertSame(Relation::REFERS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+
+        $this->assertSame(
+            'user',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'user_id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
     }
 }

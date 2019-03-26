@@ -92,13 +92,14 @@ final class Relation
 
     /**
      * @param string $into
-     * @param string $type
+     * @param string $as
      * @return Relation
      */
-    public function setInverse(string $into, string $type): Relation
+    public function setInverse(string $into, string $as): Relation
     {
         $this->inverse = $into;
-        $this->inverseType = $type;
+        $this->inverseType = $as;
+
         return $this;
     }
 

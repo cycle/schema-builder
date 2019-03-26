@@ -22,7 +22,6 @@ use Spiral\Database\DatabaseManager;
 use Spiral\Database\Driver\Driver;
 use Spiral\Database\Driver\Handler;
 
-// todo: test how not nullable relations are being generated
 abstract class BaseTest extends TestCase
 {
     // tests configuration
