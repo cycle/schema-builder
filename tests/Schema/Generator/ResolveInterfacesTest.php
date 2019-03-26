@@ -69,6 +69,26 @@ abstract class ResolveInterfacesTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RelationException
      */
+    public function testInvalidStaticLink()
+    {
+        $e = Post::define();
+        $u = Author::define();
+
+        $e->getRelations()->get('author')->setTarget('invalid');
+        $e->getRelations()->get('author')->getOptions()->set(ResolveInterfaces::STATIC_LINK, true);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+
+        $schema = (new Compiler())->compile($r, [
+            new ResolveInterfaces(),
+            new GenerateRelations(['belongsTo' => new BelongsTo()])
+        ]);
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\RelationException
+     */
     public function testAmbiguousDependency()
     {
         $e = Post::define();
