@@ -300,6 +300,27 @@ abstract class ColumnTest extends BaseTest
         $this->assertEquals('a', $table->column('name')->getDefaultValue());
     }
 
+    public function testCastDefaultDatetime()
+    {
+        $field = new Field();
+        $field->setType('datetime');
+        $field->setColumn('name');
+        $field->getOptions()->set(Column::OPT_CAST_DEFAULT, true);
+
+        $table = $this->getStub();
+        $column = Column::parse($field);
+
+        $column->render($table->column('name'));
+
+        $table->save();
+
+        $table = $this->getStub();
+        $this->assertTrue($table->hasColumn('name'));
+
+        $this->assertFalse($table->column('name')->isNullable());
+        $this->assertInstanceOf(\DateTimeInterface::class, $table->column('name')->getDefaultValue());
+    }
+
     /**
      * @return AbstractTable
      */
