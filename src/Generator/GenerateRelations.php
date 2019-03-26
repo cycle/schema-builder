@@ -14,6 +14,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\GeneratorInterface;
+use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
@@ -94,11 +95,7 @@ final class GenerateRelations implements GeneratorInterface
     protected function register(Registry $registry, Entity $entity)
     {
         foreach ($entity->getRelations() as $name => $r) {
-            if (!isset($this->relations[$r->getType()])) {
-                throw new RegistryException("Undefined relation type `{$r->getType()}`");
-            }
-
-            $schema = $this->relations[$r->getType()]->withContext(
+            $schema = $this->initRelation($r->getType())->withContext(
                 $name,
                 $entity->getRole(),
                 $r->getTarget(),
@@ -126,6 +123,51 @@ final class GenerateRelations implements GeneratorInterface
      */
     protected function inverse(Registry $registry, Entity $entity)
     {
+        foreach ($entity->getRelations() as $name => $r) {
+            if (!$r->isInversed()) {
+                continue;
+            }
 
+            $schema = $registry->getRelation($entity, $name);
+            if (!$schema instanceof InversableInterface) {
+                throw new SchemaException("Unable to inverse relation of type " . get_class($schema));
+            }
+
+            if (!isset($this->relations[$r->getInverseType()])) {
+                throw new RegistryException("Undefined relation type `{$r->getType()}`");
+            }
+
+            try {
+                $inversed = $schema->inverseRelation(
+                    $this->initRelation($r->getInverseType()),
+                    $r->getInverseName()
+                );
+
+                $registry->registerRelation(
+                    $registry->getEntity($r->getTarget()),
+                    $r->getInverseName(),
+                    $inversed
+                );
+            } catch (RelationException $e) {
+                throw new SchemaException(
+                    "Unable to inverse relation `{$entity->getRole()}`.`{$name}`",
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+    }
+
+    /**
+     * @param string $type
+     * @return RelationInterface
+     */
+    protected function initRelation(string $type): RelationInterface
+    {
+        if (!isset($this->relations[$type])) {
+            throw new RegistryException("Undefined relation type `{$type}`");
+        }
+
+        return $this->relations[$type];
     }
 }

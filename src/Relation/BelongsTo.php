@@ -9,12 +9,14 @@
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\InvertibleInterface;
+use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
+use Cycle\Schema\RelationInterface;
 
-final class BelongsTo extends RelationSchema implements InvertibleInterface
+final class BelongsTo extends RelationSchema implements InversableInterface
 {
     use FieldTrait, ForeignKeyTrait;
 
@@ -83,5 +85,29 @@ final class BelongsTo extends RelationSchema implements InvertibleInterface
         if ($this->options->get(self::FK_CREATE)) {
             $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
         }
+    }
+
+    /**
+     * @param RelationInterface $relation
+     * @param string            $into
+     * @return RelationInterface
+     *
+     * @throws RelationException
+     */
+    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface
+    {
+        if (!$relation instanceof HasOne && !$relation instanceof HasMany) {
+            throw new RelationException("BelongsTo relation can only be inversed into HasOne or HasMany");
+        }
+
+        return $relation->withContext(
+            $into,
+            $this->target,
+            $this->source,
+            $this->options->withOptions([
+                Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
+            ])
+        );
     }
 }

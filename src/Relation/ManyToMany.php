@@ -10,12 +10,13 @@ namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
 use Cycle\Schema\Exception\RelationException;
-use Cycle\Schema\InvertibleInterface;
+use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
+use Cycle\Schema\RelationInterface;
 
-class ManyToMany extends RelationSchema implements InvertibleInterface
+class ManyToMany extends RelationSchema implements InversableInterface
 {
     use FieldTrait, ForeignKeyTrait;
 
@@ -138,5 +139,35 @@ class ManyToMany extends RelationSchema implements InvertibleInterface
             $this->createForeignKey($registry, $source, $thought, $sourceField, $thoughtSourceField);
             $this->createForeignKey($registry, $target, $thought, $targetField, $thoughtTargetField);
         }
+    }
+
+    /**
+     * @param RelationInterface $relation
+     * @param string            $into
+     * @return RelationInterface
+     *
+     * @throws RelationException
+     */
+    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface
+    {
+        if (!$relation instanceof self) {
+            throw new RelationException("ManyToMany relation can only be inversed into ManyToMany");
+        }
+
+        if (!empty($this->options->get(Relation::THOUGH_WHERE)) || !empty($this->options->get(Relation::WHERE))) {
+            throw new RelationException("Unable to inverse ManyToMany relation with where constrain");
+        }
+
+        return $relation->withContext(
+            $into,
+            $this->target,
+            $this->source,
+            $this->options->withOptions([
+                Relation::INNER_KEY        => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY        => $this->options->get(Relation::INNER_KEY),
+                Relation::THOUGH_INNER_KEY => $this->options->get(Relation::THOUGH_OUTER_KEY),
+                Relation::THOUGH_OUTER_KEY => $this->options->get(Relation::THOUGH_INNER_KEY),
+            ])
+        );
     }
 }

@@ -9,13 +9,15 @@
 namespace Cycle\Schema\Relation\Morphed;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\InvertibleInterface;
+use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\MorphTrait;
+use Cycle\Schema\RelationInterface;
 
-class BelongsToMorphed extends RelationSchema implements InvertibleInterface
+class BelongsToMorphed extends RelationSchema implements InversableInterface
 {
     use FieldTrait, MorphTrait;
 
@@ -89,5 +91,31 @@ class BelongsToMorphed extends RelationSchema implements InvertibleInterface
         if ($this->options->get(self::INDEX_CREATE)) {
             $table->index([$innerField->getColumn(), $morphField->getColumn()]);
         }
+    }
+
+    /**
+     * @param RelationInterface $relation
+     * @param string            $into
+     * @return RelationInterface
+     *
+     * @throws RelationException
+     */
+    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface
+    {
+        if (!$relation instanceof MorphedHasOne && !$relation instanceof MorphedHasMany) {
+            throw new RelationException(
+                "BelongsToMorphed relation can only be inversed into MorphedHasOne or MorphedHasMany"
+            );
+        }
+
+        return $relation->withContext(
+            $into,
+            $this->target,
+            $this->source,
+            $this->options->withOptions([
+                Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
+            ])
+        );
     }
 }

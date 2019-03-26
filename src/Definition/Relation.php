@@ -22,8 +22,11 @@ final class Relation
     /** @var string */
     private $target;
 
-    /** @var bool */
-    private $inverse = false;
+    /** @var string|null */
+    private $inverse = null;
+
+    /** @var string|null */
+    private $inverseType = null;
 
     /**
      * Relation constructor.
@@ -88,20 +91,38 @@ final class Relation
     }
 
     /**
-     * @param bool $inverse
+     * @param string $into
+     * @param string $type
      * @return Relation
      */
-    public function setInverse(bool $inverse): Relation
+    public function setInverse(string $into, string $type): Relation
     {
-        $this->inverse = $inverse;
+        $this->inverse = $into;
+        $this->inverseType = $type;
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function isInverse(): bool
+    public function isInversed(): bool
+    {
+        return $this->inverse != null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInverseName(): ?string
     {
         return $this->inverse;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInverseType(): ?string
+    {
+        return $this->inverseType;
     }
 }
