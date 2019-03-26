@@ -109,7 +109,12 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TABLE        => 'user',
                 Schema::PRIMARY_KEY  => 'id',
                 Schema::FIND_BY_KEYS => ['id'],
-                Schema::COLUMNS      => ['id' => 'id', 'name' => 'user_name'],
+                Schema::COLUMNS      => [
+                    'id'      => 'id',
+                    'name'    => 'user_name',
+                    'active'  => 'active',
+                    'balance' => 'balance'
+                ],
                 Schema::RELATIONS    => [],
                 Schema::CONSTRAIN    => null,
                 Schema::TYPECAST     => [],

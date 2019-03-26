@@ -8,10 +8,7 @@
 
 namespace Cycle\Schema\Tests\Generator;
 
-use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
-use Cycle\ORM\Select\Repository;
-use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\GenerateTypecast;
 use Cycle\Schema\Generator\RenderTables;
@@ -29,24 +26,12 @@ abstract class TypecastGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
 
         $c = new Compiler();
-        $c->compile($r, [new RenderTables(), new GenerateTypecast()]);
+        $schema = $c->compile($r, [new RenderTables(), new GenerateTypecast()]);
 
-        $this->assertSame([
-            'user' => [
-                Schema::ENTITY       => User::class,
-                Schema::MAPPER       => Mapper::class,
-                Schema::SOURCE       => Source::class,
-                Schema::REPOSITORY   => Repository::class,
-                Schema::DATABASE     => 'default',
-                Schema::TABLE        => 'user',
-                Schema::PRIMARY_KEY  => 'id',
-                Schema::FIND_BY_KEYS => ['id'],
-                Schema::COLUMNS      => ['id' => 'id', 'name' => 'user_name'],
-                Schema::RELATIONS    => [],
-                Schema::CONSTRAIN    => null,
-                Schema::TYPECAST     => ['id' => 'int'],
-                Schema::SCHEMA       => []
-            ],
-        ], $c->getSchema());
+
+        $this->assertSame('int', $schema['user'][Schema::TYPECAST]['id']);
+        $this->assertSame('float', $schema['user'][Schema::TYPECAST]['balance']);
+
+        $this->assertTrue(in_array($schema['user'][Schema::TYPECAST]['id'], ['int', 'bool']));
     }
 }

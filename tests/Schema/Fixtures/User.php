@@ -29,6 +29,16 @@ class User implements AuthorInterface
             (new Field())->setType('string(32)')->setColumn('user_name')
         );
 
+        $entity->getFields()->set(
+            'active',
+            (new Field())->setType('bool')->setColumn('active')
+        );
+
+        $entity->getFields()->set(
+            'balance',
+            (new Field())->setType('float')->setColumn('balance')
+        );
+
         $entity->getRelations()->set(
             'plain',
             (new Relation())->setTarget('plain')->setType('hasOne')
