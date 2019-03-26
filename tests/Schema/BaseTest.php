@@ -61,6 +61,12 @@ abstract class BaseTest extends TestCase
             $this->getDriver()
         ));
 
+        $this->dbal->addDatabase(new Database(
+            'secondary',
+            'secondary_',
+            $this->getDriver()
+        ));
+
         $this->logger = new TestLogger();
         $this->getDriver()->setLogger($this->logger);
 

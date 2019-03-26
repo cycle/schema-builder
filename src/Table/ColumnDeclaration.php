@@ -17,7 +17,7 @@ use Spiral\Database\Schema\AbstractColumn;
  *
  * @internal
  */
-final class ColumnSchema
+final class ColumnDeclaration
 {
     // default column value
     public const OPT_DEFAULT = 'default';
@@ -177,13 +177,13 @@ final class ColumnSchema
      * Parse field definition into table definition.
      *
      * @param Field $field
-     * @return ColumnSchema
+     * @return ColumnDeclaration
      *
      * @throws ColumnException
      */
     public static function parse(Field $field): self
     {
-        $column = new ColumnSchema();
+        $column = new ColumnDeclaration();
         $column->field = $field;
 
         if (!preg_match(self::DEFINITION, $field->getType(), $type)) {

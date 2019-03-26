@@ -11,7 +11,7 @@ namespace Cycle\Schema\Relation\Traits;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Relation\OptionSchema;
-use Cycle\Schema\Table\ColumnSchema;
+use Cycle\Schema\Table\ColumnDeclaration;
 
 trait FieldTrait
 {
@@ -54,7 +54,7 @@ trait FieldTrait
         }
 
         if ($nullable) {
-            $field->getOptions()->set(ColumnSchema::OPT_NULLABLE, true);
+            $field->getOptions()->set(ColumnDeclaration::OPT_NULLABLE, true);
         }
 
         $target->getFields()->set($name, $field);

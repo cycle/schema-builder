@@ -11,7 +11,7 @@ namespace Cycle\Schema\Generator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Table\ColumnSchema;
+use Cycle\Schema\Table\ColumnDeclaration;
 use Spiral\Database\Schema\AbstractTable;
 use Spiral\Database\Schema\Reflector;
 
@@ -61,7 +61,7 @@ final class RenderTables implements GeneratorInterface
 
         $primaryKeys = [];
         foreach ($entity->getFields() as $field) {
-            $column = ColumnSchema::parse($field);
+            $column = ColumnDeclaration::parse($field);
 
             if ($column->isPrimary()) {
                 $primaryKeys[] = $field->getColumn();

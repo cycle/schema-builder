@@ -49,6 +49,57 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertInstanceOf(ManyToMany::class, $r->getRelation($post, 'tags'));
     }
 
+    /**
+     * @expectedException \Cycle\Schema\Exception\SchemaException
+     */
+    public function testDifferentDatabases()
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'secondary', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
+    }
+
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\SchemaException
+     */
+    public function testDifferentDatabases2()
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'secondary', 'tag_context');
+
+        (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
+    }
+
     public function testPackSchema()
     {
         $post = Post::define();
