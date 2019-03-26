@@ -9,11 +9,12 @@
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\InvertibleInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
-final class BelongsTo extends RelationSchema
+final class BelongsTo extends RelationSchema implements InvertibleInterface
 {
     use FieldTrait, ForeignKeyTrait;
 

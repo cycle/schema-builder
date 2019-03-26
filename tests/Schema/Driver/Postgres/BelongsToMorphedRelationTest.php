@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\Postgres; 
 
-class BelongsToMorphedTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedTest 
+class BelongsToMorphedRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedRelationTest 
 { 
     const DRIVER = "postgres"; 
 }

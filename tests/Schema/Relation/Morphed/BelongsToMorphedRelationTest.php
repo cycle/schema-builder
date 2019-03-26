@@ -23,7 +23,7 @@ use Cycle\Schema\Tests\Fixtures\MorphedTo;
 use Cycle\Schema\Tests\Fixtures\Post;
 use Cycle\Schema\Tests\Fixtures\Tag;
 
-abstract class BelongsToMorphedTest extends BaseTest
+abstract class BelongsToMorphedRelationTest extends BaseTest
 {
     public function testGenerate()
     {

@@ -10,11 +10,12 @@ namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
 use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\InvertibleInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
-class ManyToMany extends RelationSchema
+class ManyToMany extends RelationSchema implements InvertibleInterface
 {
     use FieldTrait, ForeignKeyTrait;
 

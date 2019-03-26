@@ -9,12 +9,13 @@
 namespace Cycle\Schema\Relation\Morphed;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\InvertibleInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\MorphTrait;
 
-class BelongsToMorphed extends RelationSchema
+class BelongsToMorphed extends RelationSchema implements InvertibleInterface
 {
     use FieldTrait, MorphTrait;
 
