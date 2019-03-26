@@ -45,4 +45,26 @@ class FieldsTest extends TestCase
         $m->set('id', $f = new Field());
         $m->set('id', $f = new Field());
     }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\FieldException
+     */
+    public function testNoType()
+    {
+        $m = new FieldMap();
+
+        $m->set('id', $f = new Field());
+        $m->get('id')->getType();
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\FieldException
+     */
+    public function testNoColumn()
+    {
+        $m = new FieldMap();
+
+        $m->set('id', $f = new Field());
+        $m->get('id')->getColumn();
+    }
 }
