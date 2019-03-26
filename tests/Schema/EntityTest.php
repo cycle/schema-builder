@@ -34,6 +34,30 @@ class EntityTest extends TestCase
         $this->assertFalse($e->getFields()->has("id"));
     }
 
+    public function testFieldOptions()
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set("id", new Field());
+
+        $e->getFields()->get("id")->getOptions()->set("name", "value");
+        $this->assertSame("value", $e->getFields()->get("id")->getOptions()->get("name"));
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\OptionException
+     */
+    public function testGetUndefinedOption()
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set("id", new Field());
+
+        $e->getFields()->get("id")->getOptions()->get("name");
+    }
+
     public function testSetRelation()
     {
         $e = new Entity();
