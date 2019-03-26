@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\SQLServer; 
 
-class HasOneRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\HasOneRelationTest 
+class HasOneRelationTest extends \Cycle\Schema\Tests\Relation\HasOneRelationTest 
 { 
     const DRIVER = "sqlserver"; 
 }

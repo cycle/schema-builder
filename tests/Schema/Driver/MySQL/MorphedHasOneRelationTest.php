@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\MySQL; 
 
-class HasOneRelationTest extends \Cycle\Schema\Tests\Relation\HasOneRelationTest 
+class MorphedHasOneRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\MorphedHasOneRelationTest 
 { 
     const DRIVER = "mysql"; 
 }

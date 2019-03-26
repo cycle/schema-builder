@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\Postgres; 
 
-class HasManyRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\HasManyRelationTest 
+class HasManyRelationTest extends \Cycle\Schema\Tests\Relation\HasManyRelationTest 
 { 
     const DRIVER = "postgres"; 
 }
