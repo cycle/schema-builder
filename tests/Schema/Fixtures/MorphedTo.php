@@ -8,25 +8,26 @@
 
 namespace Cycle\Schema\Tests\Fixtures;
 
-
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Relation;
 
-class Author implements AuthorInterface, ParentInterface
+class MorphedTo
 {
     public static function define(): Entity
     {
         $entity = new Entity();
-        $entity->setRole('author');
+        $entity->setRole('morphed');
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id', (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+            'id',
+            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
-        $entity->getFields()->set(
-            'name',
-            (new Field())->setType('string(32)')->setColumn('author_name')
+        $entity->getRelations()->set(
+            'parent',
+            (new Relation())->setTarget(ParentInterface::class)->setType('belongsToMorphed')
         );
 
         return $entity;

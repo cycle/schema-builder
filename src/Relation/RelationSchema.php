@@ -20,10 +20,11 @@ use Cycle\Schema\RelationInterface;
 abstract class RelationSchema implements RelationInterface
 {
     // relation rendering options
-    public const INDEX_CREATE = 1001;
-    public const FK_CREATE    = 1002;
-    public const FK_ACTION    = 1003;
-    public const INVERSE      = 1005;
+    public const INDEX_CREATE     = 1001;
+    public const FK_CREATE        = 1002;
+    public const FK_ACTION        = 1003;
+    public const INVERSE          = 1005;
+    public const MORPH_KEY_LENGTH = 1009;
 
     // options to be excluded from generated schema (helpers)
     protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::INDEX_CREATE];

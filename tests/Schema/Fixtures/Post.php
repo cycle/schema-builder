@@ -13,7 +13,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 
-class Post
+class Post implements ParentInterface
 {
     public static function define(): Entity
     {

@@ -60,6 +60,4 @@ interface RelationInterface
      * @return array
      */
     public function packSchema(): array;
-
-    // todo: inverse relation
 }

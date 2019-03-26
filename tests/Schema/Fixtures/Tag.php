@@ -11,7 +11,7 @@ namespace Cycle\Schema\Tests\Fixtures;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 
-class Tag
+class Tag implements ParentInterface
 {
     public static function define(): Entity
     {

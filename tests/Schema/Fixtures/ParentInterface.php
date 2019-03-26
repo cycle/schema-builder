@@ -8,7 +8,7 @@
 
 namespace Cycle\Schema\Tests\Fixtures;
 
-interface AuthorInterface
+interface ParentInterface
 {
 
 }

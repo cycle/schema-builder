@@ -8,25 +8,20 @@
 
 namespace Cycle\Schema\Tests\Fixtures;
 
-
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 
-class Author implements AuthorInterface, ParentInterface
+class In2 implements ParentInterface
 {
     public static function define(): Entity
     {
         $entity = new Entity();
-        $entity->setRole('author');
+        $entity->setRole('in2');
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id', (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
-        );
-
-        $entity->getFields()->set(
-            'name',
-            (new Field())->setType('string(32)')->setColumn('author_name')
+            'uuid',
+            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
         return $entity;

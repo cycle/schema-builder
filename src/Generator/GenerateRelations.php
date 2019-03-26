@@ -8,9 +8,11 @@
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\ORM\Exception\SchemaException;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
+use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\OptionSchema;
@@ -38,7 +40,8 @@ final class GenerateRelations implements GeneratorInterface
         'where'           => Relation::WHERE,
         'fkCreate'        => RelationSchema::FK_CREATE,
         'fkAction'        => RelationSchema::FK_ACTION,
-        'indexCreate'     => RelationSchema::INDEX_CREATE
+        'indexCreate'     => RelationSchema::INDEX_CREATE,
+        'morphKeyLength'  => RelationSchema::MORPH_KEY_LENGTH
     ];
 
     /** @var OptionSchema */
@@ -103,7 +106,15 @@ final class GenerateRelations implements GeneratorInterface
             );
 
             // compute relation values (field names, related entities and etc)
-            $schema->compute($registry);
+            try {
+                $schema->compute($registry);
+            } catch (RelationException $e) {
+                throw new SchemaException(
+                    "Unable to compute relation `{$entity->getRole()}`.`{$name}`",
+                    $e->getCode(),
+                    $e
+                );
+            }
 
             $registry->registerRelation($entity, $name, $schema);
         }
