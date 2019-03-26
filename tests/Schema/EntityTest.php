@@ -54,7 +54,7 @@ class EntityTest extends TestCase
         $e->setRole('role');
         $this->assertSame('role', $e->getRole());
 
-        $e->getRelations()->has("test");
+        $e->getRelations()->get("test");
     }
 
     /**
