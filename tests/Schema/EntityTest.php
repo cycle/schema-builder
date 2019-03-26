@@ -93,4 +93,30 @@ class EntityTest extends TestCase
         $e->getRelations()->set("test", new Relation());
         $e->getRelations()->set("test", new Relation());
     }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\RelationException
+     */
+    public function testRelationNoTarget()
+    {
+        $e = new Entity();
+        $e->setRole('role');
+        $this->assertSame('role', $e->getRole());
+
+        $e->getRelations()->set("test", new Relation());
+        $e->getRelations()->get("test")->getTarget();
+    }
+
+    /**
+     * @expectedException \Cycle\Schema\Exception\RelationException
+     */
+    public function testRelationNoType()
+    {
+        $e = new Entity();
+        $e->setRole('role');
+        $this->assertSame('role', $e->getRole());
+
+        $e->getRelations()->set("test", new Relation());
+        $e->getRelations()->get("test")->getType();
+    }
 }
