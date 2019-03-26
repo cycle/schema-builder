@@ -21,7 +21,7 @@ final class OptionMap implements \IteratorAggregate
      */
     public function has(string $name): bool
     {
-        return isset($this->options[$name]);
+        return array_key_exists($name, $this->options);
     }
 
     /**

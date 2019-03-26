@@ -12,7 +12,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Table\ColumnDeclaration;
+use Cycle\Schema\Table\Column;
 
 trait MorphTrait
 {
@@ -89,7 +89,7 @@ trait MorphTrait
         $field->setType(sprintf("string(%s)", $lenght));
 
         if ($nullable) {
-            $field->getOptions()->set(ColumnDeclaration::OPT_NULLABLE, true);
+            $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
         $target->getFields()->set($name, $field);
