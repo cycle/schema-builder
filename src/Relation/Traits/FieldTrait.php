@@ -33,6 +33,9 @@ trait FieldTrait
      */
     protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false)
     {
+        // ensure that field will be indexed in memory for fast references
+        $outer->setReferenced(true);
+
         if ($target->getFields()->has($name)) {
             // field already exists and defined by the user
             return;

@@ -187,7 +187,7 @@ final class ColumnDeclaration
         $column->field = $field;
 
         if (!preg_match(self::DEFINITION, $field->getType(), $type)) {
-            throw new ColumnException("Invalid column type definition in `{$field->getType()}`");
+            throw new ColumnException("Invalid column type declaration in `{$field->getType()}`");
         }
 
         $column->type = $type['type'];
