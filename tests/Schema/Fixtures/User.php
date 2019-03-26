@@ -39,6 +39,12 @@ class User implements AuthorInterface
             (new Field())->setType('float')->setColumn('balance')
         );
 
+
+        $entity->getFields()->set(
+            'created_at',
+            (new Field())->setType('datetime')->setColumn('created_at')
+        );
+
         $entity->getRelations()->set(
             'plain',
             (new Relation())->setTarget('plain')->setType('hasOne')

@@ -67,7 +67,7 @@ final class GenerateTypecast implements GeneratorInterface
                 return 'float';
         }
 
-        if (in_array($column->getAbstractType(), ['datetime', 'date', 'time'])) {
+        if (in_array($column->getAbstractType(), ['datetime', 'date', 'time', 'timestamp'])) {
             return 'datetime';
         }
 

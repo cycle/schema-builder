@@ -87,6 +87,14 @@ abstract class TableGeneratorTest extends BaseTest
         $this->assertTrue($table->hasColumn('user_name'));
         $this->assertSame('string', $table->column('user_name')->getType());
         $this->assertSame(32, $table->column('user_name')->getSize());
+
+        $this->assertTrue($table->hasColumn('active'));
+        $this->assertTrue(in_array($table->column('active')->getAbstractType(), ['boolean', 'integer']));
+
+        $this->assertTrue($table->hasColumn('balance'));
+        $this->assertSame('float', $table->column('balance')->getAbstractType());
+
+        $this->assertTrue($table->hasColumn('created_at'));
     }
 
     public function testCompiledUser()
@@ -110,10 +118,11 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::PRIMARY_KEY  => 'id',
                 Schema::FIND_BY_KEYS => ['id'],
                 Schema::COLUMNS      => [
-                    'id'      => 'id',
-                    'name'    => 'user_name',
-                    'active'  => 'active',
-                    'balance' => 'balance'
+                    'id'         => 'id',
+                    'name'       => 'user_name',
+                    'active'     => 'active',
+                    'balance'    => 'balance',
+                    'created_at' => 'created_at'
                 ],
                 Schema::RELATIONS    => [],
                 Schema::CONSTRAIN    => null,
