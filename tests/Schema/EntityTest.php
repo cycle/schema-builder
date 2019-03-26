@@ -119,4 +119,44 @@ class EntityTest extends TestCase
         $e->getRelations()->set("test", new Relation());
         $e->getRelations()->get("test")->getType();
     }
+
+    public function testMapper()
+    {
+        $e = new Entity();
+        $e->setMapper('mapper');
+
+        $this->assertSame('mapper', $e->getMapper());
+    }
+
+    public function testSource()
+    {
+        $e = new Entity();
+        $e->setSource('source');
+
+        $this->assertSame('source', $e->getSource());
+    }
+
+    public function testConstrain()
+    {
+        $e = new Entity();
+        $e->setConstrain('constrain');
+
+        $this->assertSame('constrain', $e->getConstrain());
+    }
+
+    public function testRepository()
+    {
+        $e = new Entity();
+        $e->setRepository('repository');
+
+        $this->assertSame('repository', $e->getRepository());
+    }
+
+    public function testSchema()
+    {
+        $e = new Entity();
+        $e->setSchema(['schema']);
+
+        $this->assertSame(['schema'], $e->getSchema());
+    }
 }
