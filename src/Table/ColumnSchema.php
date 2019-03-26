@@ -87,7 +87,7 @@ final class ColumnSchema
             return false;
         }
 
-        return $this->hasOption(self::OPT_DEFAULT);
+        return $this->hasOption(self::OPT_DEFAULT) || $this->hasOption(self::OPT_CAST_DEFAULT);
     }
 
     /**
