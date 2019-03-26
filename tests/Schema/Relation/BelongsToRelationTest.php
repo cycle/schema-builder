@@ -14,6 +14,7 @@ use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
+use Cycle\Schema\Generator\ResolveInterfaces;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\BelongsTo;
 use Cycle\Schema\Relation\HasMany;
@@ -49,6 +50,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
+            new ResolveInterfaces(),
             new GenerateRelations(['belongsTo' => new BelongsTo()])
         ]);
 
