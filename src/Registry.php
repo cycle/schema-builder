@@ -179,11 +179,11 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return string|null
+     * @return string
      *
      * @throws RegistryException
      */
-    public function getDatabase(Entity $entity): ?string
+    public function getDatabase(Entity $entity): string
     {
         if (!$this->hasTable($entity)) {
             throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
