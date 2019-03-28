@@ -12,6 +12,7 @@ use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Map\FieldMap;
+use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
 
 /**
@@ -19,6 +20,9 @@ use Cycle\Schema\Definition\Map\RelationMap;
  */
 final class Entity
 {
+    /** @var OptionMap */
+    private $options;
+
     /** @var string */
     private $role;
 
@@ -51,8 +55,17 @@ final class Entity
      */
     public function __construct()
     {
+        $this->options = new OptionMap();
         $this->fields = new FieldMap();
         $this->relations = new RelationMap();
+    }
+
+    /**
+     * @return OptionMap
+     */
+    public function getOptions(): OptionMap
+    {
+        return $this->options;
     }
 
     /**
