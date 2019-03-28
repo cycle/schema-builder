@@ -28,9 +28,6 @@ class RefersTo extends RelationSchema
         // save with parent
         Relation::CASCADE            => true,
 
-        // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
-
         // nullable by default
         Relation::NULLABLE           => true,
 

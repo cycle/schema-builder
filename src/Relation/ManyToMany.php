@@ -28,9 +28,6 @@ class ManyToMany extends RelationSchema implements InversableInterface
         // save with parent
         Relation::CASCADE            => true,
 
-        // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
-
         // nullable by default
         Relation::NULLABLE           => true,
 
@@ -54,9 +51,6 @@ class ManyToMany extends RelationSchema implements InversableInterface
         // name field where inner key of outer record (outer key) will be stored in pivot table,
         // role + outerKey by default
         Relation::THOUGH_OUTER_KEY   => '{target:role}_{outerKey}',
-
-        // apply pivot constrain
-        Relation::THOUGH_CONSTRAIN   => true,
 
         // custom pivot where
         Relation::THOUGH_WHERE       => [],

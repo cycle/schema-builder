@@ -28,9 +28,6 @@ final class HasOne extends RelationSchema implements InversableInterface
         // save with parent
         Relation::CASCADE            => true,
 
-        // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
-
         // not nullable by default
         Relation::NULLABLE           => false,
 

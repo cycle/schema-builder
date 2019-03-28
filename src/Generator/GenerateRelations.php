@@ -27,22 +27,19 @@ final class GenerateRelations implements GeneratorInterface
 {
     // aliases between option names and their internal IDs
     public const OPTION_MAP = [
-        'cascade'         => Relation::CASCADE,
-        'nullable'        => Relation::NULLABLE,
-        'innerKey'        => Relation::INNER_KEY,
-        'outerKey'        => Relation::OUTER_KEY,
-        'morphKey'        => Relation::MORPH_KEY,
-        'though'          => Relation::THOUGH_ENTITY,
-        'thoughInnerKey'  => Relation::THOUGH_INNER_KEY,
-        'thoughOuterKey'  => Relation::THOUGH_OUTER_KEY,
-        'thoughConstrain' => Relation::THOUGH_CONSTRAIN,
-        'thoughWhere'     => Relation::THOUGH_WHERE,
-        'constrain'       => Relation::CONSTRAIN,
-        'where'           => Relation::WHERE,
-        'fkCreate'        => RelationSchema::FK_CREATE,
-        'fkAction'        => RelationSchema::FK_ACTION,
-        'indexCreate'     => RelationSchema::INDEX_CREATE,
-        'morphKeyLength'  => RelationSchema::MORPH_KEY_LENGTH
+        'nullable'       => Relation::NULLABLE,
+        'innerKey'       => Relation::INNER_KEY,
+        'outerKey'       => Relation::OUTER_KEY,
+        'morphKey'       => Relation::MORPH_KEY,
+        'though'         => Relation::THOUGH_ENTITY,
+        'thoughInnerKey' => Relation::THOUGH_INNER_KEY,
+        'thoughOuterKey' => Relation::THOUGH_OUTER_KEY,
+        'thoughWhere'    => Relation::THOUGH_WHERE,
+        'where'          => Relation::WHERE,
+        'fkCreate'       => RelationSchema::FK_CREATE,
+        'fkAction'       => RelationSchema::FK_ACTION,
+        'indexCreate'    => RelationSchema::INDEX_CREATE,
+        'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH
     ];
 
     /** @var OptionSchema */

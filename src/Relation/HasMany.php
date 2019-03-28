@@ -28,9 +28,6 @@ class HasMany extends RelationSchema implements InversableInterface
         // save with parent
         Relation::CASCADE            => true,
 
-        // use outer entity constrain by default
-        Relation::CONSTRAIN          => true,
-
         // custom where condition
         Relation::WHERE              => [],
 
