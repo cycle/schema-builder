@@ -16,8 +16,6 @@ use Cycle\Schema\Registry;
  */
 final class CleanTables implements GeneratorInterface
 {
-    public const OPT_SKIP = 'skipClean';
-
     /**
      * @param Registry $registry
      * @return Registry
@@ -29,7 +27,7 @@ final class CleanTables implements GeneratorInterface
                 continue;
             }
 
-            if (!$entity->getOptions()->has(self::OPT_SKIP)) {
+            if (!$entity->getOptions()->has(RenderTables::READONLY)) {
                 $registry->getTableSchema($entity)->declareDropped();
             }
         }
