@@ -20,7 +20,7 @@ use Spiral\Database\Schema\Reflector;
  */
 final class RenderTables implements GeneratorInterface
 {
-    // Do not render table when entity option is set
+    // Readonly tables must be included form the sync with database
     public const READONLY = 'readonly';
 
     /** @var Reflector */
@@ -55,7 +55,7 @@ final class RenderTables implements GeneratorInterface
      */
     protected function compute(Registry $registry, Entity $entity)
     {
-        if (!$registry->hasTable($entity) || $entity->getOptions()->has(self::READONLY)) {
+        if (!$registry->hasTable($entity)) {
             // do not render entities without associated table
             return;
         }
