@@ -61,7 +61,7 @@ final class Registry implements \IteratorAggregate
      * @param string $role Entity role of class.
      * @return bool
      */
-    public function hasRole(string $role): bool
+    public function hasEntity(string $role): bool
     {
         foreach ($this->entities as $entity) {
             if ($entity->getRole() === $role || $entity->getClass() === $role) {
@@ -70,15 +70,6 @@ final class Registry implements \IteratorAggregate
         }
 
         return false;
-    }
-
-    /**
-     * @param Entity $entity
-     * @return bool
-     */
-    public function hasEntity(Entity $entity): bool
-    {
-        return array_search($entity, $this->entities, true) !== false;
     }
 
     /**
@@ -118,7 +109,7 @@ final class Registry implements \IteratorAggregate
      */
     public function registerChild(Entity $parent, Entity $child)
     {
-        if (!$this->hasEntity($parent)) {
+        if (!$this->hasInstance($parent)) {
             throw new RegistryException("Undefined entity `{$parent->getRole()}`");
         }
 
@@ -138,7 +129,7 @@ final class Registry implements \IteratorAggregate
      */
     public function getChildren(Entity $entity): array
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
@@ -158,7 +149,7 @@ final class Registry implements \IteratorAggregate
      */
     public function linkTable(Entity $entity, ?string $database, string $table): Registry
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
@@ -179,7 +170,7 @@ final class Registry implements \IteratorAggregate
      */
     public function hasTable(Entity $entity): bool
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
@@ -243,7 +234,7 @@ final class Registry implements \IteratorAggregate
      */
     public function registerRelation(Entity $entity, string $name, RelationInterface $relation)
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
@@ -261,7 +252,7 @@ final class Registry implements \IteratorAggregate
      */
     public function hasRelation(Entity $entity, string $name): bool
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
@@ -290,10 +281,19 @@ final class Registry implements \IteratorAggregate
      */
     public function getRelations(Entity $entity): array
     {
-        if (!$this->hasEntity($entity)) {
+        if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
         return $this->relations[$entity];
+    }
+
+    /**
+     * @param Entity $entity
+     * @return bool
+     */
+    protected function hasInstance(Entity $entity): bool
+    {
+        return array_search($entity, $this->entities, true) !== false;
     }
 }

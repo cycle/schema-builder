@@ -27,12 +27,11 @@ abstract class RegistryTest extends BaseTest
 
         $r->register($e);
 
-        $this->assertTrue($r->hasEntity($e));
-        $this->assertTrue($r->hasRole('user'));
-        $this->assertTrue($r->hasRole(User::class));
+        $this->assertTrue($r->hasEntity('user'));
+        $this->assertTrue($r->hasEntity(User::class));
 
-        $this->assertFalse($r->hasRole('post'));
-        $this->assertFalse($r->hasRole(Post::class));
+        $this->assertFalse($r->hasEntity('post'));
+        $this->assertFalse($r->hasEntity(Post::class));
     }
 
     public function testGetEntity()

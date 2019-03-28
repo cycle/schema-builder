@@ -71,7 +71,7 @@ abstract class RelationSchema implements RelationInterface
             'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
         ]);
 
-        if ($registry->hasRole($this->target)) {
+        if ($registry->hasEntity($this->target)) {
             $this->options = $this->options->withContext([
                 'target:primaryKey' => $this->getPrimary($registry->getEntity($this->target))
             ]);

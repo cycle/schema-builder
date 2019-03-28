@@ -46,7 +46,7 @@ class ResolveInterfaces implements GeneratorInterface
             }
 
             $target = $relation->getTarget();
-            if ($registry->hasRole($target)) {
+            if ($registry->hasEntity($target)) {
                 // no need to resolve
                 continue;
             }
