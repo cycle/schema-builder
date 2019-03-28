@@ -154,7 +154,7 @@ final class Registry implements \IteratorAggregate
         }
 
         $this->tables[$entity] = [
-            'database' => $database,
+            'database' => $this->dbal->database($database)->getName(),
             'table'    => $table,
             'schema'   => $this->dbal->database($database)->table($table)->getSchema()
         ];
@@ -179,11 +179,11 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return string
+     * @return string|null
      *
      * @throws RegistryException
      */
-    public function getDatabase(Entity $entity): string
+    public function getDatabase(Entity $entity): ?string
     {
         if (!$this->hasTable($entity)) {
             throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
