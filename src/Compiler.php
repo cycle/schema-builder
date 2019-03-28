@@ -40,12 +40,6 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
-            if (count($entity->getFields()) === 0) {
-                throw new CompilerException(
-                    "Entity `{$entity->getRole()}` is empty"
-                );
-            }
-
             $this->compute($registry, $entity);
         }
 

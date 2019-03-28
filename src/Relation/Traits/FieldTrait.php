@@ -10,6 +10,8 @@ namespace Cycle\Schema\Relation\Traits;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Exception\FieldException;
+use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Table\Column;
 
@@ -22,7 +24,20 @@ trait FieldTrait
      */
     protected function getField(Entity $entity, int $field): Field
     {
-        return $entity->getFields()->get($this->getOptions()->get($field));
+        try {
+            return $entity->getFields()->get($this->getOptions()->get($field));
+        } catch (FieldException $e) {
+            throw new RelationException(
+                sprintf(
+                    "Field `{$entity->getRole()}`.`{$this->getOptions()->get($field)}` does not exists, referenced by `%s`",
+                    $entity->getRole(),
+                    $this->getOptions()->get($field),
+                    $this->source
+                ),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**

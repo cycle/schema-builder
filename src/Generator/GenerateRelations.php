@@ -16,9 +16,11 @@ use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation as Definition;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\RelationInterface;
+
 
 /**
  * Generate relations based on their schematic definitions.
@@ -160,5 +162,26 @@ final class GenerateRelations implements GeneratorInterface
         }
 
         return $this->relations[$type];
+    }
+
+    /**
+     * @param OptionSchema|null $optionSchema
+     * @return GenerateRelations
+     */
+    public static function defaultGenerator(OptionSchema $optionSchema = null): GenerateRelations
+    {
+        return new self(
+            [
+                'belongsTo'        => new Definition\BelongsTo(),
+                'hasOne'           => new Definition\HasOne(),
+                'hasMany'          => new Definition\HasMany(),
+                'refersTo'         => new Definition\RefersTo(),
+                'manyToMany'       => new Definition\ManyToMany(),
+                'belongsToMorphed' => new Definition\Morphed\BelongsToMorphed(),
+                'morphedHasOne'    => new Definition\Morphed\MorphedHasOne(),
+                'morphedHasMany'   => new Definition\Morphed\MorphedHasMany(),
+            ],
+            $optionSchema
+        );
     }
 }
