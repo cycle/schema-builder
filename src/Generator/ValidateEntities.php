@@ -12,7 +12,7 @@ use Cycle\Schema\Exception\EntityException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 
-final class ValidateEntity implements GeneratorInterface
+final class ValidateEntities implements GeneratorInterface
 {
     /**
      * @param Registry $registry
