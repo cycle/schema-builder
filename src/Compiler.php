@@ -23,6 +23,8 @@ final class Compiler
      * @param Registry             $registry
      * @param GeneratorInterface[] $generators
      * @return array
+     *
+     * @throws CompilerException
      */
     public function compile(Registry $registry, array $generators = []): array
     {
@@ -38,6 +40,12 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
+            if (count($entity->getFields()) === 0) {
+                throw new CompilerException(
+                    "Entity `{$entity->getRole()}` is empty"
+                );
+            }
+
             $this->compute($registry, $entity);
         }
 

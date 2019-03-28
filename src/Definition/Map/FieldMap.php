@@ -14,10 +14,18 @@ use Cycle\Schema\Exception\FieldException;
 /**
  * Manage the set of fields associated with the entity.
  */
-final class FieldMap implements \IteratorAggregate
+final class FieldMap implements \IteratorAggregate, \Countable
 {
     /** @var Field[] */
     private $fields = [];
+
+    /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->fields);
+    }
 
     /**
      * @param string $name
