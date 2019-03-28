@@ -29,5 +29,7 @@ final class ValidateEntities implements GeneratorInterface
                 );
             }
         }
+
+        return $registry;
     }
 }
