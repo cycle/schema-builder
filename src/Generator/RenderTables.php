@@ -20,9 +20,6 @@ use Spiral\Database\Schema\Reflector;
  */
 final class RenderTables implements GeneratorInterface
 {
-    // Readonly tables must be included form the sync with database
-    public const READONLY = 'readonly';
-
     /** @var Reflector */
     private $reflector;
 
