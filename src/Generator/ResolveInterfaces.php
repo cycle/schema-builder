@@ -14,7 +14,7 @@ use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 
-class ResolveInterfaces implements GeneratorInterface
+final class ResolveInterfaces implements GeneratorInterface
 {
     // option to indicate that static link resolution is required
     public const STATIC_LINK = 'staticLink';
