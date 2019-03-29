@@ -26,6 +26,8 @@ final class CleanTables implements GeneratorInterface
             if (!$registry->hasTable($entity)) {
                 continue;
             }
+
+            $registry->getTableSchema($entity)->declareDropped();
         }
 
         return $registry;
