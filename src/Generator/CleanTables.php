@@ -29,7 +29,21 @@ final class CleanTables implements GeneratorInterface
 
             $schema = $registry->getTableSchema($entity);
             if ($schema->exists()) {
+                // reset state and force deletion of all undeclared FKs
                 $schema->declareDropped();
+
+                $state = $schema->getState();
+
+                // clean up all indexes and columns
+                foreach ($state->getColumns() as $column) {
+                    $state->forgetColumn($column);
+                }
+
+                foreach ($state->getIndexes() as $index) {
+                    $state->forgetIndex($index);
+                }
+
+                $schema->setState($state);
             }
         }
 
