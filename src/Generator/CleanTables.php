@@ -27,7 +27,10 @@ final class CleanTables implements GeneratorInterface
                 continue;
             }
 
-            $registry->getTableSchema($entity)->declareDropped();
+            $schema = $registry->getTableSchema($entity);
+            if ($schema->exists()) {
+                $schema->declareDropped();
+            }
         }
 
         return $registry;
