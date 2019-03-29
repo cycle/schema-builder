@@ -11,9 +11,12 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Generator\CleanTables;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
+use Cycle\Schema\Generator\SyncTables;
+use Cycle\Schema\Generator\ValidateEntities;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\BelongsTo;
 use Cycle\Schema\Relation\HasOne;
@@ -102,6 +105,29 @@ abstract class HasOneRelationTest extends BaseTest
 
         // RENDER!
         $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('plain');
+        $this->assertTrue($table->exists());
+        $this->assertTrue($table->hasForeignKey('user_id'));
+    }
+
+    public function testGeneratorFlow()
+    {
+        $e = Plain::define();
+        $u = User::define();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new Compiler())->compile($r, [
+            new ValidateEntities(),
+            new CleanTables(),
+            new GenerateRelations(['hasOne' => new HasOne()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+            new SyncTables()
+        ]);
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
