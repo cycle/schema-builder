@@ -45,6 +45,8 @@ final class CleanTables implements GeneratorInterface
                     $state->forgetIndex($index);
                 }
 
+                $state->setPrimaryKeys([]);
+
                 $schema->setState($state);
             }
         }
