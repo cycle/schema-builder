@@ -54,8 +54,9 @@ final class GenerateRelations implements GeneratorInterface
      * @param array             $relations
      * @param OptionSchema|null $optionSchema
      */
-    public function __construct(array $relations, OptionSchema $optionSchema = null)
+    public function __construct(array $relations = [], OptionSchema $optionSchema = null)
     {
+        $relations = $relations ?? self::getDefaultRelations();
         $this->options = $optionSchema ?? new OptionSchema(self::OPTION_MAP);
 
         foreach ($relations as $id => $relation) {
@@ -165,23 +166,19 @@ final class GenerateRelations implements GeneratorInterface
     }
 
     /**
-     * @param OptionSchema|null $optionSchema
-     * @return GenerateRelations
+     * @return array
      */
-    public static function defaultGenerator(OptionSchema $optionSchema = null): GenerateRelations
+    protected static function getDefaultRelations(): array
     {
-        return new self(
-            [
-                'belongsTo'        => new Definition\BelongsTo(),
-                'hasOne'           => new Definition\HasOne(),
-                'hasMany'          => new Definition\HasMany(),
-                'refersTo'         => new Definition\RefersTo(),
-                'manyToMany'       => new Definition\ManyToMany(),
-                'belongsToMorphed' => new Definition\Morphed\BelongsToMorphed(),
-                'morphedHasOne'    => new Definition\Morphed\MorphedHasOne(),
-                'morphedHasMany'   => new Definition\Morphed\MorphedHasMany(),
-            ],
-            $optionSchema
-        );
+        return [
+            'belongsTo'        => new Definition\BelongsTo(),
+            'hasOne'           => new Definition\HasOne(),
+            'hasMany'          => new Definition\HasMany(),
+            'refersTo'         => new Definition\RefersTo(),
+            'manyToMany'       => new Definition\ManyToMany(),
+            'belongsToMorphed' => new Definition\Morphed\BelongsToMorphed(),
+            'morphedHasOne'    => new Definition\Morphed\MorphedHasOne(),
+            'morphedHasMany'   => new Definition\Morphed\MorphedHasMany(),
+        ];
     }
 }

@@ -11,7 +11,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\CleanTables;
+use Cycle\Schema\Generator\ResetTables;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -122,7 +122,7 @@ abstract class HasOneRelationTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new ValidateEntities(),
-            new CleanTables(),
+            new ResetTables(),
             new GenerateRelations(['hasOne' => new HasOne()]),
             $t = new RenderTables(),
             new RenderRelations(),

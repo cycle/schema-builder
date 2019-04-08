@@ -14,7 +14,7 @@ use Cycle\Schema\Registry;
 /**
  * Declare table dropped (initiate diff calculation).
  */
-final class CleanTables implements GeneratorInterface
+final class ResetTables implements GeneratorInterface
 {
     /**
      * @param Registry $registry
