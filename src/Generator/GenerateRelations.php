@@ -51,10 +51,10 @@ final class GenerateRelations implements GeneratorInterface
     private $relations = [];
 
     /**
-     * @param array             $relations
+     * @param array|null        $relations
      * @param OptionSchema|null $optionSchema
      */
-    public function __construct(array $relations = [], OptionSchema $optionSchema = null)
+    public function __construct(array $relations = null, OptionSchema $optionSchema = null)
     {
         $relations = $relations ?? self::getDefaultRelations();
         $this->options = $optionSchema ?? new OptionSchema(self::OPTION_MAP);
