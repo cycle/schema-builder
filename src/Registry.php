@@ -11,13 +11,13 @@ namespace Cycle\Schema;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
-use Spiral\Database\DatabaseManager;
+use Spiral\Database\DatabaseProviderInterface;
 use Spiral\Database\Exception\DBALException;
 use Spiral\Database\Schema\AbstractTable;
 
 final class Registry implements \IteratorAggregate
 {
-    /** @var DatabaseManager */
+    /** @var DatabaseProviderInterface */
     private $dbal;
 
     /** @var Entity[] */
@@ -33,9 +33,9 @@ final class Registry implements \IteratorAggregate
     private $relations;
 
     /**
-     * @param DatabaseManager $dbal
+     * @param DatabaseProviderInterface $dbal
      */
-    public function __construct(DatabaseManager $dbal)
+    public function __construct(DatabaseProviderInterface $dbal)
     {
         $this->dbal = $dbal;
         $this->tables = new \SplObjectStorage();
