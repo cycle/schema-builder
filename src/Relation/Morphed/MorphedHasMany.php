@@ -24,7 +24,7 @@ class MorphedHasMany extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE                => true,
         
         // nullable by default
         Relation::NULLABLE               => true,
