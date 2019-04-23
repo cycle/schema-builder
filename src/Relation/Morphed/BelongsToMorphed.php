@@ -27,7 +27,7 @@ class BelongsToMorphed extends RelationSchema implements InversableInterface
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE                => true,
         
         // nullable by default
         Relation::NULLABLE               => true,
