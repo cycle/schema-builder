@@ -8,6 +8,7 @@
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\ORM\Mapper\Mapper;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
@@ -68,6 +69,10 @@ final class RenderTables implements GeneratorInterface
             }
 
             $column->render($table->column($field->getColumn()));
+        }
+
+        if ($registry->getChildren($entity) !== []) {
+            $table->string(Mapper::ENTITY_TYPE, 32);
         }
 
         if (count($primaryKeys)) {

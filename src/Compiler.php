@@ -10,6 +10,7 @@ namespace Cycle\Schema;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Definition\Entity;
+use Doctrine\Common\Inflector\Inflector;
 use Spiral\Database\Exception\CompilerException;
 
 final class Compiler
@@ -86,7 +87,7 @@ final class Compiler
         // table inheritance
         foreach ($registry->getChildren($entity) as $child) {
             $this->result[$child->getClass()] = [Schema::ROLE => $entity->getRole()];
-            $schema[Schema::CHILDREN][] = $child->getClass();
+            $schema[Schema::CHILDREN][$this->childAlias($child)] = $child->getClass();
         }
 
         ksort($schema);
@@ -170,5 +171,17 @@ final class Compiler
         }
 
         throw new CompilerException("Entity `{$entity->getRole()}` must have defined primary key");
+    }
+
+    /**
+     * Return the unique alias for the child entity.
+     *
+     * @param Entity $entity
+     * @return string
+     */
+    protected function childAlias(Entity $entity): string
+    {
+        $r = new \ReflectionClass($entity->getClass());
+        return Inflector::classify($r->getShortName());
     }
 }
