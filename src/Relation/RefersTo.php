@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 /**
- * Spiral Framework.
+ * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
 
@@ -16,7 +17,7 @@ use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 /**
  * Similar to BelongsTo relation but does not force external object to always exists.
  */
-class RefersTo extends RelationSchema
+final class RefersTo extends RelationSchema
 {
     use FieldTrait, ForeignKeyTrait;
 

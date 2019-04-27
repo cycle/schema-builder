@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 /**
- * Spiral Framework.
+ * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
 
@@ -16,7 +17,7 @@ use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 use Cycle\Schema\RelationInterface;
 
-class ManyToMany extends RelationSchema implements InversableInterface
+final class ManyToMany extends RelationSchema implements InversableInterface
 {
     use FieldTrait, ForeignKeyTrait;
 
