@@ -4,7 +4,8 @@
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
- */ declare(strict_types=1);
+ */
+declare(strict_types=1);
 
 namespace Cycle\Schema;
 
@@ -49,6 +50,12 @@ final class Registry implements \IteratorAggregate
      */
     public function register(Entity $entity): Registry
     {
+        foreach ($this->entities as $e) {
+            if ($e->getRole() == $entity->getRole()) {
+                throw new RegistryException("Duplicate entity `{$e->getRole()}`");
+            }
+        }
+
         $this->entities[] = $entity;
         $this->tables[$entity] = null;
         $this->children[$entity] = [];
