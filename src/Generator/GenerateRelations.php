@@ -31,6 +31,7 @@ final class GenerateRelations implements GeneratorInterface
     // aliases between option names and their internal IDs
     public const OPTION_MAP = [
         'nullable'       => Relation::NULLABLE,
+        'cascade'        => Relation::CASCADE,
         'innerKey'       => Relation::INNER_KEY,
         'outerKey'       => Relation::OUTER_KEY,
         'morphKey'       => Relation::MORPH_KEY,
