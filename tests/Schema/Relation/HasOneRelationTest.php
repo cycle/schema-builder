@@ -115,7 +115,6 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertSame(Relation::HAS_ONE, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
 
         $this->assertSame(Relation::LOAD_PROMISE, $schema['user'][Schema::RELATIONS]['plain'][Relation::LOAD]);
-
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
@@ -260,6 +259,86 @@ abstract class HasOneRelationTest extends BaseTest
 
         $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
         $this->assertSame(Relation::BELONGS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+
+        $this->assertSame(
+            'user',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'user_id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
+    }
+
+    public function testInverseToBelongsToDoNotLoad()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setInverse('user', 'belongsTo');
+        $u->getRelations()->get('plain')->getOptions()->set('load', 'lazy');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations([
+            'hasOne'    => new HasOne(),
+            'belongsTo' => new BelongsTo()
+        ]))->run($r);
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
+        $this->assertSame(Relation::BELONGS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+        $this->assertSame(null, $schema['plain'][Schema::RELATIONS]['user'][Relation::LOAD]);
+
+        $this->assertSame(
+            'user',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET]
+        );
+
+        $this->assertSame(
+            'id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
+        );
+
+        $this->assertSame(
+            'user_id',
+            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
+        );
+    }
+
+    public function testInverseToBelongsLoadEager()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setInverse('user', 'belongsTo', Relation::LOAD_EAGER);
+        $u->getRelations()->get('plain')->getOptions()->set('load', 'lazy');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations([
+            'hasOne'    => new HasOne(),
+            'belongsTo' => new BelongsTo()
+        ]))->run($r);
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
+        $this->assertSame(Relation::BELONGS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+        $this->assertSame(Relation::LOAD_EAGER, $schema['plain'][Schema::RELATIONS]['user'][Relation::LOAD]);
 
         $this->assertSame(
             'user',

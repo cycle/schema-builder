@@ -29,6 +29,9 @@ class HasMany extends RelationSchema implements InversableInterface
         // save with parent
         Relation::CASCADE            => true,
 
+        // do not pre-load relation by default
+        Relation::LOAD               => null,
+
         // custom where condition
         Relation::WHERE              => [],
 
@@ -102,11 +105,12 @@ class HasMany extends RelationSchema implements InversableInterface
     /**
      * @param RelationInterface $relation
      * @param string            $into
+     * @param int|null          $load
      * @return RelationInterface
      *
      * @throws RelationException
      */
-    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface
+    public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
         if (!$relation instanceof BelongsTo && !$relation instanceof RefersTo) {
             throw new RelationException("HasMany relation can only be inversed into BelongsTo or RefersTo");
@@ -121,6 +125,7 @@ class HasMany extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
+                Relation::LOAD      => $load,
                 Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
                 Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
             ])

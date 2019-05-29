@@ -94,6 +94,9 @@ abstract class RelationSchema implements RelationInterface
             $schema[$option] = $this->options->get($option);
         }
 
+        // load option is not required in schema
+        unset($schema[Relation::LOAD]);
+
         return [
             Relation::TYPE   => static::RELATION_TYPE,
             Relation::TARGET => $this->target,
@@ -107,11 +110,17 @@ abstract class RelationSchema implements RelationInterface
      */
     protected function getLoadMethod(): ?int
     {
-        switch ($this->options->getOption('load')) {
+        if (!$this->options->has(Relation::LOAD)) {
+            return null;
+        }
+
+        switch ($this->options->get(Relation::LOAD)) {
             case 'eager':
+            case Relation::LOAD_EAGER:
                 return Relation::LOAD_EAGER;
             case 'promise':
             case 'lazy':
+            case Relation::LOAD_PROMISE:
                 return Relation::LOAD_PROMISE;
             default:
                 return null;

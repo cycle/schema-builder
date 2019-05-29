@@ -140,7 +140,8 @@ final class GenerateRelations implements GeneratorInterface
                 try {
                     $inversed = $schema->inverseRelation(
                         $this->initRelation($r->getInverseType()),
-                        $r->getInverseName()
+                        $r->getInverseName(),
+                        $r->getInverseLoad()
                     );
 
                     $registry->registerRelation($target, $r->getInverseName(), $inversed);

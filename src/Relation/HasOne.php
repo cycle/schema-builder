@@ -29,6 +29,9 @@ final class HasOne extends RelationSchema implements InversableInterface
         // save with parent
         Relation::CASCADE            => true,
 
+        // do not pre-load relation by default
+        Relation::LOAD               => null,
+
         // not nullable by default
         Relation::NULLABLE           => false,
 
@@ -99,21 +102,24 @@ final class HasOne extends RelationSchema implements InversableInterface
     /**
      * @param RelationInterface $relation
      * @param string            $into
+     * @param int|null          $load
      * @return RelationInterface
      *
      * @throws RelationException
      */
-    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface
+    public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
         if (!$relation instanceof BelongsTo && !$relation instanceof RefersTo) {
             throw new RelationException("HasOne relation can only be inversed into BelongsTo or RefersTo");
         }
+
 
         return $relation->withContext(
             $into,
             $this->target,
             $this->source,
             $this->options->withOptions([
+                Relation::LOAD      => $load,
                 Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
                 Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
             ])

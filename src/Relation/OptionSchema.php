@@ -45,8 +45,9 @@ final class OptionSchema
     public function withOptions(iterable $options): self
     {
         $r = clone $this;
+
         foreach ($options as $name => $value) {
-            if (!isset($r->aliases[$name]) && !isset($r->template[$name])) {
+            if (!array_key_exists($name, $r->aliases) && !array_key_exists($name, $r->template)) {
                 throw new OptionException("Undefined relation option `{$name}`");
             }
 
@@ -108,7 +109,7 @@ final class OptionSchema
             throw new OptionException("Undefined relation option `{$option}`");
         }
 
-        if (isset($this->options[$option])) {
+        if (array_key_exists($option, $this->options)) {
             return $this->options[$option];
         }
 
@@ -126,29 +127,6 @@ final class OptionSchema
         }
 
         return $this->calculate($option, $value);
-    }
-
-    /**
-     * Check if custom option has been defined.
-     *
-     * @param string $option
-     * @return bool
-     */
-    public function hasOption(string $option): bool
-    {
-        return array_key_exists($option, $this->options);
-    }
-
-    /**
-     * Get custom option value.
-     *
-     * @param string $option
-     * @param mixed  $default
-     * @return bool
-     */
-    public function getOption(string $option, $default = null)
-    {
-        return $this->options[$option] ?? $default;
     }
 
     /**

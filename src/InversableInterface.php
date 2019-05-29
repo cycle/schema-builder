@@ -28,7 +28,8 @@ interface InversableInterface extends RelationInterface
      *
      * @param RelationInterface $relation
      * @param string            $into Target relation name.
+     * @param int|null          $load Target relation pre-load method (null, EAGER, PROMISE)
      * @return RelationInterface
      */
-    public function inverseRelation(RelationInterface $relation, string $into): RelationInterface;
+    public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface;
 }

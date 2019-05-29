@@ -29,6 +29,9 @@ final class Relation
     /** @var string|null */
     private $inverseType = null;
 
+    /** @var int|null */
+    private $inverseLoad = null;
+
     /**
      * Relation constructor.
      */
@@ -94,12 +97,14 @@ final class Relation
     /**
      * @param string $into
      * @param string $as
+     * @param int    $load
      * @return Relation
      */
-    public function setInverse(string $into, string $as): Relation
+    public function setInverse(string $into, string $as, ?int $load = null): Relation
     {
         $this->inverse = $into;
         $this->inverseType = $as;
+        $this->inverseLoad = $load;
 
         return $this;
     }
@@ -126,5 +131,13 @@ final class Relation
     public function getInverseType(): ?string
     {
         return $this->inverseType;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getInverseLoad(): ?int
+    {
+        return $this->inverseLoad;
     }
 }

@@ -27,6 +27,9 @@ class MorphedHasMany extends RelationSchema
         // save with parent
         Relation::CASCADE                => true,
 
+        // do not pre-load relation by default
+        Relation::LOAD                   => null,
+
         // nullable by default
         Relation::NULLABLE               => true,
 
