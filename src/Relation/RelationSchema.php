@@ -57,7 +57,7 @@ abstract class RelationSchema implements RelationInterface
         $relation->options = $options->withTemplate(static::RELATION_SCHEMA)->withContext([
             'relation'    => $name,
             'source:role' => $source,
-            'target:role' => $target
+            'target:role' => $target,
         ]);
 
         return $relation;
@@ -97,8 +97,25 @@ abstract class RelationSchema implements RelationInterface
         return [
             Relation::TYPE   => static::RELATION_TYPE,
             Relation::TARGET => $this->target,
+            Relation::LOAD   => $this->getLoadMethod(),
             Relation::SCHEMA => $schema
         ];
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function getLoadMethod(): ?int
+    {
+        switch ($this->options->getOption('load')) {
+            case 'eager':
+                return Relation::LOAD_EAGER;
+            case 'promise':
+            case 'lazy':
+                return Relation::LOAD_PROMISE;
+            default:
+                return null;
+        }
     }
 
     /**

@@ -26,7 +26,7 @@ class MorphedHasOne extends RelationSchema
     protected const RELATION_SCHEMA = [
         // save with parent
         Relation::CASCADE                => true,
-        
+
         // nullable by default
         Relation::NULLABLE               => false,
 

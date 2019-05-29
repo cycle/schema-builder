@@ -32,6 +32,7 @@ final class GenerateRelations implements GeneratorInterface
     public const OPTION_MAP = [
         'nullable'       => Relation::NULLABLE,
         'cascade'        => Relation::CASCADE,
+        'load'           => Relation::LOAD,
         'innerKey'       => Relation::INNER_KEY,
         'outerKey'       => Relation::OUTER_KEY,
         'morphKey'       => Relation::MORPH_KEY,

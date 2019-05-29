@@ -129,6 +129,29 @@ final class OptionSchema
     }
 
     /**
+     * Check if custom option has been defined.
+     *
+     * @param string $option
+     * @return bool
+     */
+    public function hasOption(string $option): bool
+    {
+        return array_key_exists($option, $this->options);
+    }
+
+    /**
+     * Get custom option value.
+     *
+     * @param string $option
+     * @param mixed  $default
+     * @return bool
+     */
+    public function getOption(string $option, $default = null)
+    {
+        return $this->options[$option] ?? $default;
+    }
+
+    /**
      * @return array
      */
     public function __debugInfo()

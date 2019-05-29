@@ -12,10 +12,10 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Generator\ResetTables;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
+use Cycle\Schema\Generator\ResetTables;
 use Cycle\Schema\Generator\SyncTables;
 use Cycle\Schema\Generator\ValidateEntities;
 use Cycle\Schema\Registry;
@@ -66,6 +66,61 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
     }
 
+    public function testPackSchemaEagerLoad()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->getOptions()->set('load', 'eager');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
+
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema);
+        $this->assertSame(Relation::HAS_ONE, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
+
+        $this->assertSame(Relation::LOAD_EAGER, $schema['user'][Schema::RELATIONS]['plain'][Relation::LOAD]);
+
+        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+
+        $this->assertArrayHasKey('plain', $schema);
+        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+    }
+
+    public function testPackSchemaLazyLoad()
+    {
+        $c = new Compiler();
+
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->getOptions()->set('load', 'lazy');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations(['hasOne' => new HasOne()]))->run($r);
+
+        $schema = $c->compile($r);
+
+        $this->assertArrayHasKey('user', $schema);
+        $this->assertSame(Relation::HAS_ONE, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
+
+        $this->assertSame(Relation::LOAD_PROMISE, $schema['user'][Schema::RELATIONS]['plain'][Relation::LOAD]);
+
+        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+
+        $this->assertArrayHasKey('plain', $schema);
+        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+    }
 
     public function testCustomKey()
     {
