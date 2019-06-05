@@ -33,6 +33,10 @@ final class Embedded extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
+
+
+        // todo: isolate entity?
+
         // sync sources (?)
 
         foreach ($source->getFields() as $name => $field) {

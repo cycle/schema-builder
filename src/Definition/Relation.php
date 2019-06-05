@@ -140,4 +140,12 @@ final class Relation
     {
         return $this->inverseLoad;
     }
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+    }
 }

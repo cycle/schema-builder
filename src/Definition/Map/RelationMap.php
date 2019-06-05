@@ -72,4 +72,14 @@ final class RelationMap implements \IteratorAggregate
     {
         return new \ArrayIterator($this->relations);
     }
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        foreach ($this->relations as $name => $relation) {
+            $this->relations[$name] = clone $relation;
+        }
+    }
 }

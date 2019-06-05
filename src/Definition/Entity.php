@@ -237,4 +237,14 @@ final class Entity
             }
         }
     }
+
+    /**
+     * Full entity copy.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+        $this->fields = clone $this->fields;
+        $this->relations = clone $this->relations;
+    }
 }

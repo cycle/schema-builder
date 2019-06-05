@@ -83,4 +83,14 @@ final class FieldMap implements \IteratorAggregate, \Countable
     {
         return new \ArrayIterator($this->fields);
     }
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        foreach ($this->fields as $name => $field) {
+            $this->fields[$name] = clone $field;
+        }
+    }
 }

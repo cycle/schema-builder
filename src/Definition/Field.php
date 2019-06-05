@@ -163,4 +163,12 @@ final class Field
     {
         return $this->referenced;
     }
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+    }
 }
