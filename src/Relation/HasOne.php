@@ -113,7 +113,6 @@ final class HasOne extends RelationSchema implements InversableInterface
             throw new RelationException("HasOne relation can only be inversed into BelongsTo or RefersTo");
         }
 
-
         return $relation->withContext(
             $into,
             $this->target,

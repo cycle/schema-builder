@@ -15,7 +15,7 @@ use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\MorphTrait;
 
-class MorphedHasOne extends RelationSchema
+final class MorphedHasOne extends RelationSchema
 {
     use FieldTrait, MorphTrait;
 

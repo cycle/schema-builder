@@ -18,7 +18,7 @@ use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\MorphTrait;
 use Cycle\Schema\RelationInterface;
 
-class BelongsToMorphed extends RelationSchema implements InversableInterface
+final class BelongsToMorphed extends RelationSchema implements InversableInterface
 {
     use FieldTrait, MorphTrait;
 

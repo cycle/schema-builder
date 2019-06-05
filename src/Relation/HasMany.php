@@ -17,7 +17,7 @@ use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 use Cycle\Schema\RelationInterface;
 
-class HasMany extends RelationSchema implements InversableInterface
+final class HasMany extends RelationSchema implements InversableInterface
 {
     use FieldTrait, ForeignKeyTrait;
 

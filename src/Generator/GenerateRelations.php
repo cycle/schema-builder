@@ -175,6 +175,7 @@ final class GenerateRelations implements GeneratorInterface
     protected static function getDefaultRelations(): array
     {
         return [
+            'embedded'         => new Definition\Embedded(),
             'belongsTo'        => new Definition\BelongsTo(),
             'hasOne'           => new Definition\HasOne(),
             'hasMany'          => new Definition\HasMany(),
