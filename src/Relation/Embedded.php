@@ -33,9 +33,13 @@ final class Embedded extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
+        // each embedded entity must isolated
+        $target = clone $target;
+        $target->setRole($source->getRole() . '.' . $target->getRole());
+        $registry->register($target);
 
-
-        // todo: isolate entity?
+        // isolated
+        $this->target = $target->getRole();
 
         // sync sources (?)
 
