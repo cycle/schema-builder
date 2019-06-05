@@ -4,7 +4,8 @@
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
- */declare(strict_types=1);
+ */
+declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
@@ -39,6 +40,10 @@ final class GenerateTypecast implements GeneratorInterface
      */
     protected function compute(Registry $registry, Entity $entity)
     {
+        if (!$registry->hasTable($entity)) {
+            return;
+        }
+
         $table = $registry->getTableSchema($entity);
 
         foreach ($entity->getFields() as $field) {
