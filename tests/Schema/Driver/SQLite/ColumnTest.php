@@ -8,7 +8,7 @@
  
 namespace Cycle\Schema\Tests\Driver\SQLite; 
 
-class ColumnTest extends \Cycle\Schema\Tests\ColumnTest
+class ColumnTest extends \Cycle\Schema\Tests\ColumnTest 
 { 
     const DRIVER = "sqlite"; 
 }

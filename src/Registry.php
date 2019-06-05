@@ -160,10 +160,27 @@ final class Registry implements \IteratorAggregate
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
         }
 
+        $database = $this->dbal->database($database)->getName();
+
+        $schema = null;
+        foreach ($this->tables as $other) {
+            $association = $this->tables[$other];
+
+            // avoid schema duplication
+            if ($association['database'] === $database && $association['table'] === $table) {
+                $schema = $association['schema'];
+                break;
+            }
+        }
+
+        if (is_null($schema)) {
+            $schema = $this->dbal->database($database)->table($table)->getSchema();
+        }
+
         $this->tables[$entity] = [
-            'database' => $this->dbal->database($database)->getName(),
+            'database' => $database,
             'table'    => $table,
-            'schema'   => $this->dbal->database($database)->table($table)->getSchema()
+            'schema'   => $schema
         ];
 
         return $this;

@@ -42,6 +42,11 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
+            if ($this->getPrimary($entity) === null) {
+                // incomplete entity, skip
+                continue;
+            }
+
             $this->compute($registry, $entity);
         }
 
@@ -159,11 +164,9 @@ final class Compiler
 
     /**
      * @param Entity $entity
-     * @return string
-     *
-     * @throws CompilerException
+     * @return string|null
      */
-    protected function getPrimary(Entity $entity): string
+    protected function getPrimary(Entity $entity): ?string
     {
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isPrimary()) {
@@ -171,7 +174,7 @@ final class Compiler
             }
         }
 
-        throw new CompilerException("Entity `{$entity->getRole()}` must have defined primary key");
+        return null;
     }
 
     /**
