@@ -118,12 +118,8 @@ abstract class RelationSchema implements RelationInterface
             case 'eager':
             case Relation::LOAD_EAGER:
                 return Relation::LOAD_EAGER;
-            case 'promise':
-            case 'lazy':
-            case Relation::LOAD_PROMISE:
-                return Relation::LOAD_PROMISE;
             default:
-                return null;
+                return Relation::LOAD_PROMISE;
         }
     }
 

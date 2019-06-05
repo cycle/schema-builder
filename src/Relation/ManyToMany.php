@@ -30,7 +30,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         Relation::CASCADE            => true,
 
         // do not pre-load relation by default
-        Relation::LOAD               => null,
+        Relation::LOAD               => Relation::LOAD_PROMISE,
 
         // nullable by default
         Relation::NULLABLE           => true,

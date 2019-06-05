@@ -30,7 +30,7 @@ class HasMany extends RelationSchema implements InversableInterface
         Relation::CASCADE            => true,
 
         // do not pre-load relation by default
-        Relation::LOAD               => null,
+        Relation::LOAD               => Relation::LOAD_PROMISE,
 
         // custom where condition
         Relation::WHERE              => [],
