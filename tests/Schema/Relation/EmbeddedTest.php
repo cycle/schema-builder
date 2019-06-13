@@ -73,15 +73,15 @@ abstract class EmbeddedTest extends BaseTest
             $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD]
         );
 
-        $this->assertArrayHasKey('composite.embedded', $schema);
-        $this->assertSame('id', $schema['composite.embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite.embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite.embedded'][Schema::TABLE]);
+        $this->assertArrayHasKey('composite:embedded', $schema);
+        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
+        $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
             'embedded' => 'embedded_column',
             'id'       => 'id'
-        ], $schema['composite.embedded'][Schema::COLUMNS]);
+        ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
     public function testPackSchemaLazyLoad()
@@ -117,15 +117,15 @@ abstract class EmbeddedTest extends BaseTest
             $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD]
         );
 
-        $this->assertArrayHasKey('composite.embedded', $schema);
-        $this->assertSame('id', $schema['composite.embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite.embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite.embedded'][Schema::TABLE]);
+        $this->assertArrayHasKey('composite:embedded', $schema);
+        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
+        $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
             'embedded' => 'embedded_column',
             'id'       => 'id'
-        ], $schema['composite.embedded'][Schema::COLUMNS]);
+        ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
     public function testRenderTable()
