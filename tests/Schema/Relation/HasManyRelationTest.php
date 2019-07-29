@@ -113,7 +113,7 @@ abstract class HasManyRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey('user_id'));
+        $this->assertTrue($table->hasForeignKey(['user_id']));
     }
 
     public function testRenderTableRedefined()
@@ -142,7 +142,7 @@ abstract class HasManyRelationTest extends BaseTest
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertFalse($table->hasForeignKey('parent_id'));
+        $this->assertFalse($table->hasForeignKey(['parent_id']));
     }
 
     /**

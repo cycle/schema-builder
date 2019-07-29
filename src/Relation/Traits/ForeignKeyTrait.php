@@ -39,8 +39,8 @@ trait ForeignKeyTrait
         }
 
         $registry->getTableSchema($target)
-                 ->foreignKey($outerField->getColumn())
-                 ->references($registry->getTable($source), $innerField->getColumn())
+                 ->foreignKey([$outerField->getColumn()])
+                 ->references($registry->getTable($source), [$innerField->getColumn()])
                  ->onUpdate($this->getOptions()->get(RelationSchema::FK_ACTION))
                  ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
     }

@@ -106,7 +106,7 @@ abstract class BelongsToRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey('author_id'));
+        $this->assertTrue($table->hasForeignKey(['author_id']));
     }
 
     public function testRenderTableRedefined()
@@ -133,7 +133,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertFalse($table->hasForeignKey('parent_id'));
+        $this->assertFalse($table->hasForeignKey(['parent_id']));
     }
 
     /**

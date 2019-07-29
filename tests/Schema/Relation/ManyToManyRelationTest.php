@@ -193,8 +193,8 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertTrue($table->hasColumn('post_id'));
         $this->assertTrue($table->hasColumn('tag_id'));
         $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
-        $this->assertTrue($table->hasForeignKey('post_id'));
-        $this->assertTrue($table->hasForeignKey('tag_id'));
+        $this->assertTrue($table->hasForeignKey(['post_id']));
+        $this->assertTrue($table->hasForeignKey(['tag_id']));
     }
 
     /**
