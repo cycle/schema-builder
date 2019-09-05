@@ -33,7 +33,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         Relation::LOAD               => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE           => true,
+        Relation::NULLABLE           => false,
 
         // custom where condition
         Relation::WHERE              => [],

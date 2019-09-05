@@ -32,11 +32,11 @@ final class HasMany extends RelationSchema implements InversableInterface
         // do not pre-load relation by default
         Relation::LOAD               => Relation::LOAD_PROMISE,
 
-        // custom where condition
-        Relation::WHERE              => [],
-
         // not nullable by default
         Relation::NULLABLE           => false,
+
+        // custom where condition
+        Relation::WHERE              => [],
 
         // link to parent entity primary key by default
         Relation::INNER_KEY          => '{source:primaryKey}',

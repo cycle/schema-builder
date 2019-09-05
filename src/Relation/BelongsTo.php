@@ -33,7 +33,7 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         Relation::LOAD               => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE           => true,
+        Relation::NULLABLE           => false,
 
         // link to parent entity primary key by default
         Relation::INNER_KEY          => '{relation}_{outerKey}',
