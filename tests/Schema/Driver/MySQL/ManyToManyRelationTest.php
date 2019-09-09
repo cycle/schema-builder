@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\MySQL; 
+namespace Cycle\Schema\Tests\Driver\MySQL;
 
-class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest 
-{ 
-    const DRIVER = "mysql"; 
+class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest
+{
+    const DRIVER = "mysql";
 }

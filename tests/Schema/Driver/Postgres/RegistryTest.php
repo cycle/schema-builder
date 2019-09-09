@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\Postgres; 
+namespace Cycle\Schema\Tests\Driver\Postgres;
 
-class RegistryTest extends \Cycle\Schema\Tests\RegistryTest 
-{ 
-    const DRIVER = "postgres"; 
+class RegistryTest extends \Cycle\Schema\Tests\RegistryTest
+{
+    const DRIVER = "postgres";
 }

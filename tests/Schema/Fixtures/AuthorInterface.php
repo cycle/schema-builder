@@ -11,5 +11,4 @@ namespace Cycle\Schema\Tests\Fixtures;
 
 interface AuthorInterface
 {
-
 }

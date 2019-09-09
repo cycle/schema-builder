@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Fixtures;
 
-
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 

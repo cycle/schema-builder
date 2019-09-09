@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLite; 
+namespace Cycle\Schema\Tests\Driver\SQLite;
 
-class ColumnTest extends \Cycle\Schema\Tests\ColumnTest 
-{ 
-    const DRIVER = "sqlite"; 
+class ColumnTest extends \Cycle\Schema\Tests\ColumnTest
+{
+    const DRIVER = "sqlite";
 }

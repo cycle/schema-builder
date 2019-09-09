@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLServer; 
+namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-class ResolveInterfacesTest extends \Cycle\Schema\Tests\Generator\ResolveInterfacesTest 
-{ 
-    const DRIVER = "sqlserver"; 
+class ResolveInterfacesTest extends \Cycle\Schema\Tests\Generator\ResolveInterfacesTest
+{
+    const DRIVER = "sqlserver";
 }

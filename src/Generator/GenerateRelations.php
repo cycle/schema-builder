@@ -22,7 +22,6 @@ use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use Cycle\Schema\RelationInterface;
 
-
 /**
  * Generate relations based on their schematic definitions.
  */

@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\MySQL; 
+namespace Cycle\Schema\Tests\Driver\MySQL;
 
-class ResolveInterfacesTest extends \Cycle\Schema\Tests\Generator\ResolveInterfacesTest 
-{ 
-    const DRIVER = "mysql"; 
+class ResolveInterfacesTest extends \Cycle\Schema\Tests\Generator\ResolveInterfacesTest
+{
+    const DRIVER = "mysql";
 }
