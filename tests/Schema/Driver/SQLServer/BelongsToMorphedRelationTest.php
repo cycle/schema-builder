@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLServer; 
+namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-class BelongsToMorphedRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedRelationTest 
-{ 
-    const DRIVER = "sqlserver"; 
+class BelongsToMorphedRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedRelationTest
+{
+    const DRIVER = "sqlserver";
 }

@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLite; 
+namespace Cycle\Schema\Tests\Driver\SQLite;
 
-class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest 
-{ 
-    const DRIVER = "sqlite"; 
+class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest
+{
+    const DRIVER = "sqlite";
 }

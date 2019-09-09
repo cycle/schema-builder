@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLite; 
+namespace Cycle\Schema\Tests\Driver\SQLite;
 
-class MorphedHasOneRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\MorphedHasOneRelationTest 
-{ 
-    const DRIVER = "sqlite"; 
+class MorphedHasOneRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\MorphedHasOneRelationTest
+{
+    const DRIVER = "sqlite";
 }

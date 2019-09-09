@@ -11,5 +11,4 @@ namespace Cycle\Schema\Exception;
 
 class OptionException extends RegistryException
 {
-
 }

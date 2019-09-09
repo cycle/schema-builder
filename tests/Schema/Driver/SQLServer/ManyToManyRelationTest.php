@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\SQLServer; 
+namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest 
-{ 
-    const DRIVER = "sqlserver"; 
+class ManyToManyRelationTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationTest
+{
+    const DRIVER = "sqlserver";
 }

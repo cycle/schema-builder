@@ -19,10 +19,12 @@ class User implements AuthorInterface
     {
         $entity = new Entity();
         $entity->setRole('user');
-        $entity->setClass(self::class);;
+        $entity->setClass(self::class);
+        ;
 
         $entity->getFields()->set(
-            'id', (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+            'id',
+            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
         $entity->getFields()->set(

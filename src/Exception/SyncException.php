@@ -11,5 +11,4 @@ namespace Cycle\Schema\Exception;
 
 class SyncException extends \RuntimeException
 {
-
 }

@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
  
-namespace Cycle\Schema\Tests\Driver\MySQL; 
+namespace Cycle\Schema\Tests\Driver\MySQL;
 
-class RefersToRelationTest extends \Cycle\Schema\Tests\Relation\RefersToRelationTest 
-{ 
-    const DRIVER = "mysql"; 
+class RefersToRelationTest extends \Cycle\Schema\Tests\Relation\RefersToRelationTest
+{
+    const DRIVER = "mysql";
 }

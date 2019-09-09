@@ -20,7 +20,7 @@ trait FieldTrait
 {
     /**
      * @param Entity $entity
-     * @param int    $field
+     * @param int $field
      * @return Field
      */
     protected function getField(Entity $entity, int $field): Field
@@ -30,7 +30,7 @@ trait FieldTrait
         } catch (FieldException $e) {
             throw new RelationException(
                 sprintf(
-                    "Field `{$entity->getRole()}`.`{$this->getOptions()->get($field)}` does not exists, referenced by `%s`",
+                    "Field `%s`.`%s` does not exists, referenced by `%s`",
                     $entity->getRole(),
                     $this->getOptions()->get($field),
                     $this->source
@@ -44,8 +44,8 @@ trait FieldTrait
     /**
      * @param Entity $target
      * @param string $name
-     * @param Field  $outer
-     * @param bool   $nullable
+     * @param Field $outer
+     * @param bool $nullable
      */
     protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false)
     {
