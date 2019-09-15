@@ -166,6 +166,10 @@ final class Registry implements \IteratorAggregate
         foreach ($this->tables as $other) {
             $association = $this->tables[$other];
 
+            if ($association === null) {
+                continue;
+            }
+
             // avoid schema duplication
             if ($association['database'] === $database && $association['table'] === $table) {
                 $schema = $association['schema'];
