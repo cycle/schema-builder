@@ -8,7 +8,6 @@ services:
 php:
   - 7.1
   - 7.2
-  - 7.4snapshot
 
 env:
   - "DB=ALL COVERAGE=ALL"
@@ -44,7 +43,21 @@ jobs:
         - vendor/bin/phpunit tests/Schema/Driver/SQLite
         - vendor/bin/phpunit tests/Schema/Driver/MySQL
         - vendor/bin/phpunit tests/Schema/Driver/Postgres
-
+        
+    # PHP 7.4 builds does not support SQLServer yet
+    - stage: Test
+      php: 7.4snapshot
+      env:
+        - "DB=postgres,mysql,sqlite"
+      before_install:
+        - cd tests
+        - docker-compose up -d
+        - cd ..
+      script:
+        - vendor/bin/phpunit tests/Schema/Driver/SQLite
+        - vendor/bin/phpunit tests/Schema/Driver/MySQL
+        - vendor/bin/phpunit tests/Schema/Driver/Postgres
+        
     # Testing various PostgresSQL version
     - stage: Test
       php: 7.1
