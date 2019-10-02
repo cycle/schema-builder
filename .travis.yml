@@ -7,6 +7,7 @@ services:
 
 php:
   - 7.2
+  - 7.3
 
 env:
   - "DB=ALL COVERAGE=ALL"
@@ -29,20 +30,6 @@ after_success:
 
 jobs:
   include:
-    # PHP 7.3 builds does not support SQLServer yet
-    - stage: Test
-      php: 7.3
-      env:
-        - "DB=postgres,mysql,sqlite"
-      before_install:
-        - cd tests
-        - docker-compose up -d
-        - cd ..
-      script:
-        - vendor/bin/phpunit tests/Schema/Driver/SQLite
-        - vendor/bin/phpunit tests/Schema/Driver/MySQL
-        - vendor/bin/phpunit tests/Schema/Driver/Postgres
-        
     # PHP 7.4 builds does not support SQLServer yet
     - stage: Test
       php: 7.4snapshot
@@ -55,18 +42,6 @@ jobs:
       script:
         - vendor/bin/phpunit tests/Schema/Driver/SQLite
         - vendor/bin/phpunit tests/Schema/Driver/MySQL
-        - vendor/bin/phpunit tests/Schema/Driver/Postgres
-        
-    # Testing various PostgresSQL version
-    - stage: Test
-      php: 7.2
-      addons:
-        postgresql: "9.2"
-      env:
-        - "DB=postgres POSTGRES=9.2 PHP=7.1"
-      before_install:
-        - psql -c 'create database spiral;' -U postgres
-      script:
         - vendor/bin/phpunit tests/Schema/Driver/Postgres
 
     # Testing various PostgresSQL version
