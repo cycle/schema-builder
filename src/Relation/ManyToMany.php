@@ -38,26 +38,26 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         // custom where condition
         Relation::WHERE              => [],
 
-        // inner key of parent record will be used to fill "THOUGHT_INNER_KEY" in pivot table
+        // inner key of parent record will be used to fill "THROUGH_INNER_KEY" in pivot table
         Relation::INNER_KEY          => '{source:primaryKey}',
 
-        // we are going to use primary key of outer table to fill "THOUGHT_OUTER_KEY" in pivot table
+        // we are going to use primary key of outer table to fill "THROUGH_OUTER_KEY" in pivot table
         // this is technically "inner" key of outer record, we will name it "outer key" for simplicity
         Relation::OUTER_KEY          => '{target:primaryKey}',
 
-        // thought entity role name
-        Relation::THOUGH_ENTITY      => null,
+        // through entity role name
+        Relation::THROUGH_ENTITY     => null,
 
         // name field where parent record inner key will be stored in pivot table, role + innerKey
         // by default
-        Relation::THOUGH_INNER_KEY   => '{source:role}_{innerKey}',
+        Relation::THROUGH_INNER_KEY  => '{source:role}_{innerKey}',
 
         // name field where inner key of outer record (outer key) will be stored in pivot table,
         // role + outerKey by default
-        Relation::THOUGH_OUTER_KEY   => '{target:role}_{outerKey}',
+        Relation::THROUGH_OUTER_KEY  => '{target:role}_{outerKey}',
 
         // custom pivot where
-        Relation::THOUGH_WHERE       => [],
+        Relation::THROUGH_WHERE      => [],
 
         // rendering options
         RelationSchema::INDEX_CREATE => true,
@@ -75,7 +75,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $thought = $registry->getEntity($this->options->get(Relation::THOUGH_ENTITY));
+        $through = $registry->getEntity($this->options->get(Relation::THROUGH_ENTITY));
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
             throw new RelationException(sprintf(
@@ -85,24 +85,24 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             ));
         }
 
-        if ($registry->getDatabase($source) !== $registry->getDatabase($thought)) {
+        if ($registry->getDatabase($source) !== $registry->getDatabase($through)) {
             throw new RelationException(sprintf(
                 "Relation ManyToMany can only link entities from same database (%s, %s)",
                 $source->getRole(),
-                $thought->getRole()
+                $through->getRole()
             ));
         }
 
         $this->ensureField(
-            $thought,
-            $this->options->get(Relation::THOUGH_INNER_KEY),
+            $through,
+            $this->options->get(Relation::THROUGH_INNER_KEY),
             $this->getField($source, Relation::INNER_KEY),
             $this->options->get(Relation::NULLABLE)
         );
 
         $this->ensureField(
-            $thought,
-            $this->options->get(Relation::THOUGH_OUTER_KEY),
+            $through,
+            $this->options->get(Relation::THROUGH_OUTER_KEY),
             $this->getField($target, Relation::OUTER_KEY),
             $this->options->get(Relation::NULLABLE)
         );
@@ -116,26 +116,26 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $thought = $registry->getEntity($this->options->get(Relation::THOUGH_ENTITY));
+        $through = $registry->getEntity($this->options->get(Relation::THROUGH_ENTITY));
 
         $sourceField = $this->getField($source, Relation::INNER_KEY);
         $targetField = $this->getField($target, Relation::OUTER_KEY);
 
-        $thoughtSourceField = $this->getField($thought, Relation::THOUGH_INNER_KEY);
-        $thoughtTargetField = $this->getField($thought, Relation::THOUGH_OUTER_KEY);
+        $throughSourceField = $this->getField($through, Relation::THROUGH_INNER_KEY);
+        $throughTargetField = $this->getField($through, Relation::THROUGH_OUTER_KEY);
 
-        $table = $registry->getTableSchema($thought);
+        $table = $registry->getTableSchema($through);
 
         if ($this->options->get(self::INDEX_CREATE)) {
             $table->index([
-                $thoughtSourceField->getColumn(),
-                $thoughtTargetField->getColumn()
+                $throughSourceField->getColumn(),
+                $throughTargetField->getColumn()
             ])->unique(true);
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $source, $thought, $sourceField, $thoughtSourceField);
-            $this->createForeignKey($registry, $target, $thought, $targetField, $thoughtTargetField);
+            $this->createForeignKey($registry, $source, $through, $sourceField, $throughSourceField);
+            $this->createForeignKey($registry, $target, $through, $targetField, $throughTargetField);
         }
     }
 
@@ -164,7 +164,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             throw new RelationException("ManyToMany relation can only be inversed into ManyToMany");
         }
 
-        if (!empty($this->options->get(Relation::THOUGH_WHERE)) || !empty($this->options->get(Relation::WHERE))) {
+        if (!empty($this->options->get(Relation::THROUGH_WHERE)) || !empty($this->options->get(Relation::WHERE))) {
             throw new RelationException("Unable to inverse ManyToMany relation with where constrain");
         }
 
@@ -173,11 +173,11 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD             => $load,
-                Relation::INNER_KEY        => $this->options->get(Relation::OUTER_KEY),
-                Relation::OUTER_KEY        => $this->options->get(Relation::INNER_KEY),
-                Relation::THOUGH_INNER_KEY => $this->options->get(Relation::THOUGH_OUTER_KEY),
-                Relation::THOUGH_OUTER_KEY => $this->options->get(Relation::THOUGH_INNER_KEY),
+                Relation::LOAD              => $load,
+                Relation::INNER_KEY         => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY         => $this->options->get(Relation::INNER_KEY),
+                Relation::THROUGH_INNER_KEY => $this->options->get(Relation::THROUGH_OUTER_KEY),
+                Relation::THROUGH_OUTER_KEY => $this->options->get(Relation::THROUGH_INNER_KEY),
             ])
         );
     }

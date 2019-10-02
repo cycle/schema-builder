@@ -29,21 +29,27 @@ final class GenerateRelations implements GeneratorInterface
 {
     // aliases between option names and their internal IDs
     public const OPTION_MAP = [
-        'nullable'       => Relation::NULLABLE,
-        'cascade'        => Relation::CASCADE,
-        'load'           => Relation::LOAD,
-        'innerKey'       => Relation::INNER_KEY,
-        'outerKey'       => Relation::OUTER_KEY,
-        'morphKey'       => Relation::MORPH_KEY,
-        'though'         => Relation::THOUGH_ENTITY,
-        'thoughInnerKey' => Relation::THOUGH_INNER_KEY,
-        'thoughOuterKey' => Relation::THOUGH_OUTER_KEY,
-        'thoughWhere'    => Relation::THOUGH_WHERE,
-        'where'          => Relation::WHERE,
-        'fkCreate'       => RelationSchema::FK_CREATE,
-        'fkAction'       => RelationSchema::FK_ACTION,
-        'indexCreate'    => RelationSchema::INDEX_CREATE,
-        'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH
+        'nullable'        => Relation::NULLABLE,
+        'cascade'         => Relation::CASCADE,
+        'load'            => Relation::LOAD,
+        'innerKey'        => Relation::INNER_KEY,
+        'outerKey'        => Relation::OUTER_KEY,
+        'morphKey'        => Relation::MORPH_KEY,
+        'through'         => Relation::THROUGH_ENTITY,
+        'throughInnerKey' => Relation::THROUGH_INNER_KEY,
+        'throughOuterKey' => Relation::THROUGH_OUTER_KEY,
+        'throughWhere'    => Relation::THROUGH_WHERE,
+        'where'           => Relation::WHERE,
+        'fkCreate'        => RelationSchema::FK_CREATE,
+        'fkAction'        => RelationSchema::FK_ACTION,
+        'indexCreate'     => RelationSchema::INDEX_CREATE,
+        'morphKeyLength'  => RelationSchema::MORPH_KEY_LENGTH,
+
+        // deprecated
+        'though'          => Relation::THROUGH_ENTITY,
+        'thoughInnerKey'  => Relation::THROUGH_INNER_KEY,
+        'thoughOuterKey'  => Relation::THROUGH_OUTER_KEY,
+        'thoughWhere'     => Relation::THROUGH_WHERE,
     ];
 
     /** @var OptionSchema */
