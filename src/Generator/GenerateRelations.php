@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
@@ -70,7 +72,7 @@ final class GenerateRelations implements GeneratorInterface
         foreach ($relations as $id => $relation) {
             if (!$relation instanceof RelationInterface) {
                 throw new \InvalidArgumentException(sprintf(
-                    "Invalid relation type, RelationInterface excepted, `%s` given",
+                    'Invalid relation type, RelationInterface excepted, `%s` given',
                     is_object($relation) ? get_class($relation) : gettype($relation)
                 ));
             }
@@ -100,7 +102,7 @@ final class GenerateRelations implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function register(Registry $registry, Entity $entity)
+    protected function register(Registry $registry, Entity $entity): void
     {
         foreach ($entity->getRelations() as $name => $r) {
             $schema = $this->initRelation($r->getType())->withContext(
@@ -129,7 +131,7 @@ final class GenerateRelations implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function inverse(Registry $registry, Entity $entity)
+    protected function inverse(Registry $registry, Entity $entity): void
     {
         foreach ($entity->getRelations() as $name => $r) {
             if (!$r->isInversed()) {
@@ -138,7 +140,7 @@ final class GenerateRelations implements GeneratorInterface
 
             $schema = $registry->getRelation($entity, $name);
             if (!$schema instanceof InversableInterface) {
-                throw new SchemaException("Unable to inverse relation of type " . get_class($schema));
+                throw new SchemaException('Unable to inverse relation of type ' . get_class($schema));
             }
 
             foreach ($schema->inverseTargets($registry) as $target) {

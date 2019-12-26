@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
@@ -39,7 +41,7 @@ final class ResolveInterfaces implements GeneratorInterface
      *
      * @throws RelationException
      */
-    protected function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity): void
     {
         foreach ($entity->getRelations() as $relation) {
             if (!$relation->getOptions()->has(self::STATIC_LINK)) {

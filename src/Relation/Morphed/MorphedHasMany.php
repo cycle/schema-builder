@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Morphed;
@@ -17,7 +19,8 @@ use Cycle\Schema\Relation\Traits\MorphTrait;
 
 final class MorphedHasMany extends RelationSchema
 {
-    use FieldTrait, MorphTrait;
+    use FieldTrait;
+    use MorphTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::MORPHED_HAS_MANY;
@@ -50,7 +53,7 @@ final class MorphedHasMany extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         parent::compute($registry);
 
@@ -77,7 +80,7 @@ final class MorphedHasMany extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         $target = $registry->getEntity($this->target);
 

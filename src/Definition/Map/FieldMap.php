@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Map;
@@ -19,6 +21,16 @@ final class FieldMap implements \IteratorAggregate, \Countable
 {
     /** @var Field[] */
     private $fields = [];
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        foreach ($this->fields as $name => $field) {
+            $this->fields[$name] = clone $field;
+        }
+    }
 
     /**
      * @return int
@@ -82,15 +94,5 @@ final class FieldMap implements \IteratorAggregate, \Countable
     public function getIterator()
     {
         return new \ArrayIterator($this->fields);
-    }
-
-    /**
-     * Cloning.
-     */
-    public function __clone()
-    {
-        foreach ($this->fields as $name => $field) {
-            $this->fields[$name] = clone $field;
-        }
     }
 }

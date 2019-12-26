@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -16,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class OptionSchemaTest extends TestCase
 {
-    public function testAliases()
+    public function testAliases(): void
     {
         $options = new OptionSchema([
             'alias' => Relation::TYPE
@@ -38,7 +40,7 @@ class OptionSchemaTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\OptionException
      */
-    public function testInvalidAlias()
+    public function testInvalidAlias(): void
     {
         $options = new OptionSchema([
             'alias' => Relation::TYPE
@@ -56,7 +58,7 @@ class OptionSchemaTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\OptionException
      */
-    public function testInvalidAlias2()
+    public function testInvalidAlias2(): void
     {
         $options = new OptionSchema([
             'alias' => Relation::TYPE
@@ -71,7 +73,7 @@ class OptionSchemaTest extends TestCase
         $options->get(RelationSchema::FK_ACTION);
     }
 
-    public function testDebugInfo()
+    public function testDebugInfo(): void
     {
         $options = new OptionSchema([
             'alias' => Relation::TYPE

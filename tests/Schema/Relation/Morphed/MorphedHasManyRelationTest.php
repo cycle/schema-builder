@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation\Morphed;
@@ -23,7 +25,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class MorphedHasManyRelationTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -39,7 +41,7 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         $this->assertInstanceOf(MorphedHasMany::class, $r->getRelation($u, 'plain'));
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $c = new Compiler();
 
@@ -65,7 +67,7 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
     }
 
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $e = Plain::define();
         $u = User::define();

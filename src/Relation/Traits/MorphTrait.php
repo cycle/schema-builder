@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
@@ -56,17 +58,17 @@ trait MorphTrait
                 $field = $primaryField;
             } else {
                 if ($key != $primaryKey) {
-                    throw new RelationException("Inconsistent primary key reference (name)");
+                    throw new RelationException('Inconsistent primary key reference (name)');
                 }
 
                 if ($field->getType() != $primaryField->getType()) {
-                    throw new RelationException("Inconsistent primary key reference (type)");
+                    throw new RelationException('Inconsistent primary key reference (type)');
                 }
             }
         }
 
         if (is_null($field)) {
-            throw new RelationException("Unable to find morphed parent");
+            throw new RelationException('Unable to find morphed parent');
         }
 
         return [$key, $field];
@@ -78,7 +80,7 @@ trait MorphTrait
      * @param int    $lenght
      * @param bool   $nullable
      */
-    protected function ensureMorphField(Entity $target, string $name, int $lenght, bool $nullable = false)
+    protected function ensureMorphField(Entity $target, string $name, int $lenght, bool $nullable = false): void
     {
         if ($target->getFields()->has($name)) {
             // field already exists and defined by the user
@@ -87,7 +89,7 @@ trait MorphTrait
 
         $field = new Field();
         $field->setColumn($name);
-        $field->setType(sprintf("string(%s)", $lenght));
+        $field->setType(sprintf('string(%s)', $lenght));
 
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);

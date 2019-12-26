@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -27,7 +29,7 @@ use Cycle\Schema\Tests\Fixtures\Post;
 
 abstract class BelongsToRelationTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -41,7 +43,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -64,7 +66,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
     }
 
-    public function testCustomKey()
+    public function testCustomKey(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -86,7 +88,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertArrayHasKey('parent_id', $schema['post'][Schema::COLUMNS]);
     }
 
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -109,7 +111,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertTrue($table->hasForeignKey(['author_id']));
     }
 
-    public function testRenderTableRedefined()
+    public function testRenderTableRedefined(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -139,7 +141,7 @@ abstract class BelongsToRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testInverseUnknownType()
+    public function testInverseUnknownType(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -158,7 +160,7 @@ abstract class BelongsToRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testInverseInvalidType()
+    public function testInverseInvalidType(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -177,7 +179,7 @@ abstract class BelongsToRelationTest extends BaseTest
         ]);
     }
 
-    public function testInverseToHasOne()
+    public function testInverseToHasOne(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -214,7 +216,7 @@ abstract class BelongsToRelationTest extends BaseTest
         );
     }
 
-    public function testInverseToHasMany()
+    public function testInverseToHasMany(): void
     {
         $e = Post::define();
         $u = Author::define();

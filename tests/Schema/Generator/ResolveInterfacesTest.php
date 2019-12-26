@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Generator;
@@ -23,7 +25,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class ResolveInterfacesTest extends BaseTest
 {
-    public function testResolveInterfaceDependency()
+    public function testResolveInterfaceDependency(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -50,7 +52,7 @@ abstract class ResolveInterfacesTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RelationException
      */
-    public function testUnableResolveInterfaceDependency()
+    public function testUnableResolveInterfaceDependency(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -70,7 +72,7 @@ abstract class ResolveInterfacesTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RelationException
      */
-    public function testInvalidStaticLink()
+    public function testInvalidStaticLink(): void
     {
         $e = Post::define();
         $u = Author::define();
@@ -90,7 +92,7 @@ abstract class ResolveInterfacesTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RelationException
      */
-    public function testAmbiguousDependency()
+    public function testAmbiguousDependency(): void
     {
         $e = Post::define();
         $u = Author::define();

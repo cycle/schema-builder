@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Map;
@@ -16,6 +18,16 @@ final class RelationMap implements \IteratorAggregate
 {
     /** @var Relation[] */
     private $relations = [];
+
+    /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        foreach ($this->relations as $name => $relation) {
+            $this->relations[$name] = clone $relation;
+        }
+    }
 
     /**
      * @param string $name
@@ -71,15 +83,5 @@ final class RelationMap implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->relations);
-    }
-
-    /**
-     * Cloning.
-     */
-    public function __clone()
-    {
-        foreach ($this->relations as $name => $relation) {
-            $this->relations[$name] = clone $relation;
-        }
     }
 }

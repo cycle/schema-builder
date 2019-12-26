@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -19,7 +21,8 @@ use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
  */
 final class RefersTo extends RelationSchema
 {
-    use FieldTrait, ForeignKeyTrait;
+    use FieldTrait;
+    use ForeignKeyTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::REFERS_TO;
@@ -50,7 +53,7 @@ final class RefersTo extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         parent::compute($registry);
 
@@ -69,7 +72,7 @@ final class RefersTo extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);

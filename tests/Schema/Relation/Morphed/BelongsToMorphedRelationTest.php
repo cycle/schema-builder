@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation\Morphed;
@@ -29,7 +31,7 @@ use Cycle\Schema\Tests\Fixtures\Tag;
 
 abstract class BelongsToMorphedRelationTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -51,7 +53,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testGenerateInconsistentType()
+    public function testGenerateInconsistentType(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -71,7 +73,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testGenerateInconsistentName()
+    public function testGenerateInconsistentName(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -88,7 +90,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $this->assertInstanceOf(BelongsToMorphed::class, $r->getRelation($e, 'parent'));
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -117,7 +119,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $this->assertArrayHasKey('parent_role', $schema['morphed'][Schema::COLUMNS]);
     }
 
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -146,7 +148,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $this->assertTrue($table->hasColumn('parent_role'));
 
         $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertTrue($table->column('parent_role')->getType() == "string");
+        $this->assertTrue($table->column('parent_role')->getType() == 'string');
         $this->assertTrue($table->column('parent_role')->getSize() == 32);
 
         $this->assertTrue($table->hasIndex(['parent_id', 'parent_role']));
@@ -155,7 +157,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testInverseToInvalidType()
+    public function testInverseToInvalidType(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -178,7 +180,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         ]);
     }
 
-    public function testInverseHasOne()
+    public function testInverseHasOne(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();
@@ -229,7 +231,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         );
     }
 
-    public function testInverseHasMany()
+    public function testInverseHasMany(): void
     {
         $e = MorphedTo::define();
         $a = Author::define();

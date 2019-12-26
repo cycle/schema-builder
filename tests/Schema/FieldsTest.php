@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
@@ -18,13 +20,13 @@ class FieldsTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\FieldException
      */
-    public function testNoField()
+    public function testNoField(): void
     {
         $m = new FieldMap();
         $m->get('id');
     }
 
-    public function testSetGet()
+    public function testSetGet(): void
     {
         $m = new FieldMap();
 
@@ -39,7 +41,7 @@ class FieldsTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\FieldException
      */
-    public function testSetTwice()
+    public function testSetTwice(): void
     {
         $m = new FieldMap();
 
@@ -50,7 +52,7 @@ class FieldsTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\FieldException
      */
-    public function testNoType()
+    public function testNoType(): void
     {
         $m = new FieldMap();
 
@@ -61,7 +63,7 @@ class FieldsTest extends TestCase
     /**
      * @expectedException \Cycle\Schema\Exception\FieldException
      */
-    public function testNoColumn()
+    public function testNoColumn(): void
     {
         $m = new FieldMap();
 

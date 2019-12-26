@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -66,7 +68,7 @@ abstract class RelationSchema implements RelationInterface
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
             'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))

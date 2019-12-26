@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema;
@@ -114,7 +116,7 @@ final class Registry implements \IteratorAggregate
      *
      * @throws RegistryException
      */
-    public function registerChild(Entity $parent, Entity $child)
+    public function registerChild(Entity $parent, Entity $child): void
     {
         if (!$this->hasInstance($parent)) {
             throw new RegistryException("Undefined entity `{$parent->getRole()}`");
@@ -260,7 +262,7 @@ final class Registry implements \IteratorAggregate
      * @throws RegistryException
      * @throws RelationException
      */
-    public function registerRelation(Entity $entity, string $name, RelationInterface $relation)
+    public function registerRelation(Entity $entity, string $name, RelationInterface $relation): void
     {
         if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");

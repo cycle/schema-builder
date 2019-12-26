@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Generator;
@@ -19,7 +21,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class TypecastGeneratorTest extends BaseTest
 {
-    public function testCompiledUser()
+    public function testCompiledUser(): void
     {
         $e = User::define();
 

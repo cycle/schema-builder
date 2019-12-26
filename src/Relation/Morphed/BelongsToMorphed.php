@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Morphed;
@@ -20,7 +22,8 @@ use Cycle\Schema\RelationInterface;
 
 final class BelongsToMorphed extends RelationSchema implements InversableInterface
 {
-    use FieldTrait, MorphTrait;
+    use FieldTrait;
+    use MorphTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::BELONGS_TO_MORPHED;
@@ -53,7 +56,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         // compute local key
         $this->options = $this->options->withContext([
@@ -86,7 +89,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
 
@@ -121,7 +124,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         if (!$relation instanceof MorphedHasOne && !$relation instanceof MorphedHasMany) {
             throw new RelationException(
-                "BelongsToMorphed relation can only be inversed into MorphedHasOne or MorphedHasMany"
+                'BelongsToMorphed relation can only be inversed into MorphedHasOne or MorphedHasMany'
             );
         }
 

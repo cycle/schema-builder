@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
@@ -41,6 +43,14 @@ final class Relation
     }
 
     /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+    }
+
+    /**
      * @return OptionMap
      */
     public function getOptions(): OptionMap
@@ -65,7 +75,7 @@ final class Relation
     public function getType(): string
     {
         if ($this->type === null) {
-            throw new RelationException("Relation type must be set");
+            throw new RelationException('Relation type must be set');
         }
 
         return $this->type;
@@ -88,7 +98,7 @@ final class Relation
     public function getTarget(): string
     {
         if ($this->target === null) {
-            throw new RelationException("Relation target must be set");
+            throw new RelationException('Relation target must be set');
         }
 
         return $this->target;
@@ -139,13 +149,5 @@ final class Relation
     public function getInverseLoad(): ?int
     {
         return $this->inverseLoad;
-    }
-
-    /**
-     * Cloning.
-     */
-    public function __clone()
-    {
-        $this->options = clone $this->options;
     }
 }

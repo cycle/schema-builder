@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
@@ -30,7 +32,7 @@ trait FieldTrait
         } catch (FieldException $e) {
             throw new RelationException(
                 sprintf(
-                    "Field `%s`.`%s` does not exists, referenced by `%s`",
+                    'Field `%s`.`%s` does not exists, referenced by `%s`',
                     $entity->getRole(),
                     $this->getOptions()->get($field),
                     $this->source
@@ -47,7 +49,7 @@ trait FieldTrait
      * @param Field $outer
      * @param bool $nullable
      */
-    protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false)
+    protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);

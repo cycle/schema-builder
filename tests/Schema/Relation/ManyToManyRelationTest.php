@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -26,7 +28,7 @@ use Cycle\Schema\Tests\Fixtures\TagContext;
 
 abstract class ManyToManyRelationTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -53,7 +55,7 @@ abstract class ManyToManyRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testDifferentDatabases()
+    public function testDifferentDatabases(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -79,7 +81,7 @@ abstract class ManyToManyRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testDifferentDatabases2()
+    public function testDifferentDatabases2(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -101,7 +103,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -161,7 +163,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
     }
 
-    public function testRenderTables()
+    public function testRenderTables(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -200,7 +202,7 @@ abstract class ManyToManyRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testInverseInvalidType()
+    public function testInverseInvalidType(): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -226,7 +228,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         ]))->run($r);
     }
 
-    public function testInverse()
+    public function testInverse(): void
     {
         $post = Post::define();
         $tag = Tag::define();

@@ -1,10 +1,13 @@
 <?php
+
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
+declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
 
@@ -14,9 +17,6 @@ use Cycle\ORM\ORM;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Tests\Fixtures\TestLogger;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LoggerTrait;
-use Psr\Log\LogLevel;
 use Spiral\Database\Config\DatabaseConfig;
 use Spiral\Database\Database;
 use Spiral\Database\DatabaseManager;
@@ -25,11 +25,11 @@ use Spiral\Database\Driver\Handler;
 
 abstract class BaseTest extends TestCase
 {
-    // tests configuration
-    public static $config;
 
     // currently active driver
     public const DRIVER = null;
+    // tests configuration
+    public static $config;
 
     // cross test driver cache
     public static $driverCache = [];
@@ -51,29 +51,26 @@ abstract class BaseTest extends TestCase
     /**
      * Init all we need.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->dbal = new DatabaseManager(new DatabaseConfig());
-        $this->dbal->addDatabase(new Database(
-            'default',
-            '',
-            $this->getDriver()
-        ));
+        $this->dbal->addDatabase(
+            new Database(
+                'default',
+                '',
+                $this->getDriver()
+            )
+        );
 
-        $this->dbal->addDatabase(new Database(
-            'secondary',
-            'secondary_',
-            $this->getDriver()
-        ));
-
-        $this->logger = new TestLogger();
-        $this->getDriver()->setLogger($this->logger);
-
-        if (self::$config['debug']) {
-            $this->logger->display();
-        }
+        $this->dbal->addDatabase(
+            new Database(
+                'secondary',
+                'secondary_',
+                $this->getDriver()
+            )
+        );
 
         $this->logger = new TestLogger();
         $this->getDriver()->setLogger($this->logger);
@@ -82,16 +79,25 @@ abstract class BaseTest extends TestCase
             $this->logger->display();
         }
 
-        $this->orm = new ORM(new Factory(
-            $this->dbal,
-            RelationConfig::getDefault()
-        ));
+        $this->logger = new TestLogger();
+        $this->getDriver()->setLogger($this->logger);
+
+        if (self::$config['debug']) {
+            $this->logger->display();
+        }
+
+        $this->orm = new ORM(
+            new Factory(
+                $this->dbal,
+                RelationConfig::getDefault()
+            )
+        );
     }
 
     /**
      * Cleanup.
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->disableProfiling();
         $this->dropDatabase($this->dbal->database('default'));
@@ -124,12 +130,14 @@ abstract class BaseTest extends TestCase
         if (!isset($this->driver)) {
             $class = $config['driver'];
 
-            $this->driver = new $class([
-                'connection' => $config['conn'],
-                'username'   => $config['user'],
-                'password'   => $config['pass'],
-                'options'    => []
-            ]);
+            $this->driver = new $class(
+                [
+                    'connection' => $config['conn'],
+                    'username'   => $config['user'],
+                    'password'   => $config['pass'],
+                    'options'    => []
+                ]
+            );
         }
 
         $this->driver->setProfiling(true);
@@ -148,7 +156,7 @@ abstract class BaseTest extends TestCase
     /**
      * @param Database|null $database
      */
-    protected function dropDatabase(Database $database = null)
+    protected function dropDatabase(Database $database = null): void
     {
         if (empty($database)) {
             return;
@@ -174,7 +182,7 @@ abstract class BaseTest extends TestCase
     /**
      * For debug purposes only.
      */
-    protected function enableProfiling()
+    protected function enableProfiling(): void
     {
         if (!is_null($this->logger)) {
             $this->logger->display();
@@ -184,7 +192,7 @@ abstract class BaseTest extends TestCase
     /**
      * For debug purposes only.
      */
-    protected function disableProfiling()
+    protected function disableProfiling(): void
     {
         if (!is_null($this->logger)) {
             $this->logger->hide();

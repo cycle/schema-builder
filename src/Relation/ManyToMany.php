@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -19,7 +21,8 @@ use Cycle\Schema\RelationInterface;
 
 final class ManyToMany extends RelationSchema implements InversableInterface
 {
-    use FieldTrait, ForeignKeyTrait;
+    use FieldTrait;
+    use ForeignKeyTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::MANY_TO_MANY;
@@ -68,7 +71,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         parent::compute($registry);
 
@@ -79,7 +82,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
             throw new RelationException(sprintf(
-                "Relation ManyToMany can only link entities from same database (%s, %s)",
+                'Relation ManyToMany can only link entities from same database (%s, %s)',
                 $source->getRole(),
                 $target->getRole()
             ));
@@ -87,7 +90,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($through)) {
             throw new RelationException(sprintf(
-                "Relation ManyToMany can only link entities from same database (%s, %s)",
+                'Relation ManyToMany can only link entities from same database (%s, %s)',
                 $source->getRole(),
                 $through->getRole()
             ));
@@ -111,7 +114,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
@@ -161,11 +164,11 @@ final class ManyToMany extends RelationSchema implements InversableInterface
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
         if (!$relation instanceof self) {
-            throw new RelationException("ManyToMany relation can only be inversed into ManyToMany");
+            throw new RelationException('ManyToMany relation can only be inversed into ManyToMany');
         }
 
         if (!empty($this->options->get(Relation::THROUGH_WHERE)) || !empty($this->options->get(Relation::WHERE))) {
-            throw new RelationException("Unable to inverse ManyToMany relation with where constrain");
+            throw new RelationException('Unable to inverse ManyToMany relation with where constrain');
         }
 
         return $relation->withContext(

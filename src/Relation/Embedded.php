@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -15,7 +17,7 @@ use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
 final class Embedded extends RelationSchema
 {
-    use  ForeignKeyTrait;
+    use ForeignKeyTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::EMBEDDED;
@@ -28,7 +30,7 @@ final class Embedded extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
@@ -57,7 +59,7 @@ final class Embedded extends RelationSchema
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         // relation does not require any column rendering besides actual tables
     }

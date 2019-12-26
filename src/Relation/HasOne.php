@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -19,7 +21,8 @@ use Cycle\Schema\RelationInterface;
 
 final class HasOne extends RelationSchema implements InversableInterface
 {
-    use FieldTrait, ForeignKeyTrait;
+    use FieldTrait;
+    use ForeignKeyTrait;
 
     // internal relation type
     protected const RELATION_TYPE = Relation::HAS_ONE;
@@ -50,7 +53,7 @@ final class HasOne extends RelationSchema implements InversableInterface
     /**
      * @param Registry $registry
      */
-    public function compute(Registry $registry)
+    public function compute(Registry $registry): void
     {
         parent::compute($registry);
 
@@ -69,7 +72,7 @@ final class HasOne extends RelationSchema implements InversableInterface
     /**
      * @param Registry $registry
      */
-    public function render(Registry $registry)
+    public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
@@ -110,7 +113,7 @@ final class HasOne extends RelationSchema implements InversableInterface
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
         if (!$relation instanceof BelongsTo && !$relation instanceof RefersTo) {
-            throw new RelationException("HasOne relation can only be inversed into BelongsTo or RefersTo");
+            throw new RelationException('HasOne relation can only be inversed into BelongsTo or RefersTo');
         }
 
         return $relation->withContext(

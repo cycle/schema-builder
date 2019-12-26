@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Table;
@@ -112,7 +114,7 @@ final class Column
      *
      * @throws ColumnException
      */
-    public function render(AbstractColumn $column)
+    public function render(AbstractColumn $column): void
     {
         $column->nullable($this->isNullable());
 
@@ -127,6 +129,10 @@ final class Column
             );
         }
 
+        if ($this->isNullable()) {
+            $column->defaultValue(null);
+        }
+
         if ($this->hasDefault() && $this->getDefault() !== null) {
             $column->defaultValue($this->getDefault());
             return;
@@ -136,42 +142,6 @@ final class Column
             // cast default value
             $column->defaultValue($this->castDefault($column));
         }
-    }
-
-    /**
-     * @param AbstractColumn $column
-     * @return bool|float|int|string
-     */
-    private function castDefault(AbstractColumn $column)
-    {
-        if (in_array($column->getAbstractType(), ['timestamp', 'datetime', 'time', 'date'])) {
-            return 0;
-        }
-
-        if ($column->getAbstractType() == 'enum') {
-            // we can use first enum value as default
-            return $column->getEnumValues()[0];
-        }
-
-        switch ($column->getType()) {
-            case AbstractColumn::INT:
-                return 0;
-            case AbstractColumn::FLOAT:
-                return 0.0;
-            case AbstractColumn::BOOL:
-                return false;
-        }
-
-        return '';
-    }
-
-    /**
-     * @param string $option
-     * @return bool
-     */
-    private function hasOption(string $option): bool
-    {
-        return $this->field->getOptions()->has($option);
     }
 
     /**
@@ -197,5 +167,41 @@ final class Column
         }
 
         return $column;
+    }
+
+    /**
+     * @param AbstractColumn $column
+     * @return bool|float|int|string
+     */
+    private function castDefault(AbstractColumn $column)
+    {
+        if (in_array($column->getAbstractType(), ['timestamp', 'datetime', 'time', 'date'])) {
+            return 0;
+        }
+
+        if ($column->getAbstractType() === 'enum') {
+            // we can use first enum value as default
+            return $column->getEnumValues()[0];
+        }
+
+        switch ($column->getType()) {
+            case AbstractColumn::INT:
+                return 0;
+            case AbstractColumn::FLOAT:
+                return 0.0;
+            case AbstractColumn::BOOL:
+                return false;
+        }
+
+        return '';
+    }
+
+    /**
+     * @param string $option
+     * @return bool
+     */
+    private function hasOption(string $option): bool
+    {
+        return $this->field->getOptions()->has($option);
     }
 }

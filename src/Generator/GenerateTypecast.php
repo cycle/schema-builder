@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
@@ -38,7 +40,7 @@ final class GenerateTypecast implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity): void
     {
         if (!$registry->hasTable($entity)) {
             return;

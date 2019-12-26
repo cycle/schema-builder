@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -34,6 +36,23 @@ final class OptionSchema
     public function __construct(array $aliases)
     {
         $this->aliases = $aliases;
+    }
+
+    /**
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        $result = [];
+
+        foreach ($this->template as $option => $value) {
+            $value = $this->get($option);
+
+            $alias = array_search($option, $this->aliases, true);
+            $result[$alias] = $value;
+        }
+
+        return $result;
     }
 
     /**
@@ -127,23 +146,6 @@ final class OptionSchema
         }
 
         return $this->calculate($option, $value);
-    }
-
-    /**
-     * @return array
-     */
-    public function __debugInfo()
-    {
-        $result = [];
-
-        foreach ($this->template as $option => $value) {
-            $value = $this->get($option);
-
-            $alias = array_search($option, $this->aliases, true);
-            $result[$alias] = $value;
-        }
-
-        return $result;
     }
 
     /**

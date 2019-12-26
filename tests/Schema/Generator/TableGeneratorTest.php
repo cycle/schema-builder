@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Generator;
@@ -22,7 +24,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class TableGeneratorTest extends BaseTest
 {
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $e = Plain::define();
 
@@ -39,7 +41,7 @@ abstract class TableGeneratorTest extends BaseTest
         $this->assertSame('primary', $table->column('id')->getAbstractType());
     }
 
-    public function testCompiled()
+    public function testCompiled(): void
     {
         $e = Plain::define();
 
@@ -68,7 +70,7 @@ abstract class TableGeneratorTest extends BaseTest
         ], $schema);
     }
 
-    public function testRenderUserTable()
+    public function testRenderUserTable(): void
     {
         $e = User::define();
 
@@ -98,7 +100,7 @@ abstract class TableGeneratorTest extends BaseTest
         $this->assertTrue($table->hasColumn('created_at'));
     }
 
-    public function testCompiledUser()
+    public function testCompiledUser(): void
     {
         $e = User::define();
 

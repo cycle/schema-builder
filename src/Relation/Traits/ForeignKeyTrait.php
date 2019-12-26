@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
@@ -33,7 +35,7 @@ trait ForeignKeyTrait
         Entity $target,
         Field $innerField,
         Field $outerField
-    ) {
+    ): void {
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
             return;
         }

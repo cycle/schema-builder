@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -26,7 +28,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class HasManyRelationTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -42,7 +44,7 @@ abstract class HasManyRelationTest extends BaseTest
         $this->assertInstanceOf(HasMany::class, $r->getRelation($u, 'plain'));
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $c = new Compiler();
 
@@ -67,7 +69,7 @@ abstract class HasManyRelationTest extends BaseTest
         $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
     }
 
-    public function testCustomKey()
+    public function testCustomKey(): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -91,7 +93,7 @@ abstract class HasManyRelationTest extends BaseTest
         $this->assertArrayHasKey('parent_id', $schema['plain'][Schema::COLUMNS]);
     }
 
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -116,7 +118,7 @@ abstract class HasManyRelationTest extends BaseTest
         $this->assertTrue($table->hasForeignKey(['user_id']));
     }
 
-    public function testRenderTableRedefined()
+    public function testRenderTableRedefined(): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -148,7 +150,7 @@ abstract class HasManyRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testInverseInvalidType()
+    public function testInverseInvalidType(): void
     {
         $c = new Compiler();
 
@@ -167,7 +169,7 @@ abstract class HasManyRelationTest extends BaseTest
         ]))->run($r);
     }
 
-    public function testInverseToBelongsTo()
+    public function testInverseToBelongsTo(): void
     {
         $c = new Compiler();
 
@@ -205,7 +207,7 @@ abstract class HasManyRelationTest extends BaseTest
         );
     }
 
-    public function testInverseToRefersTo()
+    public function testInverseToRefersTo(): void
     {
         $c = new Compiler();
 

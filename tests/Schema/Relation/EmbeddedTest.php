@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -23,7 +25,7 @@ use Cycle\Schema\Tests\Fixtures\EmbeddedEntity;
 
 abstract class EmbeddedTest extends BaseTest
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $c = Composite::define();
         $e = EmbeddedEntity::define();
@@ -42,7 +44,7 @@ abstract class EmbeddedTest extends BaseTest
         $this->assertInstanceOf(Embedded::class, $r->getRelation($c, 'embedded'));
     }
 
-    public function testPackSchema()
+    public function testPackSchema(): void
     {
         $cc = new Compiler();
 
@@ -84,7 +86,7 @@ abstract class EmbeddedTest extends BaseTest
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
-    public function testPackSchemaLazyLoad()
+    public function testPackSchemaLazyLoad(): void
     {
         $cc = new Compiler();
 
@@ -128,7 +130,7 @@ abstract class EmbeddedTest extends BaseTest
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
-    public function testRenderTable()
+    public function testRenderTable(): void
     {
         $c = Composite::define();
         $e = EmbeddedEntity::define();

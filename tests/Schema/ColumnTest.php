@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
@@ -15,7 +17,7 @@ use Spiral\Database\Schema\AbstractTable;
 
 abstract class ColumnTest extends BaseTest
 {
-    public function testColumn()
+    public function testColumn(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -33,7 +35,7 @@ abstract class ColumnTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\ColumnException
      */
-    public function testInvalidDeclaration()
+    public function testInvalidDeclaration(): void
     {
         $field = new Field();
         $field->setType('7');
@@ -42,7 +44,7 @@ abstract class ColumnTest extends BaseTest
         Column::parse($field);
     }
 
-    public function testColumnNullableStrict()
+    public function testColumnNullableStrict(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -61,7 +63,7 @@ abstract class ColumnTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\ColumnException
      */
-    public function testNoDefaultValue()
+    public function testNoDefaultValue(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -73,7 +75,7 @@ abstract class ColumnTest extends BaseTest
         $column->getDefault();
     }
 
-    public function testColumnNullableThoughtDefault()
+    public function testColumnNullableThoughtDefault(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -90,7 +92,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(null, $column->getDefault());
     }
 
-    public function testRenderSimple()
+    public function testRenderSimple(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -110,7 +112,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertFalse($table->column('name')->isNullable());
     }
 
-    public function testNullable()
+    public function testNullable(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -131,13 +133,13 @@ abstract class ColumnTest extends BaseTest
         $this->assertTrue($table->column('name')->isNullable());
     }
 
-    public function testNullableAndDefault()
+    public function testNullableAndDefault(): void
     {
         $field = new Field();
         $field->setType('string');
         $field->setColumn('name');
         $field->getOptions()->set(Column::OPT_NULLABLE, true);
-        $field->getOptions()->set(Column::OPT_DEFAULT, "value");
+        $field->getOptions()->set(Column::OPT_DEFAULT, 'value');
 
         $table = $this->getStub();
         $column = Column::parse($field);
@@ -151,10 +153,10 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame('string', $table->column('name')->getType());
 
         $this->assertTrue($table->column('name')->isNullable());
-        $this->assertSame("value", $table->column('name')->getDefaultValue());
+        $this->assertSame('value', $table->column('name')->getDefaultValue());
     }
 
-    public function testRenderWithOption()
+    public function testRenderWithOption(): void
     {
         $field = new Field();
         $field->setType('string(32)');
@@ -173,7 +175,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(32, $table->column('name')->getSize());
     }
 
-    public function testDecimal()
+    public function testDecimal(): void
     {
         $field = new Field();
         $field->setType('decimal(10,5)');
@@ -193,7 +195,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(5, $table->column('name')->getScale());
     }
 
-    public function testCastDefaultString()
+    public function testCastDefaultString(): void
     {
         $field = new Field();
         $field->setType('string');
@@ -212,10 +214,10 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame('string', $table->column('name')->getType());
 
         $this->assertFalse($table->column('name')->isNullable());
-        $this->assertSame("", $table->column('name')->getDefaultValue());
+        $this->assertSame('', $table->column('name')->getDefaultValue());
     }
 
-    public function testCastDefaultInteger()
+    public function testCastDefaultInteger(): void
     {
         $field = new Field();
         $field->setType('int');
@@ -237,7 +239,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(0, $table->column('name')->getDefaultValue());
     }
 
-    public function testCastDefaultFloat()
+    public function testCastDefaultFloat(): void
     {
         $field = new Field();
         $field->setType('float');
@@ -259,7 +261,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(0.0, $table->column('name')->getDefaultValue());
     }
 
-    public function testCastDefaultBool()
+    public function testCastDefaultBool(): void
     {
         $field = new Field();
         $field->setType('bool');
@@ -280,7 +282,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertEquals(false, $table->column('name')->getDefaultValue());
     }
 
-    public function testCastDefaultEnum()
+    public function testCastDefaultEnum(): void
     {
         $field = new Field();
         $field->setType('enum(a,b,c)');
@@ -301,7 +303,7 @@ abstract class ColumnTest extends BaseTest
         $this->assertEquals('a', $table->column('name')->getDefaultValue());
     }
 
-    public function testCastDefaultDatetime()
+    public function testCastDefaultDatetime(): void
     {
         $field = new Field();
         $field->setType('datetime');

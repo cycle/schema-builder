@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema;
@@ -33,7 +35,7 @@ final class Compiler
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
                 throw new CompilerException(sprintf(
-                    "Invalid generator `%s`",
+                    'Invalid generator `%s`',
                     is_object($generator) ? get_class($generator) : gettype($generator)
                 ));
             }
@@ -69,7 +71,7 @@ final class Compiler
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity)
+    protected function compute(Registry $registry, Entity $entity): void
     {
         $schema = [
             Schema::ENTITY       => $entity->getClass(),

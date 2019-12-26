@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
@@ -20,7 +22,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class RegistryTest extends BaseTest
 {
-    public function testHasRole()
+    public function testHasRole(): void
     {
         $r = new Registry($this->dbal);
         $e = new Entity();
@@ -35,7 +37,7 @@ abstract class RegistryTest extends BaseTest
         $this->assertFalse($r->hasEntity(Post::class));
     }
 
-    public function testGetEntity()
+    public function testGetEntity(): void
     {
         $r = new Registry($this->dbal);
         $e = new Entity();
@@ -49,7 +51,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testGetEntityException()
+    public function testGetEntityException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -59,7 +61,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testLinkTableException()
+    public function testLinkTableException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -69,7 +71,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testHasTableException()
+    public function testHasTableException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -79,7 +81,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testGetTableException()
+    public function testGetTableException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -89,7 +91,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testGetDatabaseException()
+    public function testGetDatabaseException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -99,7 +101,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testGetTableSchemaException()
+    public function testGetTableSchemaException(): void
     {
         $r = new Registry($this->dbal);
 
@@ -109,7 +111,7 @@ abstract class RegistryTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\RegistryException
      */
-    public function testRegisterChildNoEntity()
+    public function testRegisterChildNoEntity(): void
     {
         $e = new Entity();
         $e->setRole('parent');
@@ -139,7 +141,7 @@ abstract class RegistryTest extends BaseTest
         $r->registerChild($e, $c);
     }
 
-    public function testRegisterChild()
+    public function testRegisterChild(): void
     {
         $e = new Entity();
         $e->setRole('parent');

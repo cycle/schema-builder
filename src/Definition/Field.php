@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
@@ -44,6 +46,14 @@ final class Field
     }
 
     /**
+     * Cloning.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+    }
+
+    /**
      * @return OptionMap
      */
     public function getOptions(): OptionMap
@@ -57,7 +67,7 @@ final class Field
     public function getType(): string
     {
         if (empty($this->column)) {
-            throw new FieldException("Field type must be set");
+            throw new FieldException('Field type must be set');
         }
 
         return $this->type;
@@ -112,7 +122,7 @@ final class Field
     public function getColumn(): string
     {
         if (empty($this->column)) {
-            throw new FieldException("Column mapping must be set");
+            throw new FieldException('Column mapping must be set');
         }
 
         return $this->column;
@@ -162,13 +172,5 @@ final class Field
     public function isReferenced(): bool
     {
         return $this->referenced;
-    }
-
-    /**
-     * Cloning.
-     */
-    public function __clone()
-    {
-        $this->options = clone $this->options;
     }
 }

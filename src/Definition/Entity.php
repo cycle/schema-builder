@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Cycle ORM Schema Builder.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
@@ -59,6 +61,16 @@ final class Entity
         $this->options = new OptionMap();
         $this->fields = new FieldMap();
         $this->relations = new RelationMap();
+    }
+
+    /**
+     * Full entity copy.
+     */
+    public function __clone()
+    {
+        $this->options = clone $this->options;
+        $this->fields = clone $this->fields;
+        $this->relations = clone $this->relations;
     }
 
     /**
@@ -223,7 +235,7 @@ final class Entity
      *
      * @param Entity $entity
      */
-    public function merge(Entity $entity)
+    public function merge(Entity $entity): void
     {
         foreach ($entity->getRelations() as $name => $relation) {
             if (!$this->relations->has($name)) {
@@ -236,15 +248,5 @@ final class Entity
                 $this->fields->set($name, $field);
             }
         }
-    }
-
-    /**
-     * Full entity copy.
-     */
-    public function __clone()
-    {
-        $this->options = clone $this->options;
-        $this->fields = clone $this->fields;
-        $this->relations = clone $this->relations;
     }
 }
