@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema;
 
+use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
+use Cycle\ORM\Select\Repository;
+use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Entity;
 use Doctrine\Common\Inflector\Inflector;
 use Spiral\Database\Exception\CompilerException;
@@ -21,17 +24,27 @@ final class Compiler
     /** @var array */
     private $result = [];
 
+    /** @var array */
+    private $defaults = [
+        Schema::MAPPER => Mapper::class,
+        Schema::REPOSITORY => Repository::class,
+        Schema::SOURCE => Source::class,
+        Schema::CONSTRAIN => null,
+    ];
+
     /**
      * Compile the registry schema.
      *
-     * @param Registry             $registry
+     * @param Registry $registry
      * @param GeneratorInterface[] $generators
+     * @param array $defaults
      * @return array
      *
-     * @throws CompilerException
      */
-    public function compile(Registry $registry, array $generators = []): array
+    public function compile(Registry $registry, array $generators = [], array $defaults = []): array
     {
+        $this->defaults = $defaults + $this->defaults;
+
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
                 throw new CompilerException(sprintf(
@@ -75,10 +88,10 @@ final class Compiler
     {
         $schema = [
             Schema::ENTITY       => $entity->getClass(),
-            Schema::SOURCE       => $entity->getSource(),
-            Schema::MAPPER       => $entity->getMapper(),
-            Schema::REPOSITORY   => $entity->getRepository(),
-            Schema::CONSTRAIN    => $entity->getConstrain(),
+            Schema::SOURCE       => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
+            Schema::MAPPER       => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
+            Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
+            Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
             Schema::SCHEMA       => $entity->getSchema(),
             Schema::PRIMARY_KEY  => $this->getPrimary($entity),
             Schema::COLUMNS      => $this->renderColumns($entity),
