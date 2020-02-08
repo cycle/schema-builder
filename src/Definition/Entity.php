@@ -133,9 +133,9 @@ final class Entity
     /**
      * @return string
      */
-    public function getMapper(): string
+    public function getMapper(): ?string
     {
-        return $this->mapper ?? Mapper::class;
+        return $this->mapper;
     }
 
     /**
@@ -152,9 +152,9 @@ final class Entity
     /**
      * @return string
      */
-    public function getSource(): string
+    public function getSource(): ?string
     {
-        return $this->source ?? Source::class;
+        return $this->source;
     }
 
     /**
@@ -190,9 +190,9 @@ final class Entity
     /**
      * @return string
      */
-    public function getRepository(): string
+    public function getRepository(): ?string
     {
-        return $this->repository ?? Repository::class;
+        return $this->repository;
     }
 
     /**
