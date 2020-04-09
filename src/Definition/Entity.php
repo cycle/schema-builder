@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
-use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Select\Repository;
-use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
@@ -135,7 +132,7 @@ final class Entity
      */
     public function getMapper(): ?string
     {
-        return $this->mapper;
+        return $this->normalizeClass($this->mapper);
     }
 
     /**
@@ -154,7 +151,7 @@ final class Entity
      */
     public function getSource(): ?string
     {
-        return $this->source;
+        return $this->normalizeClass($this->source);
     }
 
     /**
@@ -173,7 +170,7 @@ final class Entity
      */
     public function getConstrain(): ?string
     {
-        return $this->constrain;
+        return $this->normalizeClass($this->constrain);
     }
 
     /**
@@ -192,7 +189,7 @@ final class Entity
      */
     public function getRepository(): ?string
     {
-        return $this->repository;
+        return $this->normalizeClass($this->repository);
     }
 
     /**
@@ -248,5 +245,18 @@ final class Entity
                 $this->fields->set($name, $field);
             }
         }
+    }
+
+    /**
+     * @param string|null $class
+     * @return string|null
+     */
+    private function normalizeClass(string $class = null): ?string
+    {
+        if ($class === null) {
+            return null;
+        }
+
+        return ltrim($class, '\\');
     }
 }
