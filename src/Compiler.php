@@ -16,7 +16,6 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Entity;
-use Doctrine\Common\Inflector\Inflector;
 use Spiral\Database\Exception\CompilerException;
 
 final class Compiler
@@ -31,6 +30,14 @@ final class Compiler
         Schema::SOURCE => Source::class,
         Schema::CONSTRAIN => null,
     ];
+
+    /** @var \Doctrine\Inflector\Inflector */
+    private $inflector;
+
+    public function __construct( )
+    {
+        $this->inflector = (new \Doctrine\Inflector\Rules\English\InflectorFactory())->build();
+    }
 
     /**
      * Compile the registry schema.
@@ -201,6 +208,7 @@ final class Compiler
     protected function childAlias(Entity $entity): string
     {
         $r = new \ReflectionClass($entity->getClass());
-        return Inflector::classify($r->getShortName());
+
+        return $this->inflector->classify($r->getShortName());
     }
 }
