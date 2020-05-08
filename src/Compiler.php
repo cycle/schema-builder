@@ -34,7 +34,7 @@ final class Compiler
     /** @var \Doctrine\Inflector\Inflector */
     private $inflector;
 
-    public function __construct( )
+    public function __construct()
     {
         $this->inflector = (new \Doctrine\Inflector\Rules\English\InflectorFactory())->build();
     }
