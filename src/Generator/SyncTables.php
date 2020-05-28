@@ -32,19 +32,25 @@ final class SyncTables implements GeneratorInterface
      */
     public function run(Registry $registry): Registry
     {
-        $reflector = new Reflector();
-        foreach ($registry as $entity) {
-            if (!$registry->hasTable($entity) || $entity->getOptions()->has(self::READONLY_SCHEMA)) {
-                continue;
+        $databases = [];
+        foreach ($registry as $regEntity) {
+            if ($registry->hasTable($regEntity) && !$regEntity->getOptions()->has(SyncTables::READONLY_SCHEMA)) {
+                $databases[$registry->getDatabase($regEntity)][] = $registry->getTableSchema($regEntity);
             }
-
-            $reflector->addTable($registry->getTableSchema($entity));
         }
 
-        try {
-            $reflector->run();
-        } catch (\Throwable $e) {
-            throw new SyncException($e->getMessage(), $e->getCode(), $e);
+        foreach ($databases as $database => $tables) {
+            $reflector = new Reflector();
+
+            foreach ($tables as $table) {
+                $reflector->addTable($table);
+            }
+
+            try {
+                $reflector->run();
+            } catch (\Throwable $e) {
+                throw new SyncException($e->getMessage(), $e->getCode(), $e);
+            }
         }
 
         return $registry;
