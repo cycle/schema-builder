@@ -26,24 +26,26 @@ final class SyncTables implements GeneratorInterface
 
     /**
      * @param Registry $registry
+     *
      * @return Registry
      *
      * @throws SyncException
      */
     public function run(Registry $registry): Registry
     {
-        $databases = [];
-        foreach ($registry as $regEntity) {
-            if ($registry->hasTable($regEntity) && !$regEntity->getOptions()->has(SyncTables::READONLY_SCHEMA)) {
-                $databases[$registry->getDatabase($regEntity)][] = $registry->getTableSchema($regEntity);
-            }
-        }
-
-        foreach ($databases as $database => $tables) {
+        foreach ($this->getRegistryDbList($registry) as $dbName) {
             $reflector = new Reflector();
 
-            foreach ($tables as $table) {
-                $reflector->addTable($table);
+            foreach ($registry as $regEntity) {
+                if (
+                    !$registry->hasTable($regEntity)
+                    || $registry->getDatabase($regEntity) !== $dbName
+                    || $regEntity->getOptions()->has(SyncTables::READONLY_SCHEMA)
+                ) {
+                    continue;
+                }
+
+                $reflector->addTable($registry->getTableSchema($regEntity));
             }
 
             try {
@@ -54,5 +56,25 @@ final class SyncTables implements GeneratorInterface
         }
 
         return $registry;
+    }
+
+    /**
+     * @param Registry $registry
+     *
+     * @return array
+     */
+    private function getRegistryDbList(Registry $registry): array
+    {
+        $databases = [];
+        foreach ($registry as $regEntity) {
+            $dbName = $registry->getDatabase($regEntity);
+            if (in_array($dbName, $databases, true)) {
+                continue;
+            }
+
+            $databases[] = $dbName;
+        }
+
+        return $databases;
     }
 }
