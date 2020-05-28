@@ -37,7 +37,11 @@ final class SyncTables implements GeneratorInterface
             $reflector = new Reflector();
 
             foreach ($registry as $regEntity) {
-                if ($registry->getDatabase($regEntity) !== $dbName) {
+                if (
+                    $registry->hasTable($regEntity)
+                    && $registry->getDatabase($regEntity) !== $dbName
+                    && !$regEntity->getOptions()->has(SyncTables::READONLY_SCHEMA)
+                ) {
                     continue;
                 }
                 $reflector->addTable($registry->getTableSchema($regEntity));
