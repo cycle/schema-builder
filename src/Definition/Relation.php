@@ -124,7 +124,7 @@ final class Relation
      */
     public function isInversed(): bool
     {
-        return $this->inverse != null;
+        return $this->inverse !== null;
     }
 
     /**
