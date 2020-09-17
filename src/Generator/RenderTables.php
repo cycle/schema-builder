@@ -93,7 +93,9 @@ final class RenderTables implements GeneratorInterface
         }
 
         if ($registry->getChildren($entity) !== []) {
-            $table->string(Mapper::ENTITY_TYPE, 32);
+            if (!$table->hasColumn(Mapper::ENTITY_TYPE)) {
+                $table->string(Mapper::ENTITY_TYPE, 32);
+            }
         }
 
         if (count($primaryKeys)) {
