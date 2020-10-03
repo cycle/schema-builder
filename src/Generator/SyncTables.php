@@ -67,6 +67,9 @@ final class SyncTables implements GeneratorInterface
     {
         $databases = [];
         foreach ($registry as $regEntity) {
+            if(!$registry->hasTable($regEntity)){
+                continue;
+            }
             $dbName = $registry->getDatabase($regEntity);
             if (in_array($dbName, $databases, true)) {
                 continue;
