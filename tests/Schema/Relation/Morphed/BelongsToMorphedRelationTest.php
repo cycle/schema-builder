@@ -53,26 +53,6 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
     /**
      * @expectedException \Cycle\Schema\Exception\SchemaException
      */
-    public function testGenerateInconsistentType(): void
-    {
-        $e = MorphedTo::define();
-        $a = Author::define();
-        $p = Tag::define();
-
-        $r = new Registry($this->dbal);
-        $r->register($e)->linkTable($e, 'default', 'morphed');
-
-        $r->register($a)->linkTable($a, 'default', 'author');
-        $r->register($p)->linkTable($p, 'default', 'tag');
-
-        (new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]))->run($r);
-
-        $this->assertInstanceOf(BelongsToMorphed::class, $r->getRelation($e, 'parent'));
-    }
-
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testGenerateInconsistentName(): void
     {
         $e = MorphedTo::define();
