@@ -60,10 +60,6 @@ trait MorphTrait
                 if ($key != $primaryKey) {
                     throw new RelationException('Inconsistent primary key reference (name)');
                 }
-
-                if ($field->getType() != $primaryField->getType()) {
-                    throw new RelationException('Inconsistent primary key reference (type)');
-                }
             }
         }
 
