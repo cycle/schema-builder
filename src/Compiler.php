@@ -130,17 +130,19 @@ final class Compiler
      */
     protected function renderColumns(Entity $entity): array
     {
-        // collect fields by row name
+        // Check field duplicates
         /** @var Field[][] $fieldGroups */
         $fieldGroups = [];
+        // Collect and group fields by column name
         foreach ($entity->getFields() as $name => $field) {
             $fieldGroups[$field->getColumn()][$name] = $field;
         }
         foreach ($fieldGroups as $fieldName => $fields) {
-            // Find duplicates
+            // We need duplicates only
             if (count($fields) === 1) {
                 continue;
             }
+            // Compare
             $comparator = new FieldComparator();
             foreach ($fields as $name => $field) {
                 $comparator->addField($name, $field);
@@ -149,7 +151,7 @@ final class Compiler
                 $comparator->compare();
             } catch (\Throwable $e) {
                 throw new Exception\CompilerException(
-                    "Error compiling the `{$entity->getRole()}` role.\n\n{$e->getMessage()}",
+                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
                     $e->getCode()
                 );
             }
