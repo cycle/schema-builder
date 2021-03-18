@@ -15,6 +15,7 @@ use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
+use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Spiral\Database\Exception\CompilerException;
@@ -133,25 +134,24 @@ final class Compiler
         /** @var Field[][] $fieldGroups */
         $fieldGroups = [];
         foreach ($entity->getFields() as $name => $field) {
-            $fieldGroups[$field->getColumn()][] = $field;
+            $fieldGroups[$field->getColumn()][$name] = $field;
         }
-        foreach ($fieldGroups as $name => $fields) {
+        foreach ($fieldGroups as $fieldName => $fields) {
             // Find duplicates
             if (count($fields) === 1) {
                 continue;
             }
-
-            // Check options
-            $options = iterator_to_array(current($fields)->getOptions());
-            while ($checkField = next($fields)) {
-                $nextOptions = iterator_to_array($checkField->getOptions());
-                // todo: make field comparator
-                if (count($options) !== count($nextOptions) || count(array_diff_assoc($nextOptions, $options)) > 0) {
-                    throw new Exception\CompilerException(
-                        "Different options are specified for fields of the same name.\n" .
-                        "Check the options for the `{$name}` field of the `{$entity->getRole()}` role."
-                    );
-                }
+            $comparator = new FieldComparator();
+            foreach ($fields as $name => $field) {
+                $comparator->addField($name, $field);
+            }
+            try {
+                $comparator->compare();
+            } catch (\Throwable $e) {
+                throw new Exception\CompilerException(
+                    "Error compiling the `{$entity->getRole()}` role.\n\n{$e->getMessage()}",
+                    $e->getCode()
+                );
             }
         }
 
