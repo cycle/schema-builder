@@ -16,6 +16,7 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Definition\Field;
 use Spiral\Database\Exception\CompilerException;
 
 final class Compiler
@@ -128,6 +129,32 @@ final class Compiler
      */
     protected function renderColumns(Entity $entity): array
     {
+        // collect fields by row name
+        /** @var Field[][] $fieldGroups */
+        $fieldGroups = [];
+        foreach ($entity->getFields() as $name => $field) {
+            $fieldGroups[$field->getColumn()][] = $field;
+        }
+        foreach ($fieldGroups as $name => $fields) {
+            // Find duplicates
+            if (count($fields) === 1) {
+                continue;
+            }
+
+            // Check options
+            $options = iterator_to_array(current($fields)->getOptions());
+            while ($checkField = next($fields)) {
+                $nextOptions = iterator_to_array($checkField->getOptions());
+                // todo: make field comparator
+                if (count($options) !== count($nextOptions) || count(array_diff_assoc($nextOptions, $options)) > 0) {
+                    throw new Exception\CompilerException(
+                        "Different options are specified for fields of the same name.\n" .
+                        "Check the options for the `{$name}` field of the `{$entity->getRole()}` role."
+                    );
+                }
+            }
+        }
+
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
             $schema[$name] = $field->getColumn();
