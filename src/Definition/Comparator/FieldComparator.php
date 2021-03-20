@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Comparator;
@@ -13,7 +14,7 @@ final class FieldComparator
     /** @var Field[] */
     private $fields = [];
 
-    public function addField(string $key, Field $field): void
+    public function addField(string $key, Field $field): self
     {
         if ($this->columnName === null) {
             $this->columnName = $field->getColumn();
@@ -22,6 +23,7 @@ final class FieldComparator
             throw new InvalidArgumentException('The field comparator only accepts fields with the same column name.');
         }
         $this->fields[$key] = $field;
+        return $this;
     }
 
     public function compare(): void
@@ -56,7 +58,10 @@ final class FieldComparator
     private function compareProperties(): bool
     {
         $tuples = array_map(static function (Field $field): array {
-            return [$field->getType(), $field->isPrimary()];
+            return [
+                $field->getType(),
+                // $field->isPrimary(), // should not compared
+            ];
         }, $this->fields);
 
         // Compare options content
