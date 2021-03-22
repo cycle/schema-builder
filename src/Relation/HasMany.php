@@ -41,6 +41,9 @@ final class HasMany extends RelationSchema implements InversableInterface
         // custom where condition
         Relation::WHERE              => [],
 
+        // custom orderBy rules
+        Relation::ORDER_BY           => [],
+
         // link to parent entity primary key by default
         Relation::INNER_KEY          => '{source:primaryKey}',
 
