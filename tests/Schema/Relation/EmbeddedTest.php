@@ -13,6 +13,7 @@ namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
@@ -159,5 +160,34 @@ abstract class EmbeddedTest extends BaseTest
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('id'));
         $this->assertTrue($table->hasColumn('embedded_column'));
+    }
+
+    public function testEmbedIdFieldWithPrefix(): void
+    {
+        $c = Composite::define();
+        $e = EmbeddedEntity::define();
+
+        $e->getFields()->set('id', (new Field())
+            ->setColumn('embedded_id')
+            ->setType('int')
+        );
+
+        $c->getRelations()->set(
+            'embedded',
+            (new Relation())->setTarget('embedded')->setType('embedded')
+        );
+
+        $r = new Registry($this->dbal);
+        $r->register($c)->linkTable($c, 'default', 'composite');
+        $r->register($e);
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['embedded' => new Embedded()]),
+            $t = new RenderTables(),
+            new RenderRelations()
+        ]);
+
+        // No compilation error
+        $this->assertTrue(true);
     }
 }
