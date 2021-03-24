@@ -15,6 +15,7 @@ use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
+use Cycle\Schema\Exception\FieldException\EmbeddedPrimaryKeyException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -181,13 +182,16 @@ abstract class EmbeddedTest extends BaseTest
         $r->register($c)->linkTable($c, 'default', 'composite');
         $r->register($e);
 
-        (new Compiler())->compile($r, [
-            new GenerateRelations(['embedded' => new Embedded()]),
-            $t = new RenderTables(),
-            new RenderRelations()
-        ]);
+        $this->expectException(EmbeddedPrimaryKeyException::class);
+        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `id`.');
 
-        // No compilation error
-        $this->assertTrue(true);
+        (new Compiler())->compile(
+            $r,
+            [
+                new GenerateRelations(['embedded' => new Embedded()]),
+                $t = new RenderTables(),
+                new RenderRelations()
+            ]
+        );
     }
 }
