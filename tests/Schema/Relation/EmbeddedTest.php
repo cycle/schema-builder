@@ -168,10 +168,7 @@ abstract class EmbeddedTest extends BaseTest
         $c = Composite::define();
         $e = EmbeddedEntity::define();
 
-        $e->getFields()->set('id', (new Field())
-            ->setColumn('embedded_id')
-            ->setType('int')
-        );
+        $e->getFields()->set('id', (new Field())->setColumn('embedded_id')->setType('int'));
 
         $c->getRelations()->set(
             'embedded',
