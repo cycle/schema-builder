@@ -56,7 +56,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
     public function get(string $name): Field
     {
         if (!$this->has($name)) {
-            throw new FieldException("Undefined field `{$name}`");
+            throw new FieldException("Undefined field `{$name}`.");
         }
 
         return $this->fields[$name];
@@ -70,7 +70,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
     public function set(string $name, Field $field): self
     {
         if ($this->has($name)) {
-            throw new FieldException("Field `{$name}` already exists");
+            throw new FieldException("Field `{$name}` already exists.");
         }
 
         $this->fields[$name] = $field;
