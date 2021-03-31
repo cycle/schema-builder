@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Exception\FieldException\EmbeddedPrimaryKeyException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
 
@@ -49,6 +50,9 @@ final class Embedded extends RelationSchema
         foreach ($source->getFields() as $name => $field) {
             if ($field->isPrimary()) {
                 // sync primary keys
+                if ($target->getFields()->has($name)) {
+                    throw new EmbeddedPrimaryKeyException($target, $name);
+                }
                 $target->getFields()->set($name, $field);
             }
         }

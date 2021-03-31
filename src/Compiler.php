@@ -15,7 +15,9 @@ use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
+use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Definition\Field;
 use Spiral\Database\Exception\CompilerException;
 
 final class Compiler
@@ -128,6 +130,33 @@ final class Compiler
      */
     protected function renderColumns(Entity $entity): array
     {
+        // Check field duplicates
+        /** @var Field[][] $fieldGroups */
+        $fieldGroups = [];
+        // Collect and group fields by column name
+        foreach ($entity->getFields() as $name => $field) {
+            $fieldGroups[$field->getColumn()][$name] = $field;
+        }
+        foreach ($fieldGroups as $fieldName => $fields) {
+            // We need duplicates only
+            if (count($fields) === 1) {
+                continue;
+            }
+            // Compare
+            $comparator = new FieldComparator();
+            foreach ($fields as $name => $field) {
+                $comparator->addField($name, $field);
+            }
+            try {
+                $comparator->compare();
+            } catch (\Throwable $e) {
+                throw new Exception\CompilerException(
+                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
+                    $e->getCode()
+                );
+            }
+        }
+
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
             $schema[$name] = $field->getColumn();
