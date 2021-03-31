@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Exception\OptionException;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use PHPUnit\Framework\TestCase;
@@ -37,9 +38,6 @@ class OptionSchemaTest extends TestCase
         $this->assertSame(100, $options->get(Relation::TYPE));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\OptionException
-     */
     public function testInvalidAlias(): void
     {
         $options = new OptionSchema([
@@ -50,14 +48,13 @@ class OptionSchemaTest extends TestCase
             Relation::TYPE => 200
         ]);
 
+        $this->expectException(OptionException::class);
+
         $options->withOptions([
             'unknown' => 100
         ]);
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\OptionException
-     */
     public function testInvalidAlias2(): void
     {
         $options = new OptionSchema([
@@ -69,6 +66,8 @@ class OptionSchemaTest extends TestCase
         ])->withOptions([
             'alias' => 100
         ]);
+
+        $this->expectException(OptionException::class);
 
         $options->get(RelationSchema::FK_ACTION);
     }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests;
 
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Exception\ColumnException;
 use Cycle\Schema\Table\Column;
 use Spiral\Database\Schema\AbstractTable;
 
@@ -32,14 +33,13 @@ abstract class ColumnTest extends BaseTest
         $this->assertFalse($column->isNullable());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\ColumnException
-     */
     public function testInvalidDeclaration(): void
     {
         $field = new Field();
         $field->setType('7');
         $field->setColumn('name');
+
+        $this->expectException(ColumnException::class);
 
         Column::parse($field);
     }
@@ -60,18 +60,16 @@ abstract class ColumnTest extends BaseTest
         $this->assertTrue($column->isNullable());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\ColumnException
-     */
     public function testNoDefaultValue(): void
     {
         $field = new Field();
         $field->setType('string');
         $field->setColumn('name');
-
         $column = Column::parse($field);
 
         $this->assertFalse($column->hasDefault());
+        $this->expectException(ColumnException::class);
+
         $column->getDefault();
     }
 

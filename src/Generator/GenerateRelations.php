@@ -42,6 +42,7 @@ final class GenerateRelations implements GeneratorInterface
         'throughOuterKey' => Relation::THROUGH_OUTER_KEY,
         'throughWhere'    => Relation::THROUGH_WHERE,
         'where'           => Relation::WHERE,
+        'orderBy'         => Relation::ORDER_BY,
         'fkCreate'        => RelationSchema::FK_CREATE,
         'fkAction'        => RelationSchema::FK_ACTION,
         'indexCreate'     => RelationSchema::INDEX_CREATE,

@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
+use Cycle\Schema\Exception\RelationException;
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
@@ -48,15 +49,13 @@ class EntityTest extends TestCase
         $this->assertSame('value', $e->getFields()->get('id')->getOptions()->get('name'));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\OptionException
-     */
     public function testGetUndefinedOption(): void
     {
         $e = new Entity();
         $e->setRole('role');
-
         $e->getFields()->set('id', new Field());
+
+        $this->expectException(\Cycle\Schema\Exception\OptionException::class);
 
         $e->getFields()->get('id')->getOptions()->get('name');
     }
@@ -72,54 +71,50 @@ class EntityTest extends TestCase
         $this->assertTrue($e->getRelations()->has('test'));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testGetUndefined(): void
     {
         $e = new Entity();
         $e->setRole('role');
         $this->assertSame('role', $e->getRole());
 
+        $this->expectException(RelationException::class);
+
         $e->getRelations()->get('test');
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testSetRelationDouble(): void
     {
         $e = new Entity();
         $e->setRole('role');
         $this->assertSame('role', $e->getRole());
-
         $e->getRelations()->set('test', new Relation());
+
+        $this->expectException(RelationException::class);
+
         $e->getRelations()->set('test', new Relation());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testRelationNoTarget(): void
     {
         $e = new Entity();
         $e->setRole('role');
         $this->assertSame('role', $e->getRole());
-
         $e->getRelations()->set('test', new Relation());
+
+        $this->expectException(RelationException::class);
+
         $e->getRelations()->get('test')->getTarget();
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testRelationNoType(): void
     {
         $e = new Entity();
         $e->setRole('role');
         $this->assertSame('role', $e->getRole());
-
         $e->getRelations()->set('test', new Relation());
+
+        $this->expectException(RelationException::class);
+
         $e->getRelations()->get('test')->getType();
     }
 

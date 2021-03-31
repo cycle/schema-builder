@@ -15,6 +15,7 @@ use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Relation as RelationDefinition;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -52,9 +53,6 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertInstanceOf(ManyToMany::class, $r->getRelation($post, 'tags'));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testDifferentDatabases(): void
     {
         $post = Post::define();
@@ -74,13 +72,11 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tag)->linkTable($tag, 'secondary', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
+        $this->expectException(SchemaException::class);
+
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
-
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testDifferentDatabases2(): void
     {
         $post = Post::define();
@@ -99,6 +95,8 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($post)->linkTable($post, 'default', 'post');
         $r->register($tag)->linkTable($tag, 'default', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'secondary', 'tag_context');
+
+        $this->expectException(SchemaException::class);
 
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
@@ -199,9 +197,6 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertTrue($table->hasForeignKey(['tag_id']));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testInverseInvalidType(): void
     {
         $post = Post::define();
@@ -221,6 +216,8 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($post)->linkTable($post, 'default', 'post');
         $r->register($tag)->linkTable($tag, 'default', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        $this->expectException(SchemaException::class);
 
         (new GenerateRelations([
             'manyToMany' => new ManyToMany(),

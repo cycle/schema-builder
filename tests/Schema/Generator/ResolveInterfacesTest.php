@@ -13,6 +13,7 @@ namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\ResolveInterfaces;
 use Cycle\Schema\Registry;
@@ -49,9 +50,6 @@ abstract class ResolveInterfacesTest extends BaseTest
         $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testUnableResolveInterfaceDependency(): void
     {
         $e = Post::define();
@@ -63,15 +61,14 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
 
-        $schema = (new Compiler())->compile($r, [
+        $this->expectException(RelationException::class);
+
+        (new Compiler())->compile($r, [
             new ResolveInterfaces(),
             new GenerateRelations(['belongsTo' => new BelongsTo()])
         ]);
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testInvalidStaticLink(): void
     {
         $e = Post::define();
@@ -83,15 +80,14 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
 
-        $schema = (new Compiler())->compile($r, [
+        $this->expectException(RelationException::class);
+
+        (new Compiler())->compile($r, [
             new ResolveInterfaces(),
             new GenerateRelations(['belongsTo' => new BelongsTo()])
         ]);
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RelationException
-     */
     public function testAmbiguousDependency(): void
     {
         $e = Post::define();
@@ -106,7 +102,9 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
         $r->register($u1)->linkTable($u1, 'default', 'user');
 
-        $schema = (new Compiler())->compile($r, [
+        $this->expectException(RelationException::class);
+
+        (new Compiler())->compile($r, [
             new ResolveInterfaces(),
             new GenerateRelations(['belongsTo' => new BelongsTo()])
         ]);

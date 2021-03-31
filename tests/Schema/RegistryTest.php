@@ -15,6 +15,7 @@ use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\Post;
@@ -48,69 +49,60 @@ abstract class RegistryTest extends BaseTest
         $this->assertSame($e, $r->getEntity('user'));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testGetEntityException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->getEntity('user');
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testLinkTableException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->linkTable(new Entity(), 'default', 'table');
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testHasTableException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->hasTable(new Entity());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testGetTableException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->getTable(new Entity());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testGetDatabaseException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->getDatabase(new Entity());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testGetTableSchemaException(): void
     {
         $r = new Registry($this->dbal);
 
+        $this->expectException(RegistryException::class);
+
         $r->getTableSchema(new Entity());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testRegisterChildNoEntity(): void
     {
         $e = new Entity();
@@ -137,6 +129,8 @@ abstract class RegistryTest extends BaseTest
             'name',
             (new Field())->setType('string')->setColumn('name')
         );
+
+        $this->expectException(RegistryException::class);
 
         $r->registerChild($e, $c);
     }

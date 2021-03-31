@@ -5,7 +5,7 @@
   "description": "Cycle ORM Schema Builder",
   "require": {
     "php": ">=7.2",
-    "cycle/orm": "^1.0",
+    "cycle/orm": "^1.4",
     "yiisoft/friendly-exception": "^1.0"
   },
   "require-dev": {

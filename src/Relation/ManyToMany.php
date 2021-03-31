@@ -41,6 +41,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         // custom where condition
         Relation::WHERE              => [],
 
+        // custom orderBy rules
+        Relation::ORDER_BY           => [],
+
         // inner key of parent record will be used to fill "THROUGH_INNER_KEY" in pivot table
         Relation::INNER_KEY          => '{source:primaryKey}',
 
