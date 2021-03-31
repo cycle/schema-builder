@@ -138,9 +138,6 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertFalse($table->hasForeignKey(['parent_id']));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\RegistryException
-     */
     public function testInverseUnknownType(): void
     {
         $e = Post::define();
@@ -152,14 +149,13 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
+        $this->expectException(\Cycle\Schema\Exception\RegistryException::class);
+
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsTo' => new BelongsTo()])
         ]);
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testInverseInvalidType(): void
     {
         $e = Post::define();
@@ -170,6 +166,8 @@ abstract class BelongsToRelationTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
+
+        $this->expectException(\Cycle\Schema\Exception\SchemaException::class);
 
         (new Compiler())->compile($r, [
             new GenerateRelations([

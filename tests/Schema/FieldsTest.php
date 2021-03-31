@@ -13,16 +13,17 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Map\FieldMap;
+use Cycle\Schema\Exception\FieldException;
 use PHPUnit\Framework\TestCase;
 
 class FieldsTest extends TestCase
 {
-    /**
-     * @expectedException \Cycle\Schema\Exception\FieldException
-     */
     public function testNoField(): void
     {
         $m = new FieldMap();
+
+        $this->expectException(FieldException::class);
+
         $m->get('id');
     }
 
@@ -38,36 +39,33 @@ class FieldsTest extends TestCase
         $this->assertSame(['id' => $f], iterator_to_array($m->getIterator()));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\FieldException
-     */
     public function testSetTwice(): void
     {
         $m = new FieldMap();
-
         $m->set('id', $f = new Field());
+
+        $this->expectException(FieldException::class);
+
         $m->set('id', $f = new Field());
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\FieldException
-     */
     public function testNoType(): void
     {
         $m = new FieldMap();
-
         $m->set('id', $f = new Field());
+
+        $this->expectException(FieldException::class);
+
         $m->get('id')->getType();
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\FieldException
-     */
     public function testNoColumn(): void
     {
         $m = new FieldMap();
-
         $m->set('id', $f = new Field());
+
+        $this->expectException(FieldException::class);
+
         $m->get('id')->getColumn();
     }
 }

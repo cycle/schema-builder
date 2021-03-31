@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation\Morphed;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -50,9 +51,6 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $this->assertInstanceOf(BelongsToMorphed::class, $r->getRelation($e, 'parent'));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testGenerateInconsistentName(): void
     {
         $e = MorphedTo::define();
@@ -65,9 +63,9 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'in2');
 
-        (new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]))->run($r);
+        $this->expectException(SchemaException::class);
 
-        $this->assertInstanceOf(BelongsToMorphed::class, $r->getRelation($e, 'parent'));
+        (new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]))->run($r);
     }
 
     public function testPackSchema(): void
@@ -134,9 +132,6 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $this->assertTrue($table->hasIndex(['parent_id', 'parent_role']));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testInverseToInvalidType(): void
     {
         $e = MorphedTo::define();
@@ -152,7 +147,9 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'post');
 
-        $schema = (new Compiler())->compile($r, [
+        $this->expectException(SchemaException::class);
+
+        (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsToMorphed' => new BelongsToMorphed(),
                 'hasOne'           => new HasOne()

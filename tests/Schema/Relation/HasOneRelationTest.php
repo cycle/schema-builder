@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -218,9 +219,6 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertFalse($table->hasForeignKey(['parent_id']));
     }
 
-    /**
-     * @expectedException \Cycle\Schema\Exception\SchemaException
-     */
     public function testInverseInvalidType(): void
     {
         $c = new Compiler();
@@ -233,6 +231,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
+
+        $this->expectException(SchemaException::class);
 
         (new GenerateRelations([
             'hasOne'     => new HasOne(),
