@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -149,7 +150,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $this->expectException(\Cycle\Schema\Exception\RegistryException::class);
+        $this->expectException(RegistryException::class);
 
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsTo' => new BelongsTo()])
