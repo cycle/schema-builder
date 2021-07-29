@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
@@ -88,9 +87,7 @@ final class RefersTo extends RelationSchema
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index(array_map(function (Field $field) {
-                return $field->getColumn();
-            }, $innerFields));
+            $table->index($innerFields->getKeys());
         }
 
         if ($this->options->get(self::FK_CREATE)) {

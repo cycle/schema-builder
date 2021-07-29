@@ -192,7 +192,9 @@ final class OptionSchema
         $name = "{{$name}}";
         $replace = $this->get($option);
         if (is_array($replace)) {
-            $name = [$name];
+            return implode('|', array_map(function (string $replace) use ($name, $target) {
+                return str_replace($name, $replace, $target);
+            }, $replace));
         }
 
         return str_replace($name, $replace, $target);

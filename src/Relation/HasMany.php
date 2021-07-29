@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -69,12 +68,14 @@ final class HasMany extends RelationSchema implements InversableInterface
 
         // create target outer field
         foreach ($this->getFields($source, Relation::INNER_KEY) as $field) {
-            $this->ensureField(
-                $target,
-                $this->options->get(Relation::OUTER_KEY),
-                $field,
-                $this->options->get(Relation::NULLABLE)
-            );
+            foreach ((array) $this->options->get(Relation::OUTER_KEY) as $outerField) {
+                $this->ensureField(
+                    $target,
+                    $outerField,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
         }
     }
 
@@ -91,10 +92,8 @@ final class HasMany extends RelationSchema implements InversableInterface
 
         $table = $registry->getTableSchema($target);
 
-        if ($this->options->get(self::INDEX_CREATE) && count($outerFields) > 0) {
-            $table->index(array_map(function (Field $field) {
-                return $field->getColumn();
-            }, $outerFields));
+        if ($this->options->get(self::INDEX_CREATE) && $outerFields->count() > 0) {
+            $table->index($outerFields->getKeys());
         }
 
         if ($this->options->get(self::FK_CREATE)) {

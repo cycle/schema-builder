@@ -35,4 +35,16 @@ class Post implements ParentInterface
 
         return $entity;
     }
+
+    public static function defineCompositePK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'slug',
+            (new Field())->setType('primary')->setColumn('slug')->setPrimary(true)
+        );
+
+        return $entity;
+    }
 }

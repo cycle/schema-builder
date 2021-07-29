@@ -94,14 +94,7 @@ final class MorphedHasOne extends RelationSchema
         $table = $registry->getTableSchema($target);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $index = [];
-            foreach ($outerFields as $field) {
-                $index[] = $field->getColumn();
-            }
-            foreach ($morphFields as $field) {
-                $index[] = $field->getColumn();
-            }
-
+            $index = array_merge($outerFields->getKeys(), $morphFields->getKeys());
             if (count($index) > 0) {
                 $table->index($index);
             }

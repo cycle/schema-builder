@@ -19,7 +19,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 $tokenizer = new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
     'directories' => [__DIR__],
-    'exclude'     => []
+    'exclude'     => [__DIR__.'/Schema/Relation/Traits']
 ]));
 
 $databases = [

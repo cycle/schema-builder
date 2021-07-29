@@ -17,6 +17,18 @@ use Cycle\Schema\Definition\Relation;
 
 class User implements AuthorInterface
 {
+    public static function defineCompositePK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'slug',
+            (new Field())->setType('primary')->setColumn('slug')->setPrimary(true)
+        );
+
+        return $entity;
+    }
+
     public static function define(): Entity
     {
         $entity = new Entity();

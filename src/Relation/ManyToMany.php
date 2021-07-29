@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -100,21 +101,25 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         }
 
         foreach ($this->getFields($source, Relation::INNER_KEY) as $field) {
-            $this->ensureField(
-                $through,
-                $this->options->get(Relation::THROUGH_INNER_KEY),
-                $field,
-                $this->options->get(Relation::NULLABLE)
-            );
+            foreach ((array)$this->options->get(Relation::THROUGH_INNER_KEY) as $innerField) {
+                $this->ensureField(
+                    $through,
+                    $innerField,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
         }
 
         foreach ($this->getFields($source, Relation::OUTER_KEY) as $field) {
-            $this->ensureField(
-                $through,
-                $this->options->get(Relation::THROUGH_OUTER_KEY),
-                $field,
-                $this->options->get(Relation::NULLABLE)
-            );
+            foreach ((array)$this->options->get(Relation::THROUGH_OUTER_KEY) as $outerField) {
+                $this->ensureField(
+                    $through,
+                    $outerField,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
         }
     }
 
@@ -131,21 +136,21 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         $sourceFields = $this->getFields($source, Relation::INNER_KEY);
         $targetFields = $this->getFields($target, Relation::OUTER_KEY);
 
-        $throughSourceField = $this->getField($through, Relation::THROUGH_INNER_KEY);
-        $throughTargetField = $this->getField($through, Relation::THROUGH_OUTER_KEY);
+        $throughSourceFields = $this->getFields($through, Relation::THROUGH_INNER_KEY);
+        $throughTargetFields = $this->getFields($through, Relation::THROUGH_OUTER_KEY);
 
         $table = $registry->getTableSchema($through);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([
-                $throughSourceField->getColumn(),
-                $throughTargetField->getColumn()
-            ])->unique(true);
+            $index = array_merge($throughSourceFields->getKeys(), $throughTargetFields->getKeys());
+            if (count($index) > 0) {
+                $table->index($index)->unique(true);
+            }
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignCompositeKey($registry, $source, $through, $sourceFields, [$throughSourceField]);
-            $this->createForeignCompositeKey($registry, $target, $through, $targetFields, [$throughTargetField]);
+            $this->createForeignCompositeKey($registry, $source, $through, $sourceFields, $throughSourceFields);
+            $this->createForeignCompositeKey($registry, $target, $through, $targetFields, $throughTargetFields);
         }
     }
 
@@ -183,9 +188,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD => $load,
-                Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
-                Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
+                Relation::LOAD =>              $load,
+                Relation::INNER_KEY =>         $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY =>         $this->options->get(Relation::INNER_KEY),
                 Relation::THROUGH_INNER_KEY => $this->options->get(Relation::THROUGH_OUTER_KEY),
                 Relation::THROUGH_OUTER_KEY => $this->options->get(Relation::THROUGH_INNER_KEY),
             ])

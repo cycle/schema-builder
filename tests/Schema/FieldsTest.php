@@ -68,4 +68,13 @@ class FieldsTest extends TestCase
 
         $m->get('id')->getColumn();
     }
+
+    public function testGetKeys(): void
+    {
+        $m = new FieldMap();
+        $m->set('id', $f = new Field());
+        $m->set('name', $f = new Field());
+
+        $this->assertSame(['id', 'name'], $m->getKeys());
+    }
 }

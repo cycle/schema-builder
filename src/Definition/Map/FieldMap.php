@@ -41,6 +41,15 @@ final class FieldMap implements \IteratorAggregate, \Countable
     }
 
     /**
+     * Get field keys
+     * @return array
+     */
+    public function getKeys(): array
+    {
+        return array_keys($this->fields);
+    }
+
+    /**
      * @param string $name
      * @return bool
      */

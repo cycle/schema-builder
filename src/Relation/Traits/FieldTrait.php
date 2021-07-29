@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
-use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\FieldException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
@@ -47,16 +47,17 @@ trait FieldTrait
     /**
      * @param Entity $entity
      * @param int $field
-     * @return array<Field>
+     * @return FieldMap
      */
-    protected function getFields(Entity $entity, int $field): array
+    protected function getFields(Entity $entity, int $field): FieldMap
     {
-        $fields = [];
+        $fields = new FieldMap();
         $keys = (array)$this->getOptions()->get($field);
 
         foreach ($keys as $key) {
             try {
-                $fields[] = $entity->getFields()->get($key);
+                $field = $entity->getFields()->get($key);
+                $fields->set($field->getColumn(), $field);
             } catch (FieldException $e) {
                 throw new RelationException(
                     sprintf(

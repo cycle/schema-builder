@@ -49,6 +49,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('another_primary', (new Field())->setType('bigPrimary'));
 
         $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryKeys());
+        $this->assertTrue($e->hasPrimaryKey());
     }
 
     public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
@@ -59,6 +60,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('id', new Field());
 
         $this->assertSame([], $e->getPrimaryKeys());
+        $this->assertFalse($e->hasPrimaryKey());
     }
 
     public function testFieldOptions(): void

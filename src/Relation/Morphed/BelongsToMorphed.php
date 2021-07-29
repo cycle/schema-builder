@@ -105,15 +105,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $index = [];
-            foreach ($innerFields as $field) {
-                $index[] = $field->getColumn();
-            }
-
-            foreach ($morphFields as $field) {
-                $index[] = $field->getColumn();
-            }
-
+            $index = array_merge($innerFields->getKeys(), $morphFields->getKeys());
             if (count($index) > 0) {
                 $table->index($index);
             }
