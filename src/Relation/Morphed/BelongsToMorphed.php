@@ -60,30 +60,36 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         // compute local key
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
+            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryKeys()
         ]);
 
         $source = $registry->getEntity($this->source);
 
-        list($outerKey, $outerField) = $this->findOuterKey($registry, $this->target);
+        list($outerKeys, $outerFields) = $this->findOuterKey($registry, $this->target);
 
         // register primary key reference
-        $this->options = $this->options->withContext(['target:primaryKey' => $outerKey]);
+        $this->options = $this->options->withContext([
+            'target:primaryKey' => $outerKeys
+        ]);
 
         // create target outer field
-        $this->ensureField(
-            $source,
-            $this->options->get(Relation::INNER_KEY),
-            $outerField,
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ((array)$this->options->get(Relation::INNER_KEY) as $i => $key) {
+            $this->ensureField(
+                $source,
+                $key,
+                $outerFields[$i],
+                $this->options->get(Relation::NULLABLE)
+            );
+        }
 
-        $this->ensureMorphField(
-            $source,
-            $this->options->get(Relation::MORPH_KEY),
-            $this->options->get(RelationSchema::MORPH_KEY_LENGTH),
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ((array)$this->options->get(Relation::MORPH_KEY) as $key) {
+            $this->ensureMorphField(
+                $source,
+                $key,
+                $this->options->get(RelationSchema::MORPH_KEY_LENGTH),
+                $this->options->get(Relation::NULLABLE)
+            );
+        }
     }
 
     /**
@@ -93,13 +99,24 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         $source = $registry->getEntity($this->source);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $morphField = $this->getField($source, Relation::MORPH_KEY);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $morphFields = $this->getFields($source, Relation::MORPH_KEY);
 
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$innerField->getColumn(), $morphField->getColumn()]);
+            $index = [];
+            foreach ($innerFields as $field) {
+                $index[] = $field->getColumn();
+            }
+
+            foreach ($morphFields as $field) {
+                $index[] = $field->getColumn();
+            }
+
+            if (count($index) > 0) {
+                $table->index($index);
+            }
         }
     }
 

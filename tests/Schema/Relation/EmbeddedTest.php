@@ -78,7 +78,7 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
@@ -122,7 +122,7 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 

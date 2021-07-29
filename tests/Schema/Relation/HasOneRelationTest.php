@@ -268,7 +268,7 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
@@ -308,7 +308,7 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
@@ -346,7 +346,7 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 

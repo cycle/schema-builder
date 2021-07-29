@@ -61,12 +61,16 @@ final class MorphedHasOne extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
-            $target,
-            $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY),
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ($this->getFields($source, Relation::INNER_KEY) as $field) {
+            foreach ((array)$this->options->get(Relation::OUTER_KEY) as $outerField) {
+                $this->ensureField(
+                    $target,
+                    $outerField,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
+        }
 
         // create target outer field
         $this->ensureMorphField(
@@ -84,13 +88,23 @@ final class MorphedHasOne extends RelationSchema
     {
         $target = $registry->getEntity($this->target);
 
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
-        $morphField = $this->getField($target, Relation::MORPH_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
+        $morphFields = $this->getFields($target, Relation::MORPH_KEY);
 
         $table = $registry->getTableSchema($target);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$outerField->getColumn(), $morphField->getColumn()]);
+            $index = [];
+            foreach ($outerFields as $field) {
+                $index[] = $field->getColumn();
+            }
+            foreach ($morphFields as $field) {
+                $index[] = $field->getColumn();
+            }
+
+            if (count($index) > 0) {
+                $table->index($index);
+            }
         }
     }
 }

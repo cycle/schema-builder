@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\FieldException;
@@ -41,6 +42,36 @@ trait FieldTrait
                 $e
             );
         }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param int $field
+     * @return array<Field>
+     */
+    protected function getFields(Entity $entity, int $field): array
+    {
+        $fields = [];
+        $keys = (array)$this->getOptions()->get($field);
+
+        foreach ($keys as $key) {
+            try {
+                $fields[] = $entity->getFields()->get($key);
+            } catch (FieldException $e) {
+                throw new RelationException(
+                    sprintf(
+                        'Field `%s`.`%s` does not exists, referenced by `%s`',
+                        $entity->getRole(),
+                        $key,
+                        $this->source
+                    ),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+
+        return $fields;
     }
 
     /**

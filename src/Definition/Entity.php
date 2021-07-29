@@ -248,6 +248,40 @@ final class Entity
     }
 
     /**
+     * Check if entity has primary key
+     *
+     * @return bool
+     */
+    public function hasPrimaryKey(): bool
+    {
+        foreach ($this->getFields() as $name => $field) {
+            if ($field->isPrimary()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get entity primary keys
+     *
+     * @return array
+     */
+    public function getPrimaryKeys(): array
+    {
+        $keys = [];
+
+        foreach ($this->getFields() as $name => $field) {
+            if ($field->isPrimary()) {
+                $keys[] = $name;
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
      * @param string|null $class
      * @return string|null
      */

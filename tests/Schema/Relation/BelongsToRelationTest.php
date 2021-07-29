@@ -210,7 +210,7 @@ abstract class BelongsToRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -247,7 +247,7 @@ abstract class BelongsToRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }

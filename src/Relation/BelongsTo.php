@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -61,12 +62,16 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
-            $source,
-            $this->options->get(Relation::INNER_KEY),
-            $this->getField($target, Relation::OUTER_KEY),
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ((array)$this->options->get(Relation::INNER_KEY) as $key) {
+            foreach ($this->getFields($target, Relation::OUTER_KEY) as $field) {
+                $this->ensureField(
+                    $source,
+                    $key,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
+        }
     }
 
     /**
@@ -77,17 +82,19 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         $table = $registry->getTableSchema($source);
 
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$innerField->getColumn()]);
+        if ($this->options->get(self::INDEX_CREATE) && count($innerFields) > 0) {
+            $table->index(array_map(function (Field $field) {
+                return $field->getColumn();
+            }, $innerFields));
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
+            $this->createForeignCompositeKey($registry, $target, $source, $outerFields, $innerFields);
         }
     }
 

@@ -71,12 +71,12 @@ abstract class RelationSchema implements RelationInterface
     public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
+            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryKeys()
         ]);
 
         if ($registry->hasEntity($this->target)) {
             $this->options = $this->options->withContext([
-                'target:primaryKey' => $this->getPrimary($registry->getEntity($this->target))
+                'target:primaryKey' => $registry->getEntity($this->target)->getPrimaryKeys()
             ]);
         }
     }
@@ -134,6 +134,7 @@ abstract class RelationSchema implements RelationInterface
     }
 
     /**
+     * @deprecated
      * @param Entity $entity
      * @return string
      *

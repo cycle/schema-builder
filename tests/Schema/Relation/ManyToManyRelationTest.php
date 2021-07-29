@@ -136,12 +136,12 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
@@ -264,12 +264,12 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 

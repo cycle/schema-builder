@@ -46,37 +46,47 @@ trait MorphTrait
     protected function findOuterKey(Registry $registry, string $interface): array
     {
         /** @var Field|null $field */
-        $key = null;
-        $field = null;
+        $keys = null;
+        $fields = null;
+        $prevEntity = null;
 
         foreach ($this->findTargets($registry, $interface) as $entity) {
-            $primaryKey = $this->getPrimary($entity);
-            $primaryField = $entity->getFields()->get($primaryKey);
+            $primaryKeys = $entity->getPrimaryKeys();
+            $primaryFields = array_map(function (string $key) use ($entity) {
+                return $entity->getFields()->get($key);
+            }, $primaryKeys);
 
-            if (is_null($field)) {
-                $key = $primaryKey;
-                $field = $primaryField;
+            if (is_null($keys)) {
+                $keys = $primaryKeys;
+                $fields = $primaryFields;
+                $prevEntity = $entity;
             } else {
-                if ($key != $primaryKey) {
-                    throw new RelationException('Inconsistent primary key reference (name)');
+                if ($keys !== $primaryKeys) {
+                    throw new RelationException(sprintf(
+                        "Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s)",
+                        $entity->getRole(),
+                        implode(',', $primaryKeys),
+                        $prevEntity->getRole(),
+                        implode(',', $keys)
+                    ));
                 }
             }
         }
 
-        if (is_null($field)) {
+        if (is_null($fields)) {
             throw new RelationException('Unable to find morphed parent');
         }
 
-        return [$key, $field];
+        return [$keys, $fields];
     }
 
     /**
      * @param Entity $target
      * @param string $name
-     * @param int    $lenght
+     * @param int    $length
      * @param bool   $nullable
      */
-    protected function ensureMorphField(Entity $target, string $name, int $lenght, bool $nullable = false): void
+    protected function ensureMorphField(Entity $target, string $name, int $length, bool $nullable = false): void
     {
         if ($target->getFields()->has($name)) {
             // field already exists and defined by the user
@@ -85,7 +95,7 @@ trait MorphTrait
 
         $field = new Field();
         $field->setColumn($name);
-        $field->setType(sprintf('string(%s)', $lenght));
+        $field->setType(sprintf('string(%s)', $length));
 
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);

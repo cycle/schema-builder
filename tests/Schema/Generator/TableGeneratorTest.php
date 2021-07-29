@@ -59,7 +59,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::REPOSITORY   => Repository::class,
                 Schema::DATABASE     => 'default',
                 Schema::TABLE        => 'plain',
-                Schema::PRIMARY_KEY  => 'id',
+                Schema::PRIMARY_KEY  => ['id'],
                 Schema::FIND_BY_KEYS => ['id'],
                 Schema::COLUMNS      => ['id' => 'id'],
                 Schema::RELATIONS    => [],
@@ -118,7 +118,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::REPOSITORY   => Repository::class,
                 Schema::DATABASE     => 'default',
                 Schema::TABLE        => 'user',
-                Schema::PRIMARY_KEY  => 'id',
+                Schema::PRIMARY_KEY  => ['id'],
                 Schema::FIND_BY_KEYS => ['id'],
                 Schema::COLUMNS      => [
                     'id'         => 'id',

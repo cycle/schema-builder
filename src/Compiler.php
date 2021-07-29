@@ -66,7 +66,7 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
-            if ($this->getPrimary($entity) === null) {
+            if (!$entity->hasPrimaryKey()) {
                 // incomplete entity, skip
                 continue;
             }
@@ -102,7 +102,7 @@ final class Compiler
             Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
             Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
             Schema::SCHEMA       => $entity->getSchema(),
-            Schema::PRIMARY_KEY  => $this->getPrimary($entity),
+            Schema::PRIMARY_KEY  => $entity->getPrimaryKeys(),
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
@@ -187,7 +187,7 @@ final class Compiler
      */
     protected function renderReferences(Entity $entity): array
     {
-        $schema = [$this->getPrimary($entity)];
+        $schema = $entity->getPrimaryKeys();
 
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isReferenced()) {
@@ -214,6 +214,7 @@ final class Compiler
     }
 
     /**
+     * @deprecated
      * @param Entity $entity
      * @return string|null
      */
@@ -233,6 +234,7 @@ final class Compiler
      *
      * @param Entity $entity
      * @return string
+     * @throws \ReflectionException
      */
     protected function childAlias(Entity $entity): string
     {

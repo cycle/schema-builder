@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Relation\Traits\ForeignKeyTrait;
@@ -61,12 +62,16 @@ final class RefersTo extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
-            $source,
-            $this->options->get(Relation::INNER_KEY),
-            $this->getField($target, Relation::OUTER_KEY),
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ($this->getFields($target, Relation::OUTER_KEY) as $field) {
+            foreach ((array)$this->options->get(Relation::INNER_KEY) as $innerField) {
+                $this->ensureField(
+                    $source,
+                    $innerField,
+                    $field,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
+        }
     }
 
     /**
@@ -77,17 +82,19 @@ final class RefersTo extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$innerField->getColumn()]);
+            $table->index(array_map(function (Field $field) {
+                return $field->getColumn();
+            }, $innerFields));
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
+            $this->createForeignCompositeKey($registry, $target, $source, $outerFields, $innerFields);
         }
     }
 }

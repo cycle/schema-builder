@@ -38,6 +38,29 @@ class EntityTest extends TestCase
         $this->assertFalse($e->getFields()->has('id'));
     }
 
+    public function testPrimaryKeys(): void
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('id', (new Field())->setPrimary(true));
+        $e->getFields()->set('name', new Field());
+        $e->getFields()->set('alternate_primary', (new Field())->setType('primary'));
+        $e->getFields()->set('another_primary', (new Field())->setType('bigPrimary'));
+
+        $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryKeys());
+    }
+
+    public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('id', new Field());
+
+        $this->assertSame([], $e->getPrimaryKeys());
+    }
+
     public function testFieldOptions(): void
     {
         $e = new Entity();

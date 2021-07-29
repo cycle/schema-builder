@@ -47,6 +47,39 @@ trait ForeignKeyTrait
                  ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
     }
 
+
+    /**
+     * Create foreign key between two entities. Only when both entities are located
+     * in a same database.
+     *
+     * @param Registry $registry
+     * @param Entity   $source
+     * @param Entity   $target
+     * @param Field[]  $innerFields
+     * @param Field[]  $outerFields
+     */
+    protected function createForeignCompositeKey(
+        Registry $registry,
+        Entity $source,
+        Entity $target,
+        array $innerFields,
+        array $outerFields
+    ): void {
+        if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
+            return;
+        }
+
+        $registry->getTableSchema($target)
+            ->foreignKey(array_map(function (Field $field) {
+                return $field->getColumn();
+            }, $outerFields))
+            ->references($registry->getTable($source), array_map(function (Field $field) {
+                return $field->getColumn();
+            }, $innerFields))
+            ->onUpdate($this->getOptions()->get(RelationSchema::FK_ACTION))
+            ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
+    }
+
     /**
      * @return OptionSchema
      */
