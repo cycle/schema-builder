@@ -188,9 +188,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD =>              $load,
-                Relation::INNER_KEY =>         $this->options->get(Relation::OUTER_KEY),
-                Relation::OUTER_KEY =>         $this->options->get(Relation::INNER_KEY),
+                Relation::LOAD              => $load,
+                Relation::INNER_KEY         => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY         => $this->options->get(Relation::INNER_KEY),
                 Relation::THROUGH_INNER_KEY => $this->options->get(Relation::THROUGH_OUTER_KEY),
                 Relation::THROUGH_OUTER_KEY => $this->options->get(Relation::THROUGH_INNER_KEY),
             ])
