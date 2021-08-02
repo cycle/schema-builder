@@ -14,6 +14,7 @@ namespace Cycle\Schema\Definition;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
+use Cycle\Schema\Exception\EntityException;
 
 /**
  * Contains information about specific entity definition.
@@ -49,6 +50,9 @@ final class Entity
 
     /** @var array */
     private $schema = [];
+
+    /** @var array */
+    private $primaryKeys = [];
 
     /**
      * Entity constructor.
@@ -249,11 +253,13 @@ final class Entity
 
     /**
      * Check if entity has primary key
-     *
-     * @return bool
      */
     public function hasPrimaryKey(): bool
     {
+        if ($this->primaryKeys !== []) {
+            return true;
+        }
+
         foreach ($this->getFields() as $name => $field) {
             if ($field->isPrimary()) {
                 return true;
@@ -264,9 +270,34 @@ final class Entity
     }
 
     /**
-     * Get entity primary keys
-     *
-     * @return array
+     * Set primary key columns
+     * Column names will be converted into property names
+     */
+    public function setPrimaryKeys(array $columns): void
+    {
+        $propertyNames = [];
+        $totalColumns = count($columns);
+
+        foreach ($this->getFields() as $name => $field) {
+            if (($i = array_search($field->getColumn(), $columns)) !== false) {
+                $propertyNames[] = $name;
+                unset($columns[$i]);
+            }
+        }
+
+        if (count($propertyNames) !== $totalColumns) {
+            throw new EntityException(sprintf(
+                'Invalid primary keys for `%s`. Columns `%s` not found.',
+                $this->getRole(), implode('`, `', $columns)
+            ));
+        }
+
+        $this->primaryKeys = $propertyNames;
+    }
+
+    /**
+     * Get entity primary key property names
+     * @return string[]
      */
     public function getPrimaryKeys(): array
     {
@@ -278,7 +309,22 @@ final class Entity
             }
         }
 
-        return $keys;
+        if ($this->primaryKeys !== [] && $keys === []) {
+            return $this->primaryKeys;
+        }
+
+        if ($this->primaryKeys === [] && $keys !== []) {
+            return $keys;
+        }
+
+        if (
+            count($keys) !== count($this->primaryKeys)
+            || array_diff($keys, $this->primaryKeys) != []
+        ) {
+            throw new EntityException("Ambiguous primary key definition for `{$this->getRole()}`.");
+        }
+
+        return $this->primaryKeys;
     }
 
     /**

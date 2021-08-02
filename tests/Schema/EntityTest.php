@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
+use Cycle\Schema\Exception\EntityException;
 use Cycle\Schema\Exception\RelationException;
 use PHPUnit\Framework\TestCase;
 
@@ -52,6 +53,33 @@ class EntityTest extends TestCase
         $this->assertTrue($e->hasPrimaryKey());
     }
 
+    public function testSetPrimaryKeys()
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id'));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryKeys(['id', 'slug']);
+
+        $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryKeys());
+    }
+
+    public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn()
+    {
+        $this->expectException(EntityException::class);
+        $this->expectErrorMessage('Invalid primary keys for `role`. Columns `test`, `test1` not found.');
+
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id'));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryKeys(['test', 'test1', 'slug']);
+    }
+
     public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
     {
         $e = new Entity();
@@ -61,6 +89,22 @@ class EntityTest extends TestCase
 
         $this->assertSame([], $e->getPrimaryKeys());
         $this->assertFalse($e->hasPrimaryKey());
+    }
+
+    public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches()
+    {
+        $this->expectException(EntityException::class);
+        $this->expectErrorMessage('Ambiguous primary key definition for `role`.');
+
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id')->setPrimary(true));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryKeys(['id', 'slug']);
+
+        $e->getPrimaryKeys();
     }
 
     public function testFieldOptions(): void
