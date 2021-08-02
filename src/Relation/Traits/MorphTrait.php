@@ -52,7 +52,7 @@ trait MorphTrait
 
         foreach ($this->findTargets($registry, $interface) as $entity) {
             $primaryKeys = $entity->getPrimaryKeys();
-            $primaryFields = array_map(function (string $key) use ($entity) {
+            $primaryFields = array_map(static function (string $key) use ($entity) {
                 return $entity->getFields()->get($key);
             }, $primaryKeys);
 

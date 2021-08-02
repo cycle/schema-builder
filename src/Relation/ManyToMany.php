@@ -142,7 +142,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         $table = $registry->getTableSchema($through);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $index = array_merge($throughSourceFields->getKeys(), $throughTargetFields->getKeys());
+            $index = array_merge($throughSourceFields->getColumnNames(), $throughTargetFields->getColumnNames());
             if (count($index) > 0) {
                 $table->index($index)->unique(true);
             }

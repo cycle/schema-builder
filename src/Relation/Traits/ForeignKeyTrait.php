@@ -70,8 +70,8 @@ trait ForeignKeyTrait
         }
 
         $registry->getTableSchema($target)
-            ->foreignKey($outerFields->getKeys())
-            ->references($registry->getTable($source), $innerFields->getKeys())
+            ->foreignKey($outerFields->getColumnNames())
+            ->references($registry->getTable($source), $innerFields->getColumnNames())
             ->onUpdate($this->getOptions()->get(RelationSchema::FK_ACTION))
             ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
     }

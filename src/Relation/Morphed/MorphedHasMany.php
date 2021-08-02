@@ -94,7 +94,7 @@ final class MorphedHasMany extends RelationSchema
         $table = $registry->getTableSchema($target);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $index = array_merge($outerFields->getKeys(), $morphFields->getKeys());
+            $index = array_merge($outerFields->getColumnNames(), $morphFields->getColumnNames());
 
             if (count($index) > 0) {
                 $table->index($index);

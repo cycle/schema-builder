@@ -86,8 +86,8 @@ final class RefersTo extends RelationSchema
 
         $table = $registry->getTableSchema($source);
 
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index($innerFields->getKeys());
+        if ($this->options->get(self::INDEX_CREATE) && $innerFields->count() > 0) {
+            $table->index($innerFields->getColumnNames());
         }
 
         if ($this->options->get(self::FK_CREATE)) {

@@ -93,7 +93,7 @@ final class HasMany extends RelationSchema implements InversableInterface
         $table = $registry->getTableSchema($target);
 
         if ($this->options->get(self::INDEX_CREATE) && $outerFields->count() > 0) {
-            $table->index($outerFields->getKeys());
+            $table->index($outerFields->getColumnNames());
         }
 
         if ($this->options->get(self::FK_CREATE)) {
