@@ -23,12 +23,12 @@ class Tag implements ParentInterface
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('bigPrimary')->setColumn('id')->setPrimary(true)
         );
 
         $entity->getFields()->set(
-            'name',
+            'p_name',
             (new Field())->setType('string(32)')->setColumn('name')
         );
 
@@ -40,7 +40,7 @@ class Tag implements ParentInterface
         $entity = self::define();
 
         $entity->getFields()->set(
-            'slug',
+            'p_slug',
             (new Field())->setType('primary')->setColumn('slug')->setPrimary(true)
         );
 

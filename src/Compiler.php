@@ -102,7 +102,7 @@ final class Compiler
             Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
             Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
             Schema::SCHEMA       => $entity->getSchema(),
-            Schema::PRIMARY_KEY  => $entity->getPrimaryKeys(),
+            Schema::PRIMARY_KEY  => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
@@ -187,7 +187,7 @@ final class Compiler
      */
     protected function renderReferences(Entity $entity): array
     {
-        $schema = $entity->getPrimaryKeys();
+        $schema = $entity->getPrimaryFields()->getNames();
 
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isReferenced()) {

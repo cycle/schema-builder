@@ -69,6 +69,15 @@ class FieldsTest extends TestCase
         $m->get('id')->getColumn();
     }
 
+    function testCount()
+    {
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id'));
+        $m->set('p_name', (new Field())->setColumn('name'));
+
+        $this->assertSame(2, $m->count());
+    }
+
     public function testGetColumnNames(): void
     {
         $m = new FieldMap();
@@ -76,5 +85,65 @@ class FieldsTest extends TestCase
         $m->set('p_name', (new Field())->setColumn('name'));
 
         $this->assertSame(['id', 'name'], $m->getColumnNames());
+    }
+
+    function testGetNames()
+    {
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id'));
+        $m->set('p_name', (new Field())->setColumn('name'));
+
+        $this->assertSame(['p_id', 'p_name'], $m->getNames());
+    }
+
+    function testHasColumn()
+    {
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id'));
+
+        $this->assertTrue($m->hasColumn('id'));
+        $this->assertFalse($m->hasColumn('p_id'));
+    }
+
+    function testGetKeyByColumnName()
+    {
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id'));
+        $m->set('p_slug', (new Field())->setColumn('slug'));
+
+        $this->assertSame('p_id', $m->getKeyByColumnName('id'));
+        $this->assertSame('p_slug', $m->getKeyByColumnName('slug'));
+    }
+
+    function testGetKeyByColumnNameShouldThrowAnExceptionWhenFieldNotFound()
+    {
+        $this->expectException(FieldException::class);
+        $this->expectErrorMessage('Undefined field with column name `slug`.');
+
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id'));
+
+        $m->getKeyByColumnName('slug');
+    }
+
+    function testGetByColumnName()
+    {
+        $m = new FieldMap();
+        $m->set('p_id', $id = (new Field())->setColumn('id'));
+        $m->set('p_slug', $slug = (new Field())->setColumn('slug'));
+
+        $this->assertSame($id, $m->getByColumnName('id'));
+        $this->assertSame($slug, $m->getByColumnName('slug'));
+    }
+
+    function testGetByColumnNameShouldThrowAnExceptionWhenFieldNotFound()
+    {
+        $this->expectException(FieldException::class);
+        $this->expectErrorMessage('Undefined field with column name `slug`.');
+
+        $m = new FieldMap();
+        $m->set('p_id', $id = (new Field())->setColumn('id'));
+
+        $m->getByColumnName('slug');
     }
 }

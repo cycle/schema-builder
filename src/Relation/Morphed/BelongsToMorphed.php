@@ -60,7 +60,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         // compute local key
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryKeys()
+            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryFields()->getColumnNames()
         ]);
 
         $source = $registry->getEntity($this->source);
@@ -72,12 +72,16 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
             'target:primaryKey' => $outerKeys
         ]);
 
+        $outerKeys = array_combine($outerKeys, (array)$this->options->get(Relation::INNER_KEY));
+
         // create target outer field
-        foreach ((array)$this->options->get(Relation::INNER_KEY) as $i => $key) {
+        foreach ($outerKeys as $key => $morphKey) {
+            $outerField = $outerFields->getByColumnName($key);
+
             $this->ensureField(
                 $source,
-                $key,
-                $outerFields[$i],
+                $morphKey,
+                $outerField,
                 $this->options->get(Relation::NULLABLE)
             );
         }

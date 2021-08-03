@@ -15,6 +15,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\EntityException;
+use Cycle\Schema\Exception\FieldException;
 use Cycle\Schema\Exception\RelationException;
 use PHPUnit\Framework\TestCase;
 
@@ -39,7 +40,7 @@ class EntityTest extends TestCase
         $this->assertFalse($e->getFields()->has('id'));
     }
 
-    public function testPrimaryKeys(): void
+    public function testPrimaryFields(): void
     {
         $e = new Entity();
         $e->setRole('role');
@@ -49,7 +50,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('alternate_primary', (new Field())->setType('primary'));
         $e->getFields()->set('another_primary', (new Field())->setType('bigPrimary'));
 
-        $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryKeys());
+        $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryFields()->getNames());
         $this->assertTrue($e->hasPrimaryKey());
     }
 
@@ -63,13 +64,13 @@ class EntityTest extends TestCase
 
         $e->setPrimaryKeys(['id', 'slug']);
 
-        $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryKeys());
+        $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
     }
 
     public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn()
     {
-        $this->expectException(EntityException::class);
-        $this->expectErrorMessage('Invalid primary keys for `role`. Columns `test`, `test1` not found.');
+        $this->expectException(FieldException::class);
+        $this->expectErrorMessage('Undefined field with column name `test`.');
 
         $e = new Entity();
         $e->setRole('role');
@@ -87,7 +88,7 @@ class EntityTest extends TestCase
 
         $e->getFields()->set('id', new Field());
 
-        $this->assertSame([], $e->getPrimaryKeys());
+        $this->assertSame([], $e->getPrimaryFields()->getNames());
         $this->assertFalse($e->hasPrimaryKey());
     }
 
@@ -104,7 +105,7 @@ class EntityTest extends TestCase
 
         $e->setPrimaryKeys(['id', 'slug']);
 
-        $e->getPrimaryKeys();
+        $e->getPrimaryFields();
     }
 
     public function testFieldOptions(): void

@@ -51,8 +51,8 @@ final class Entity
     /** @var array */
     private $schema = [];
 
-    /** @var array */
-    private $primaryKeys = [];
+    /** @var FieldMap */
+    private $primaryKeyFields;
 
     /**
      * Entity constructor.
@@ -61,6 +61,7 @@ final class Entity
     {
         $this->options = new OptionMap();
         $this->fields = new FieldMap();
+        $this->primaryKeyFields = new FieldMap();
         $this->relations = new RelationMap();
     }
 
@@ -71,6 +72,7 @@ final class Entity
     {
         $this->options = clone $this->options;
         $this->fields = clone $this->fields;
+        $this->primaryKeyFields = clone $this->primaryKeyFields;
         $this->relations = clone $this->relations;
     }
 
@@ -256,11 +258,11 @@ final class Entity
      */
     public function hasPrimaryKey(): bool
     {
-        if ($this->primaryKeys !== []) {
+        if ($this->primaryKeyFields->count() > 0) {
             return true;
         }
 
-        foreach ($this->getFields() as $name => $field) {
+        foreach ($this->getFields() as $field) {
             if ($field->isPrimary()) {
                 return true;
             }
@@ -275,56 +277,44 @@ final class Entity
      */
     public function setPrimaryKeys(array $columns): void
     {
-        $propertyNames = [];
-        $totalColumns = count($columns);
+        $this->primaryKeyFields = new FieldMap();
 
-        foreach ($this->getFields() as $name => $field) {
-            if (($i = array_search($field->getColumn(), $columns)) !== false) {
-                $propertyNames[] = $name;
-                unset($columns[$i]);
-            }
+        foreach ($columns as $column) {
+            $name = $this->getFields()->getKeyByColumnName($column);
+            $this->primaryKeyFields->set($name, $this->getFields()->get($name));
         }
-
-        if (count($propertyNames) !== $totalColumns) {
-            throw new EntityException(sprintf(
-                'Invalid primary keys for `%s`. Columns `%s` not found.',
-                $this->getRole(), implode('`, `', $columns)
-            ));
-        }
-
-        $this->primaryKeys = $propertyNames;
     }
 
     /**
      * Get entity primary key property names
-     * @return string[]
+     * @return FieldMap
      */
-    public function getPrimaryKeys(): array
+    public function getPrimaryFields(): FieldMap
     {
-        $keys = [];
+        $map = new FieldMap();
 
         foreach ($this->getFields() as $name => $field) {
             if ($field->isPrimary()) {
-                $keys[] = $name;
+                $map->set($name, $field);
             }
         }
 
-        if ($this->primaryKeys !== [] && $keys === []) {
-            return $this->primaryKeys;
+        if ($this->primaryKeyFields->count() > 0 && $map->count() === 0) {
+            return $this->primaryKeyFields;
         }
 
-        if ($this->primaryKeys === [] && $keys !== []) {
-            return $keys;
+        if ($this->primaryKeyFields->count() === 0 && $map->count() > 0) {
+            return $map;
         }
 
         if (
-            count($keys) !== count($this->primaryKeys)
-            || array_diff($keys, $this->primaryKeys) != []
+            $this->primaryKeyFields->count() !== $map->count()
+            || array_diff($map->getColumnNames(), $this->primaryKeyFields->getColumnNames()) != []
         ) {
             throw new EntityException("Ambiguous primary key definition for `{$this->getRole()}`.");
         }
 
-        return $this->primaryKeys;
+        return $this->primaryKeyFields;
     }
 
     /**

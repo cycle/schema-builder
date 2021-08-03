@@ -78,13 +78,13 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame(['id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
-            'embedded' => 'embedded_column',
-            'id'       => 'id'
+            'p_embedded' => 'embedded_column',
+            'p_id'       => 'id'
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -122,13 +122,13 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame(['id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
-            'embedded' => 'embedded_column',
-            'id'       => 'id'
+            'p_embedded' => 'embedded_column',
+            'p_id'       => 'id'
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -168,7 +168,7 @@ abstract class EmbeddedTest extends BaseTest
         $c = Composite::define();
         $e = EmbeddedEntity::define();
 
-        $e->getFields()->set('id', (new Field())->setColumn('embedded_id')->setType('int'));
+        $e->getFields()->set('p_id', (new Field())->setColumn('embedded_id')->setType('int'));
 
         $c->getRelations()->set(
             'embedded',
@@ -180,7 +180,7 @@ abstract class EmbeddedTest extends BaseTest
         $r->register($e);
 
         $this->expectException(EmbeddedPrimaryKeyException::class);
-        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `id`.');
+        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `p_id`.');
 
         (new Compiler())->compile(
             $r,

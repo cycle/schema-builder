@@ -51,10 +51,8 @@ trait MorphTrait
         $prevEntity = null;
 
         foreach ($this->findTargets($registry, $interface) as $entity) {
-            $primaryKeys = $entity->getPrimaryKeys();
-            $primaryFields = array_map(static function (string $key) use ($entity) {
-                return $entity->getFields()->get($key);
-            }, $primaryKeys);
+            $primaryFields = $entity->getPrimaryFields();
+            $primaryKeys = $primaryFields->getColumnNames();
 
             if (is_null($keys)) {
                 $keys = $primaryKeys;

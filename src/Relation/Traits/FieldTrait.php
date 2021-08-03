@@ -56,8 +56,10 @@ trait FieldTrait
 
         foreach ($keys as $key) {
             try {
-                $field = $entity->getFields()->get($key);
-                $fields->set($field->getColumn(), $field);
+                $field = $entity->getFields()->getByColumnName($key);
+                $name = $entity->getFields()->getKeyByColumnName($key);
+
+                $fields->set($name, $field);
             } catch (FieldException $e) {
                 throw new RelationException(
                     sprintf(
@@ -86,7 +88,7 @@ trait FieldTrait
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);
 
-        if ($target->getFields()->has($name)) {
+        if ($target->getFields()->hasColumn($name)) {
             // field already exists and defined by the user
             return;
         }

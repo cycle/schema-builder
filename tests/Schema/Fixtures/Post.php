@@ -24,7 +24,7 @@ class Post implements ParentInterface
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
@@ -41,7 +41,7 @@ class Post implements ParentInterface
         $entity = self::define();
 
         $entity->getFields()->set(
-            'slug',
+            'p_slug',
             (new Field())->setType('primary')->setColumn('slug')->setPrimary(true)
         );
 

@@ -24,7 +24,7 @@ class MorphedTo
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 

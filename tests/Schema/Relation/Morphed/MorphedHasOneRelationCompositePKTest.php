@@ -59,7 +59,7 @@ abstract class MorphedHasOneRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('slug', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('p_slug', $schema['plain'][Schema::COLUMNS]);
         $this->assertArrayHasKey('plain_id', $schema['plain'][Schema::COLUMNS]);
         $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
     }
