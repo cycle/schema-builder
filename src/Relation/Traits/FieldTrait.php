@@ -21,11 +21,6 @@ use Cycle\Schema\Table\Column;
 
 trait FieldTrait
 {
-    /**
-     * @param Entity $entity
-     * @param int $field
-     * @return Field
-     */
     protected function getField(Entity $entity, int $field): Field
     {
         try {
@@ -44,15 +39,10 @@ trait FieldTrait
         }
     }
 
-    /**
-     * @param Entity $entity
-     * @param int $field
-     * @return FieldMap
-     */
-    protected function getFields(Entity $entity, int $field): FieldMap
+    protected function getFields(Entity $entity, int $option): FieldMap
     {
         $fields = new FieldMap();
-        $keys = (array)$this->getOptions()->get($field);
+        $keys = (array)$this->getOptions()->get($option);
 
         foreach ($keys as $key) {
             try {
@@ -63,7 +53,7 @@ trait FieldTrait
             } catch (FieldException $e) {
                 throw new RelationException(
                     sprintf(
-                        'Field `%s`.`%s` does not exists, referenced by `%s`',
+                        'Field `%s`.`%s` does not exists, referenced by `%s`.',
                         $entity->getRole(),
                         $key,
                         $this->source
@@ -77,12 +67,6 @@ trait FieldTrait
         return $fields;
     }
 
-    /**
-     * @param Entity $target
-     * @param string $name
-     * @param Field $outer
-     * @param bool $nullable
-     */
     protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
@@ -115,8 +99,5 @@ trait FieldTrait
         $target->getFields()->set($name, $field);
     }
 
-    /**
-     * @return OptionSchema
-     */
     abstract protected function getOptions(): OptionSchema;
 }

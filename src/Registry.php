@@ -17,6 +17,7 @@ use Cycle\Schema\Exception\RelationException;
 use Spiral\Database\DatabaseProviderInterface;
 use Spiral\Database\Exception\DBALException;
 use Spiral\Database\Schema\AbstractTable;
+use Traversable;
 
 final class Registry implements \IteratorAggregate
 {
@@ -101,9 +102,9 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @return Entity[]|\Traversable
+     * @return Entity[]|Traversable
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->entities);
     }

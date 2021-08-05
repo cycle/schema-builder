@@ -13,6 +13,7 @@ namespace Cycle\Schema\Definition\Map;
 
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\FieldException;
+use Traversable;
 
 /**
  * Manage the set of fields associated with the entity.
@@ -148,9 +149,9 @@ final class FieldMap implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return Field[]|\Traversable
+     * @return Field[]|Traversable
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->fields);
     }

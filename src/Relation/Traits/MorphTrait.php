@@ -13,18 +13,21 @@ namespace Cycle\Schema\Relation\Traits;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\Column;
+use Generator;
 
 trait MorphTrait
 {
     /**
-     * @param Registry $registry
-     * @param string   $interface
-     * @return \Generator
+     * @psalm-param class-string $interface
+     *
+     * @return Entity[]|Generator
+     * @psalm-return Generator<int, Entity, mixed, null>
      */
-    protected function findTargets(Registry $registry, string $interface): \Generator
+    protected function findTargets(Registry $registry, string $interface): Generator
     {
         foreach ($registry as $entity) {
             $class = $entity->getClass();
@@ -37,15 +40,12 @@ trait MorphTrait
     }
 
     /**
-     * @param Registry $registry
-     * @param string   $interface
      * @return array Tuple [name, Field]
      *
      * @throws RelationException
      */
     protected function findOuterKey(Registry $registry, string $interface): array
     {
-        /** @var Field|null $field */
         $keys = null;
         $fields = null;
         $prevEntity = null;
@@ -58,32 +58,24 @@ trait MorphTrait
                 $keys = $primaryKeys;
                 $fields = $primaryFields;
                 $prevEntity = $entity;
-            } else {
-                if ($keys !== $primaryKeys) {
-                    throw new RelationException(sprintf(
-                        "Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s)",
-                        $entity->getRole(),
-                        implode(',', $primaryKeys),
-                        $prevEntity->getRole(),
-                        implode(',', $keys)
-                    ));
-                }
+            } elseif ($keys !== $primaryKeys) {
+                throw new RelationException(sprintf(
+                    "Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s).",
+                    $entity->getRole(),
+                    implode(',', $primaryKeys),
+                    $prevEntity->getRole(),
+                    implode(',', $keys)
+                ));
             }
         }
 
         if (is_null($fields)) {
-            throw new RelationException('Unable to find morphed parent');
+            throw new RelationException('Unable to find morphed parent.');
         }
 
         return [$keys, $fields];
     }
 
-    /**
-     * @param Entity $target
-     * @param string $name
-     * @param int    $length
-     * @param bool   $nullable
-     */
     protected function ensureMorphField(Entity $target, string $name, int $length, bool $nullable = false): void
     {
         if ($target->getFields()->has($name)) {
@@ -100,5 +92,22 @@ trait MorphTrait
         }
 
         $target->getFields()->set($name, $field);
+    }
+
+    protected function mergeIndex(Registry $registry, Entity $source, FieldMap ...$mergeMaps): void
+    {
+        $table = $registry->getTableSchema($source);
+
+        if ($this->options->get(self::INDEX_CREATE)) {
+            $index = array_merge(array_map(
+                static function (FieldMap $map): array {
+                    return $map->getColumnNames();
+                },
+                $mergeMaps
+            ));
+            if (count($index) > 0) {
+                $table->index($index);
+            }
+        }
     }
 }

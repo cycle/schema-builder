@@ -62,7 +62,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('p_id', (new Field())->setColumn('id'));
         $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
 
-        $e->setPrimaryKeys(['id', 'slug']);
+        $e->setPrimaryColumns(['id', 'slug']);
 
         $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
     }
@@ -78,7 +78,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('p_id', (new Field())->setColumn('id'));
         $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
 
-        $e->setPrimaryKeys(['test', 'test1', 'slug']);
+        $e->setPrimaryColumns(['test', 'test1', 'slug']);
     }
 
     public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
@@ -103,7 +103,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('p_id', (new Field())->setColumn('id')->setPrimary(true));
         $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
 
-        $e->setPrimaryKeys(['id', 'slug']);
+        $e->setPrimaryColumns(['id', 'slug']);
 
         $e->getPrimaryFields();
     }

@@ -81,23 +81,12 @@ final class MorphedHasOne extends RelationSchema
         );
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function render(Registry $registry): void
     {
         $target = $registry->getEntity($this->target);
-
         $outerFields = $this->getFields($target, Relation::OUTER_KEY);
         $morphFields = $this->getFields($target, Relation::MORPH_KEY);
 
-        $table = $registry->getTableSchema($target);
-
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $index = array_merge($outerFields->getColumnNames(), $morphFields->getColumnNames());
-            if (count($index) > 0) {
-                $table->index($index);
-            }
-        }
+        $this->mergeIndex($registry, $target, $outerFields, $morphFields);
     }
 }

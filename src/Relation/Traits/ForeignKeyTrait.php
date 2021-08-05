@@ -21,14 +21,7 @@ use Cycle\Schema\Relation\RelationSchema;
 trait ForeignKeyTrait
 {
     /**
-     * Create foreign key between two entities. Only when both entities are located
-     * in a same database.
-     *
-     * @param Registry $registry
-     * @param Entity   $source
-     * @param Entity   $target
-     * @param Field    $innerField
-     * @param Field    $outerField
+     * Create foreign key between two entities. Only when both entities are located in a same database.
      */
     protected function createForeignKey(
         Registry $registry,
@@ -51,12 +44,6 @@ trait ForeignKeyTrait
     /**
      * Create foreign key between two entities with composite fields. Only when both entities are located
      * in a same database.
-     *
-     * @param Registry $registry
-     * @param Entity   $source
-     * @param Entity   $target
-     * @param FieldMap $innerFields
-     * @param FieldMap $outerFields
      */
     protected function createForeignCompositeKey(
         Registry $registry,
@@ -76,8 +63,5 @@ trait ForeignKeyTrait
             ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
     }
 
-    /**
-     * @return OptionSchema
-     */
     abstract protected function getOptions(): OptionSchema;
 }

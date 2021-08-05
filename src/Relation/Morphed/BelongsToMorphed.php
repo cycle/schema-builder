@@ -65,7 +65,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
 
         $source = $registry->getEntity($this->source);
 
-        list($outerKeys, $outerFields) = $this->findOuterKey($registry, $this->target);
+        [$outerKeys, $outerFields] = $this->findOuterKey($registry, $this->target);
 
         // register primary key reference
         $this->options = $this->options->withContext([
@@ -96,24 +96,13 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
         }
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
-
         $innerFields = $this->getFields($source, Relation::INNER_KEY);
         $morphFields = $this->getFields($source, Relation::MORPH_KEY);
 
-        $table = $registry->getTableSchema($source);
-
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $index = array_merge($innerFields->getColumnNames(), $morphFields->getColumnNames());
-            if (count($index) > 0) {
-                $table->index($index);
-            }
-        }
+        $this->mergeIndex($registry, $source, $innerFields, $morphFields);
     }
 
     /**

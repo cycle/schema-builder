@@ -65,9 +65,6 @@ abstract class RelationSchema implements RelationInterface
         return $relation;
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
@@ -107,9 +104,6 @@ abstract class RelationSchema implements RelationInterface
         ];
     }
 
-    /**
-     * @return int|null
-     */
     protected function getLoadMethod(): ?int
     {
         if (!$this->options->has(Relation::LOAD)) {
@@ -125,9 +119,6 @@ abstract class RelationSchema implements RelationInterface
         }
     }
 
-    /**
-     * @return OptionSchema
-     */
     protected function getOptions(): OptionSchema
     {
         return $this->options;
@@ -135,8 +126,6 @@ abstract class RelationSchema implements RelationInterface
 
     /**
      * @deprecated
-     * @param Entity $entity
-     * @return string
      *
      * @throws RegistryException
      */

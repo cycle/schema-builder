@@ -58,19 +58,16 @@ foreach ($classes as $class) {
             $filename,
             sprintf(
                 '<?php
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
+
 declare(strict_types=1);
+
 namespace %s;
 
 class %s extends \%s
 {
     const DRIVER = "%s";
-}',
+}
+',
                 $details['namespace'],
                 $class->getShortName(),
                 $class->getName(),
