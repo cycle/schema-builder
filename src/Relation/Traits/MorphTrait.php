@@ -99,12 +99,13 @@ trait MorphTrait
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $index = array_merge(array_map(
+            $index = array_merge(...array_map(
                 static function (FieldMap $map): array {
                     return $map->getColumnNames();
                 },
                 $mergeMaps
             ));
+
             if (count($index) > 0) {
                 $table->index($index);
             }
