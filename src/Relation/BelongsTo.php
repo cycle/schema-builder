@@ -61,16 +61,10 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        foreach ($this->getFields($target, Relation::OUTER_KEY) as $field) {
-            foreach ((array)$this->options->get(Relation::INNER_KEY) as $key) {
-                $this->ensureField(
-                    $source,
-                    $key,
-                    $field,
-                    $this->options->get(Relation::NULLABLE)
-                );
-            }
-        }
+        $this->createRelatedFields(
+            $target, Relation::OUTER_KEY,
+            $source, Relation::INNER_KEY
+        );
     }
 
     /**

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Map\FieldMap;
@@ -97,6 +98,20 @@ trait FieldTrait
         }
 
         $target->getFields()->set($name, $field);
+    }
+
+    protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
+    {
+        foreach ($this->getFields($source, $sourceKey) as $sourceField) {
+            foreach ((array)$this->options->get($targetKey) as $targetField) {
+                $this->ensureField(
+                    $target,
+                    $targetField,
+                    $sourceField,
+                    $this->options->get(Relation::NULLABLE)
+                );
+            }
+        }
     }
 
     abstract protected function getOptions(): OptionSchema;

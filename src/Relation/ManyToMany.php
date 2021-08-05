@@ -81,7 +81,6 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
-
         $through = $registry->getEntity($this->options->get(Relation::THROUGH_ENTITY));
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
@@ -100,27 +99,15 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             ));
         }
 
-        foreach ($this->getFields($source, Relation::INNER_KEY) as $field) {
-            foreach ((array)$this->options->get(Relation::THROUGH_INNER_KEY) as $innerField) {
-                $this->ensureField(
-                    $through,
-                    $innerField,
-                    $field,
-                    $this->options->get(Relation::NULLABLE)
-                );
-            }
-        }
+        $this->createRelatedFields(
+            $source, Relation::INNER_KEY,
+            $through, Relation::THROUGH_INNER_KEY
+        );
 
-        foreach ($this->getFields($source, Relation::OUTER_KEY) as $field) {
-            foreach ((array)$this->options->get(Relation::THROUGH_OUTER_KEY) as $outerField) {
-                $this->ensureField(
-                    $through,
-                    $outerField,
-                    $field,
-                    $this->options->get(Relation::NULLABLE)
-                );
-            }
-        }
+        $this->createRelatedFields(
+            $source, Relation::OUTER_KEY,
+            $through, Relation::THROUGH_OUTER_KEY
+        );
     }
 
     /**

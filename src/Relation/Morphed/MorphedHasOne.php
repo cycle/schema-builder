@@ -61,16 +61,10 @@ final class MorphedHasOne extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        foreach ($this->getFields($source, Relation::INNER_KEY) as $field) {
-            foreach ((array)$this->options->get(Relation::OUTER_KEY) as $outerField) {
-                $this->ensureField(
-                    $target,
-                    $outerField,
-                    $field,
-                    $this->options->get(Relation::NULLABLE)
-                );
-            }
-        }
+        $this->createRelatedFields(
+            $source, Relation::INNER_KEY,
+            $target, Relation::OUTER_KEY
+        );
 
         // create target outer field
         $this->ensureMorphField(
