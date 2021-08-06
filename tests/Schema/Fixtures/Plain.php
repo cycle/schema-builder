@@ -50,7 +50,7 @@ class Plain
 
         $entity->getFields()->set(
             'p_slug',
-            (new Field())->setType('primary')->setColumn('slug')->setPrimary(true)
+            (new Field())->setType('string')->setColumn('slug')->setPrimary(true)
         );
 
         return $entity;
