@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\SQLServer;
 
 class BelongsToMorphedRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedRelationCompositePKTest
 {
-    const DRIVER = "sqlserver";
+    public const DRIVER = 'sqlserver';
 }

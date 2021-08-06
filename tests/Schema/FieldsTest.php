@@ -69,7 +69,7 @@ class FieldsTest extends TestCase
         $m->get('id')->getColumn();
     }
 
-    function testCount()
+    public function testCount(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -87,7 +87,7 @@ class FieldsTest extends TestCase
         $this->assertSame(['id', 'name'], $m->getColumnNames());
     }
 
-    function testGetNames()
+    public function testGetNames(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -96,7 +96,7 @@ class FieldsTest extends TestCase
         $this->assertSame(['p_id', 'p_name'], $m->getNames());
     }
 
-    function testHasColumn()
+    public function testHasColumn(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -105,7 +105,7 @@ class FieldsTest extends TestCase
         $this->assertFalse($m->hasColumn('p_id'));
     }
 
-    function testGetKeyByColumnName()
+    public function testGetKeyByColumnName(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -115,7 +115,7 @@ class FieldsTest extends TestCase
         $this->assertSame('p_slug', $m->getKeyByColumnName('slug'));
     }
 
-    function testGetKeyByColumnNameShouldThrowAnExceptionWhenFieldNotFound()
+    public function testGetKeyByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
         $this->expectException(FieldException::class);
         $this->expectErrorMessage('Undefined field with column name `slug`.');
@@ -126,7 +126,7 @@ class FieldsTest extends TestCase
         $m->getKeyByColumnName('slug');
     }
 
-    function testGetByColumnName()
+    public function testGetByColumnName(): void
     {
         $m = new FieldMap();
         $m->set('p_id', $id = (new Field())->setColumn('id'));
@@ -136,7 +136,7 @@ class FieldsTest extends TestCase
         $this->assertSame($slug, $m->getByColumnName('slug'));
     }
 
-    function testGetByColumnNameShouldThrowAnExceptionWhenFieldNotFound()
+    public function testGetByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
         $this->expectException(FieldException::class);
         $this->expectErrorMessage('Undefined field with column name `slug`.');

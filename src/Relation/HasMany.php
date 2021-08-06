@@ -68,8 +68,10 @@ final class HasMany extends RelationSchema implements InversableInterface
 
         // create target outer field
         $this->createRelatedFields(
-            $source, Relation::INNER_KEY,
-            $target, Relation::OUTER_KEY
+            $source,
+            Relation::INNER_KEY,
+            $target,
+            Relation::OUTER_KEY
         );
     }
 

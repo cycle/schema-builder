@@ -54,7 +54,7 @@ class EntityTest extends TestCase
         $this->assertTrue($e->hasPrimaryKey());
     }
 
-    public function testSetPrimaryKeys()
+    public function testSetPrimaryKeys(): void
     {
         $e = new Entity();
         $e->setRole('role');
@@ -67,7 +67,7 @@ class EntityTest extends TestCase
         $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
     }
 
-    public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn()
+    public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn(): void
     {
         $this->expectException(FieldException::class);
         $this->expectErrorMessage('Undefined field with column name `test`.');
@@ -92,7 +92,7 @@ class EntityTest extends TestCase
         $this->assertFalse($e->hasPrimaryKey());
     }
 
-    public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches()
+    public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches(): void
     {
         $this->expectException(EntityException::class);
         $this->expectErrorMessage('Ambiguous primary key definition for `role`.');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation\Traits;
@@ -32,7 +33,7 @@ class FieldTraitTest extends TestCase
         $this->source = 'test';
     }
 
-    public function testGetsFieldShouldReturnFieldIfItExists()
+    public function testGetsFieldShouldReturnFieldIfItExists(): void
     {
         $entity = new Entity();
         $entity->getFields()->set('id', $field = new Field());
@@ -40,7 +41,7 @@ class FieldTraitTest extends TestCase
         $this->assertSame($field, $this->getField($entity, 123));
     }
 
-    public function testGetsFieldShouldThrowAnExceptionIdFieldNotExists()
+    public function testGetsFieldShouldThrowAnExceptionIdFieldNotExists(): void
     {
         $entity = new Entity();
         $entity->setRole('post');
@@ -51,7 +52,7 @@ class FieldTraitTest extends TestCase
         $this->getField($entity, 123);
     }
 
-    public function testGetsFieldsShouldReturnFieldsMapForSingleField()
+    public function testGetsFieldsShouldReturnFieldsMapForSingleField(): void
     {
         $entity = new Entity();
         $entity->getFields()->set('id', $field = (new Field())->setColumn('id'));
@@ -62,7 +63,7 @@ class FieldTraitTest extends TestCase
         $this->assertSame($field, $fields->get('id'));
     }
 
-    public function testGetsFieldsShouldReturnFieldsMapForMultipleField()
+    public function testGetsFieldsShouldReturnFieldsMapForMultipleField(): void
     {
         $entity = new Entity();
         $entity->getFields()
@@ -76,7 +77,7 @@ class FieldTraitTest extends TestCase
         $this->assertSame($fieldSlug, $fields->get('slug'));
     }
 
-    public function testGetsFieldsShouldThrowAnExcpetionIfFieldNotExists()
+    public function testGetsFieldsShouldThrowAnExcpetionIfFieldNotExists(): void
     {
         $entity = new Entity();
         $entity->setRole('post');
@@ -89,7 +90,7 @@ class FieldTraitTest extends TestCase
         $this->getFields($entity, 234);
     }
 
-    public function testEnsureFieldIfFieldExistsItShouldNotBeCreated()
+    public function testEnsureFieldIfFieldExistsItShouldNotBeCreated(): void
     {
         $target = new Entity();
 
@@ -107,7 +108,7 @@ class FieldTraitTest extends TestCase
     /**
      * @dataProvider outerFieldTypes
      */
-    public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(string $originalType, string $type, bool $nullable)
+    public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(string $originalType, string $type, bool $nullable): void
     {
         $target = new Entity();
 

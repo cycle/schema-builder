@@ -147,7 +147,7 @@ final class OptionSchema
 
         $value = $this->calculate($option, $value);
 
-        if (strpos($value, "|") !== false) {
+        if (strpos($value, '|') !== false) {
             return array_filter(explode('|', $value));
         }
 

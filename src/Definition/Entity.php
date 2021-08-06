@@ -236,7 +236,7 @@ final class Entity
             }
         }
 
-        if ($this->primaryFields->count() === 0 XOR $map->count() === 0) {
+        if ($this->primaryFields->count() === 0 xor $map->count() === 0) {
             return $map->count() === 0 ? $this->primaryFields : $map;
         }
 

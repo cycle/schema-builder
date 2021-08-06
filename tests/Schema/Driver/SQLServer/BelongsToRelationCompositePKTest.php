@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\SQLServer;
 
 class BelongsToRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\BelongsToRelationCompositePKTest
 {
-    const DRIVER = "sqlserver";
+    public const DRIVER = 'sqlserver';
 }

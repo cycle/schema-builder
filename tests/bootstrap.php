@@ -53,7 +53,8 @@ $db = getenv('DB') ?: null;
         'debug'     => false,
         'strict'    => true,
         'benchmark' => true,
-    ] + ($db === null
+    ] + (
+        $db === null
         ? $drivers
         : array_intersect_key($drivers, array_flip((array)$db))
     );

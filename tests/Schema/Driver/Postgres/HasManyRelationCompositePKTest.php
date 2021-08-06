@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\Postgres;
 
 class HasManyRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\HasManyRelationCompositePKTest
 {
-    const DRIVER = "postgres";
+    public const DRIVER = 'postgres';
 }

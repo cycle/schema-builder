@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\MySQL;
 
 class RefersToRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\RefersToRelationCompositePKTest
 {
-    const DRIVER = "mysql";
+    public const DRIVER = 'mysql';
 }

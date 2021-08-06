@@ -62,8 +62,10 @@ final class MorphedHasMany extends RelationSchema
 
         // create target outer field
         $this->createRelatedFields(
-            $source, Relation::INNER_KEY,
-            $target, Relation::OUTER_KEY
+            $source,
+            Relation::INNER_KEY,
+            $target,
+            Relation::OUTER_KEY
         );
 
         // create target outer field

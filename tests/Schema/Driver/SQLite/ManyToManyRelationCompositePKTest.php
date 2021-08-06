@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\SQLite;
 
 class ManyToManyRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationCompositePKTest
 {
-    const DRIVER = "sqlite";
+    public const DRIVER = 'sqlite';
 }

@@ -60,7 +60,7 @@ trait MorphTrait
                 $prevEntity = $entity;
             } elseif ($keys !== $primaryKeys) {
                 throw new RelationException(sprintf(
-                    "Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s).",
+                    'Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s).',
                     $entity->getRole(),
                     implode(',', $primaryKeys),
                     $prevEntity->getRole(),

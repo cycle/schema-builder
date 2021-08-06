@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\SQLite;
 
 class BelongsToMorphedRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\Morphed\BelongsToMorphedRelationCompositePKTest
 {
-    const DRIVER = "sqlite";
+    public const DRIVER = 'sqlite';
 }

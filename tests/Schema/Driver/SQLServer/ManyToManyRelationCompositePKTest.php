@@ -6,5 +6,5 @@ namespace Cycle\Schema\Tests\Driver\SQLServer;
 
 class ManyToManyRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationCompositePKTest
 {
-    const DRIVER = "sqlserver";
+    public const DRIVER = 'sqlserver';
 }

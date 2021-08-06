@@ -109,11 +109,13 @@ trait FieldTrait
         $sourceFieldNames = $sourceFields->getNames();
 
         if (count($targetColumns) !== count($sourceFieldNames)) {
-            throw new RegistryException(sprintf('Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
+            throw new RegistryException(sprintf(
+                'Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
                 $source->getRole(),
                 implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
                 $target->getRole(),
-                implode('`, `', $targetColumns)));
+                implode('`, `', $targetColumns)
+            ));
         }
 
         $fields = array_combine($targetColumns, $sourceFieldNames);
