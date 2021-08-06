@@ -214,22 +214,6 @@ final class Compiler
     }
 
     /**
-     * @deprecated
-     * @param Entity $entity
-     * @return string|null
-     */
-    protected function getPrimary(Entity $entity): ?string
-    {
-        foreach ($entity->getFields() as $name => $field) {
-            if ($field->isPrimary()) {
-                return $name;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Return the unique alias for the child entity.
      *
      * @param Entity $entity
