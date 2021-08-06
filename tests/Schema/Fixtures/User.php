@@ -69,4 +69,18 @@ class User implements AuthorInterface
 
         return $entity;
     }
+
+    public static function defineWithoutPK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        $entity->getFields()->set(
+            'p_id',
+            (new Field())->setColumn('id')
+        );
+
+        return $entity;
+    }
 }

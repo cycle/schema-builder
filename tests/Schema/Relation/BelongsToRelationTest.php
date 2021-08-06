@@ -44,6 +44,36 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
     }
 
+    public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `post` must have defined primary key');
+
+        $e = Post::defineWithoutPK();
+        $u = Author::define();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `author` must have defined primary key');
+
+        $e = Post::define();
+        $u = Author::defineWithoutPK();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
+    }
+
     public function testPackSchema(): void
     {
         $e = Post::define();

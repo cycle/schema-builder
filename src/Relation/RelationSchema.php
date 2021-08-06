@@ -16,6 +16,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\RelationInterface;
+use Cycle\Schema\Tests\Fixtures\Plain;
 
 /**
  * Defines relation options, renders needed columns and other options.
@@ -68,12 +69,12 @@ abstract class RelationSchema implements RelationInterface
     public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryFields()->getColumnNames()
+            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source))
         ]);
 
         if ($registry->hasEntity($this->target)) {
             $this->options = $this->options->withContext([
-                'target:primaryKey' => $registry->getEntity($this->target)->getPrimaryFields()->getColumnNames()
+                'target:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->target))
             ]);
         }
     }
@@ -125,18 +126,16 @@ abstract class RelationSchema implements RelationInterface
     }
 
     /**
-     * @deprecated
-     *
      * @throws RegistryException
      */
-    protected function getPrimary(Entity $entity): string
+    protected function getPrimaryColumns(Entity $entity): array
     {
-        foreach ($entity->getFields() as $name => $field) {
-            if ($field->isPrimary()) {
-                return $name;
-            }
+        $columns = $entity->getPrimaryFields()->getColumnNames();
+
+        if ($columns == []) {
+            throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
         }
 
-        throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
+        return $columns;
     }
 }

@@ -35,6 +35,15 @@ class Author implements AuthorInterface, ParentInterface
         return $entity;
     }
 
+    public static function defineWithoutPK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        return $entity;
+    }
+
     public static function defineCompositePK(): Entity
     {
         $entity = self::define();

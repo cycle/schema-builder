@@ -15,6 +15,7 @@ use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Relation as RelationDefinition;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
@@ -51,6 +52,56 @@ abstract class ManyToManyRelationTest extends BaseTest
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
 
         $this->assertInstanceOf(ManyToMany::class, $r->getRelation($post, 'tags'));
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `post` must have defined primary key');
+
+        $post = Post::defineWithoutPK();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `tag` must have defined primary key');
+
+        $post = Post::define();
+        $tag = Tag::defineWithoutPK();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()->set('though', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
     public function testDifferentDatabases(): void

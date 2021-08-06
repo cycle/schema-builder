@@ -60,7 +60,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         // compute local key
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $registry->getEntity($this->source)->getPrimaryFields()->getColumnNames()
+            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source))
         ]);
 
         $source = $registry->getEntity($this->source);

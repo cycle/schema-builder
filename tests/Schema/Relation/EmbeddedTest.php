@@ -16,6 +16,7 @@ use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\FieldException\EmbeddedPrimaryKeyException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -44,6 +45,26 @@ abstract class EmbeddedTest extends BaseTest
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
 
         $this->assertInstanceOf(Embedded::class, $r->getRelation($c, 'embedded'));
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `composite` must have defined primary key');
+
+        $c = Composite::defineWithoutPk();
+        $e = EmbeddedEntity::define();
+
+        $c->getRelations()->set(
+            'embedded',
+            (new Relation())->setTarget('embedded')->setType('embedded')
+        );
+
+        $r = new Registry($this->dbal);
+        $r->register($c)->linkTable($c, 'default', 'composite');
+        $r->register($e);
+
+        (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
     }
 
     public function testPackSchema(): void

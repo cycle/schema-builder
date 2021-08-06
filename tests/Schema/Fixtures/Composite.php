@@ -29,4 +29,18 @@ class Composite
 
         return $entity;
     }
+
+    public static function defineWithoutPk(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        $entity->getFields()->set(
+            'p_id',
+            (new Field())->setColumn('id')
+        );
+
+        return $entity;
+    }
 }

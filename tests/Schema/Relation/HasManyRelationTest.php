@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
@@ -43,6 +44,40 @@ abstract class HasManyRelationTest extends BaseTest
         (new GenerateRelations(['hasMany' => new HasMany()]))->run($r);
 
         $this->assertInstanceOf(HasMany::class, $r->getRelation($u, 'plain'));
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `plain` must have defined primary key');
+
+        $e = Plain::defineWithoutPK();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setType('hasMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations(['hasMany' => new HasMany()]))->run($r);
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `user` must have defined primary key');
+
+        $e = Plain::define();
+        $u = User::defineWithoutPK();
+
+        $u->getRelations()->get('plain')->setType('hasMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new GenerateRelations(['hasMany' => new HasMany()]))->run($r);
     }
 
     public function testPackSchema(): void
