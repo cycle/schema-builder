@@ -16,6 +16,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\FieldException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Table\Column;
@@ -102,15 +103,28 @@ trait FieldTrait
 
     protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
     {
-        foreach ($this->getFields($source, $sourceKey) as $sourceField) {
-            foreach ((array)$this->options->get($targetKey) as $targetField) {
-                $this->ensureField(
-                    $target,
-                    $targetField,
-                    $sourceField,
-                    $this->options->get(Relation::NULLABLE)
-                );
-            }
+        $targetColumns = (array)$this->options->get($targetKey);
+        $sourceFieldNames = $this->getFields($source, $sourceKey)->getNames();
+
+        if (count($targetColumns) !== count($sourceFieldNames)) {
+            throw new RegistryException(sprintf('Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
+                $source->getRole(),
+                implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
+                $target->getRole(),
+                implode('`, `', $targetColumns)));
+        }
+
+        $fields = array_combine($targetColumns, $sourceFieldNames);
+
+        foreach ($fields as $targetColumn => $sourceFieldName) {
+            $sourceField = $this->getFields($source, $sourceKey)->get($sourceFieldName);
+
+            $this->ensureField(
+                $target,
+                $targetColumn,
+                $sourceField,
+                $this->options->get(Relation::NULLABLE)
+            );
         }
     }
 

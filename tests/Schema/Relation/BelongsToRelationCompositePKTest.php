@@ -67,12 +67,31 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
     }
 
+    public function testInconsistentAmountOfPKsShouldThrowAndException(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Inconsistent amount of primary fields. Source entity `author` - PKs `id`, `slug`. Target entity `post` - PKs `parent_id`.');
+
+        $e = Post::defineCompositePK();
+        $u = Author::defineCompositePK();
+
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id']);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        $schema = (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()])
+        ]);
+    }
+
     public function testCustomKey(): void
     {
         $e = Post::defineCompositePK();
         $u = Author::defineCompositePK();
 
-        $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id', 'parent_slug']);
 
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
@@ -87,6 +106,7 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
 
         $this->assertArrayHasKey('author', $schema);
         $this->assertArrayHasKey('parent_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_slug', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testRenderTable(): void
@@ -117,7 +137,7 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
         $e = Post::defineCompositePK();
         $u = Author::defineCompositePK();
 
-        $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id', 'parent_slug']);
         $e->getRelations()->get('author')->getOptions()->set('fkCreate', false);
 
         $r = new Registry($this->dbal);

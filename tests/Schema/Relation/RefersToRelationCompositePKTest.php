@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -63,6 +64,28 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         $this->assertArrayHasKey('author', $schema);
         $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_slug', $schema['post'][Schema::COLUMNS]);
+    }
+
+    public function testInconsistentAmountOfPKsShouldThrowAndException(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Inconsistent amount of primary fields. Source entity `author` - PKs `id`, `slug`. Target entity `post` - PKs `parent_id`.');
+
+        $e = Post::defineCompositePK();
+        $u = Author::defineCompositePK();
+
+        $e->getRelations()->get('author')->setType('refersTo');
+
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id']);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['refersTo' => new RefersTo()])
+        ]);
     }
 
     public function testCustomKey(): void
@@ -72,7 +95,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         $e->getRelations()->get('author')->setType('refersTo');
 
-        $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id', 'parent_slug']);
 
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
@@ -87,6 +110,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         $this->assertArrayHasKey('author', $schema);
         $this->assertArrayHasKey('parent_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_slug', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testRenderTable(): void
@@ -121,7 +145,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         $e->getRelations()->get('author')->setType('refersTo');
 
-        $e->getRelations()->get('author')->getOptions()->set('innerKey', 'parent_id');
+        $e->getRelations()->get('author')->getOptions()->set('innerKey', ['parent_id', 'parent_slug']);
         $e->getRelations()->get('author')->getOptions()->set('fkCreate', false);
 
         $r = new Registry($this->dbal);
@@ -140,6 +164,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertFalse($table->hasForeignKey(['parent_id']));
+        $this->assertTrue($table->hasColumn('parent_slug'));
+        $this->assertFalse($table->hasForeignKey(['parent_id', 'parent_slug']));
     }
 }

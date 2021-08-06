@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests\Relation;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
@@ -70,6 +71,27 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
     }
 
+    public function testInconsistentAmountOfPKsShouldThrowAndException(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Inconsistent amount of primary fields. Source entity `user` - PKs `id`, `slug`. Target entity `plain` - PKs `parent_id`.');
+
+        $e = Plain::defineCompositePK();
+        $u = User::defineCompositePK();
+
+        $u->getRelations()->get('plain')->setType('hasMany');
+
+        $u->getRelations()->get('plain')->getOptions()->set('outerKey', ['parent_id']);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        $schema = (new Compiler())->compile($r, [
+            new GenerateRelations(['hasMany' => new HasMany()])
+        ]);
+    }
+
     public function testCustomKey(): void
     {
         $e = Plain::defineCompositePK();
@@ -77,7 +99,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
 
         $u->getRelations()->get('plain')->setType('hasMany');
 
-        $u->getRelations()->get('plain')->getOptions()->set('outerKey', 'parent_id');
+        $u->getRelations()->get('plain')->getOptions()->set('outerKey', ['parent_id', 'parent_slug']);
 
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'plain');
@@ -92,6 +114,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
 
         $this->assertArrayHasKey('plain', $schema);
         $this->assertArrayHasKey('parent_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_slug', $schema['plain'][Schema::COLUMNS]);
     }
 
     public function testRenderTable(): void
@@ -126,7 +149,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
 
         $u->getRelations()->get('plain')->setType('hasMany');
 
-        $u->getRelations()->get('plain')->getOptions()->set('outerKey', 'parent_id');
+        $u->getRelations()->get('plain')->getOptions()->set('outerKey', ['parent_id', 'parent_slug']);
         $u->getRelations()->get('plain')->getOptions()->set('fkCreate', false);
 
         $r = new Registry($this->dbal);
@@ -145,7 +168,8 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertFalse($table->hasForeignKey(['parent_id']));
+        $this->assertTrue($table->hasColumn('parent_slug'));
+        $this->assertFalse($table->hasForeignKey(['parent_id', 'parent_slug']));
     }
 
     public function testInverseInvalidType(): void
