@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\Postgres;
 
-class MorphedHasManyRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\Morphed\MorphedHasManyRelationCompositePKTest
+use Cycle\Schema\Tests\Relation\Morphed\MorphedHasManyRelationCompositePKTest as BaseTest;
+
+class MorphedHasManyRelationCompositePKTest extends BaseTest
 {
     public const DRIVER = 'postgres';
 }

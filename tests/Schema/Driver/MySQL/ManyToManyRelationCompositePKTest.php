@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\MySQL;
 
-class ManyToManyRelationCompositePKTest extends \Cycle\Schema\Tests\Relation\ManyToManyRelationCompositePKTest
+use Cycle\Schema\Tests\Relation\ManyToManyRelationCompositePKTest as BaseTest;
+
+class ManyToManyRelationCompositePKTest extends BaseTest
 {
     public const DRIVER = 'mysql';
 }

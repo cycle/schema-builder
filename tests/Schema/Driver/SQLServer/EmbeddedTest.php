@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-class EmbeddedTest extends \Cycle\Schema\Tests\Relation\EmbeddedTest
+use Cycle\Schema\Tests\Relation\EmbeddedTest as BaseTest;
+
+class EmbeddedTest extends BaseTest
 {
     public const DRIVER = 'sqlserver';
 }

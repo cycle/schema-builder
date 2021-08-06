@@ -53,24 +53,28 @@ foreach ($classes as $class) {
     echo "Found {$class->getName()}\n";
     foreach ($databases as $driver => $details) {
         $filename = sprintf('%s/%s.php', $details['directory'], $class->getShortName());
+        $baseTestName = 'BaseTest';
 
         file_put_contents(
             $filename,
             sprintf(
-                '<?php
+                "<?php
 
 declare(strict_types=1);
 
 namespace %s;
 
-class %s extends \%s
+use %s;
+
+class %s extends %s
 {
-    const DRIVER = "%s";
+    public const DRIVER = '%s';
 }
-',
+",
                 $details['namespace'],
+                $class->getName() . ' as ' . $baseTestName,
                 $class->getShortName(),
-                $class->getName(),
+                $baseTestName,
                 $driver
             )
         );

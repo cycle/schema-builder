@@ -108,8 +108,11 @@ class FieldTraitTest extends TestCase
     /**
      * @dataProvider outerFieldTypes
      */
-    public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(string $originalType, string $type, bool $nullable): void
-    {
+    public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(
+        string $originalType,
+        string $type,
+        bool $nullable
+    ): void {
         $target = new Entity();
 
         $outer = (new Field())
