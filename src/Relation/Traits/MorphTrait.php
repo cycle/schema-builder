@@ -76,22 +76,22 @@ trait MorphTrait
         return [$keys, $fields];
     }
 
-    protected function ensureMorphField(Entity $target, string $name, int $length, bool $nullable = false): void
+    protected function ensureMorphField(Entity $target, string $column, int $length, bool $nullable = false): void
     {
-        if ($target->getFields()->has($name)) {
+        if ($target->getFields()->has($column)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
-        $field->setColumn($name);
+        $field->setColumn($column);
         $field->setType(sprintf('string(%s)', $length));
 
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($name, $field);
+        $target->getFields()->set($column, $field);
     }
 
     protected function mergeIndex(Registry $registry, Entity $source, FieldMap ...$mergeMaps): void

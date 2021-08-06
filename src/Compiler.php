@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
@@ -100,7 +100,7 @@ final class Compiler
             Schema::SOURCE       => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
             Schema::MAPPER       => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
             Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
-            Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
+            Schema::SCOPE        => $entity->getConstrain() ?? $this->defaults[Schema::SCOPE],
             Schema::SCHEMA       => $entity->getSchema(),
             Schema::PRIMARY_KEY  => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS      => $this->renderColumns($entity),

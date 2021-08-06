@@ -68,18 +68,18 @@ trait FieldTrait
         return $fields;
     }
 
-    protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false): void
+    protected function ensureField(Entity $target, string $column, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);
 
-        if ($target->getFields()->hasColumn($name)) {
+        if ($target->getFields()->hasColumn($column)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
-        $field->setColumn($name);
+        $field->setColumn($column);
         $field->setTypecast($outer->getTypecast());
 
         switch ($outer->getType()) {
@@ -97,7 +97,7 @@ trait FieldTrait
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($name, $field);
+        $target->getFields()->set($column, $field);
     }
 
     protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
