@@ -134,6 +134,8 @@ abstract class RelationSchema implements RelationInterface
     }
 
     /**
+     * @deprecated deprecated since version 2.0. Use getPrimaryColumns method
+     *
      * @param Entity $entity
      * @return string
      *

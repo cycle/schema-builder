@@ -214,6 +214,8 @@ final class Compiler
     }
 
     /**
+     * @deprecated deprecated since version 2.0. Use Entity::getPrimaryFields instead
+     *
      * @param Entity $entity
      * @return string|null
      */
