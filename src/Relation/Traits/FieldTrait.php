@@ -103,8 +103,10 @@ trait FieldTrait
 
     protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
     {
+        $sourceFields = $this->getFields($source, $sourceKey);
+
         $targetColumns = (array)$this->options->get($targetKey);
-        $sourceFieldNames = $this->getFields($source, $sourceKey)->getNames();
+        $sourceFieldNames = $sourceFields->getNames();
 
         if (count($targetColumns) !== count($sourceFieldNames)) {
             throw new RegistryException(sprintf('Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
@@ -117,7 +119,7 @@ trait FieldTrait
         $fields = array_combine($targetColumns, $sourceFieldNames);
 
         foreach ($fields as $targetColumn => $sourceFieldName) {
-            $sourceField = $this->getFields($source, $sourceKey)->get($sourceFieldName);
+            $sourceField = $sourceFields->get($sourceFieldName);
 
             $this->ensureField(
                 $target,
