@@ -11,20 +11,18 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\FieldException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Table\Column;
 
 trait FieldTrait
 {
-    /**
-     * @param Entity $entity
-     * @param int $field
-     * @return Field
-     */
     protected function getField(Entity $entity, int $field): Field
     {
         try {
@@ -43,24 +41,46 @@ trait FieldTrait
         }
     }
 
-    /**
-     * @param Entity $target
-     * @param string $name
-     * @param Field $outer
-     * @param bool $nullable
-     */
-    protected function ensureField(Entity $target, string $name, Field $outer, bool $nullable = false): void
+    protected function getFields(Entity $entity, int $option): FieldMap
+    {
+        $fields = new FieldMap();
+        $keys = (array)$this->getOptions()->get($option);
+
+        foreach ($keys as $key) {
+            try {
+                $field = $entity->getFields()->getByColumnName($key);
+                $name = $entity->getFields()->getKeyByColumnName($key);
+
+                $fields->set($name, $field);
+            } catch (FieldException $e) {
+                throw new RelationException(
+                    sprintf(
+                        'Field `%s`.`%s` does not exists, referenced by `%s`.',
+                        $entity->getRole(),
+                        $key,
+                        $this->source
+                    ),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+
+        return $fields;
+    }
+
+    protected function ensureField(Entity $target, string $column, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);
 
-        if ($target->getFields()->has($name)) {
+        if ($target->getFields()->hasColumn($column)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
-        $field->setColumn($name);
+        $field->setColumn($column);
         $field->setTypecast($outer->getTypecast());
 
         switch ($outer->getType()) {
@@ -78,11 +98,39 @@ trait FieldTrait
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($name, $field);
+        $target->getFields()->set($column, $field);
     }
 
-    /**
-     * @return OptionSchema
-     */
+    protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
+    {
+        $sourceFields = $this->getFields($source, $sourceKey);
+
+        $targetColumns = (array)$this->options->get($targetKey);
+        $sourceFieldNames = $sourceFields->getNames();
+
+        if (count($targetColumns) !== count($sourceFieldNames)) {
+            throw new RegistryException(sprintf(
+                'Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
+                $source->getRole(),
+                implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
+                $target->getRole(),
+                implode('`, `', $targetColumns)
+            ));
+        }
+
+        $fields = array_combine($targetColumns, $sourceFieldNames);
+
+        foreach ($fields as $targetColumn => $sourceFieldName) {
+            $sourceField = $sourceFields->get($sourceFieldName);
+
+            $this->ensureField(
+                $target,
+                $targetColumn,
+                $sourceField,
+                $this->options->get(Relation::NULLABLE)
+            );
+        }
+    }
+
     abstract protected function getOptions(): OptionSchema;
 }

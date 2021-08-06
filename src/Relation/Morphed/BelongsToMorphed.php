@@ -60,47 +60,49 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         // compute local key
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
+            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source))
         ]);
 
         $source = $registry->getEntity($this->source);
 
-        list($outerKey, $outerField) = $this->findOuterKey($registry, $this->target);
+        [$outerKeys, $outerFields] = $this->findOuterKey($registry, $this->target);
 
         // register primary key reference
-        $this->options = $this->options->withContext(['target:primaryKey' => $outerKey]);
+        $this->options = $this->options->withContext([
+            'target:primaryKey' => $outerKeys
+        ]);
+
+        $outerKeys = array_combine($outerKeys, (array)$this->options->get(Relation::INNER_KEY));
 
         // create target outer field
-        $this->ensureField(
-            $source,
-            $this->options->get(Relation::INNER_KEY),
-            $outerField,
-            $this->options->get(Relation::NULLABLE)
-        );
+        foreach ($outerKeys as $key => $morphKey) {
+            $outerField = $outerFields->getByColumnName($key);
 
-        $this->ensureMorphField(
-            $source,
-            $this->options->get(Relation::MORPH_KEY),
-            $this->options->get(RelationSchema::MORPH_KEY_LENGTH),
-            $this->options->get(Relation::NULLABLE)
-        );
+            $this->ensureField(
+                $source,
+                $morphKey,
+                $outerField,
+                $this->options->get(Relation::NULLABLE)
+            );
+        }
+
+        foreach ((array)$this->options->get(Relation::MORPH_KEY) as $key) {
+            $this->ensureMorphField(
+                $source,
+                $key,
+                $this->options->get(RelationSchema::MORPH_KEY_LENGTH),
+                $this->options->get(Relation::NULLABLE)
+            );
+        }
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $morphFields = $this->getFields($source, Relation::MORPH_KEY);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $morphField = $this->getField($source, Relation::MORPH_KEY);
-
-        $table = $registry->getTableSchema($source);
-
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$innerField->getColumn(), $morphField->getColumn()]);
-        }
+        $this->mergeIndex($registry, $source, $innerFields, $morphFields);
     }
 
     /**

@@ -1,17 +1,12 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\Postgres;
 
-class MorphedHasOneRelationTest extends \Cycle\Schema\Tests\Relation\Morphed\MorphedHasOneRelationTest
+use Cycle\Schema\Tests\Relation\Morphed\MorphedHasOneRelationTest as BaseTest;
+
+class MorphedHasOneRelationTest extends BaseTest
 {
     public const DRIVER = 'postgres';
 }

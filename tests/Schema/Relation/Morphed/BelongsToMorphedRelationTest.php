@@ -185,7 +185,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -199,7 +199,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -236,7 +236,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -250,7 +250,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            'id',
+            ['id'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(

@@ -61,11 +61,11 @@ final class RefersTo extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
+        $this->createRelatedFields(
+            $target,
+            Relation::OUTER_KEY,
             $source,
-            $this->options->get(Relation::INNER_KEY),
-            $this->getField($target, Relation::OUTER_KEY),
-            $this->options->get(Relation::NULLABLE)
+            Relation::INNER_KEY
         );
     }
 
@@ -77,17 +77,17 @@ final class RefersTo extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         $table = $registry->getTableSchema($source);
 
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$innerField->getColumn()]);
+        if ($this->options->get(self::INDEX_CREATE) && $innerFields->count() > 0) {
+            $table->index($innerFields->getColumnNames());
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $target, $source, $outerField, $innerField);
+            $this->createForeignCompositeKey($registry, $target, $source, $outerFields, $innerFields);
         }
     }
 }

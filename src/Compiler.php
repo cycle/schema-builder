@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
@@ -66,7 +66,7 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
-            if ($this->getPrimary($entity) === null) {
+            if (!$entity->hasPrimaryKey()) {
                 // incomplete entity, skip
                 continue;
             }
@@ -100,9 +100,9 @@ final class Compiler
             Schema::SOURCE       => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
             Schema::MAPPER       => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
             Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
-            Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
+            Schema::SCOPE        => $entity->getConstrain() ?? $this->defaults[Schema::SCOPE],
             Schema::SCHEMA       => $entity->getSchema(),
-            Schema::PRIMARY_KEY  => $this->getPrimary($entity),
+            Schema::PRIMARY_KEY  => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS      => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST     => $this->renderTypecast($entity),
@@ -187,7 +187,7 @@ final class Compiler
      */
     protected function renderReferences(Entity $entity): array
     {
-        $schema = [$this->getPrimary($entity)];
+        $schema = $entity->getPrimaryFields()->getNames();
 
         foreach ($entity->getFields() as $name => $field) {
             if ($field->isReferenced()) {
@@ -214,25 +214,11 @@ final class Compiler
     }
 
     /**
-     * @param Entity $entity
-     * @return string|null
-     */
-    protected function getPrimary(Entity $entity): ?string
-    {
-        foreach ($entity->getFields() as $name => $field) {
-            if ($field->isPrimary()) {
-                return $name;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Return the unique alias for the child entity.
      *
      * @param Entity $entity
      * @return string
+     * @throws \ReflectionException
      */
     protected function childAlias(Entity $entity): string
     {

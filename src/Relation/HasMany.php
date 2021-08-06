@@ -67,11 +67,11 @@ final class HasMany extends RelationSchema implements InversableInterface
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
+        $this->createRelatedFields(
+            $source,
+            Relation::INNER_KEY,
             $target,
-            $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY),
-            $this->options->get(Relation::NULLABLE)
+            Relation::OUTER_KEY
         );
     }
 
@@ -83,17 +83,17 @@ final class HasMany extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $innerField = $this->getField($source, Relation::INNER_KEY);
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         $table = $registry->getTableSchema($target);
 
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$outerField->getColumn()]);
+        if ($this->options->get(self::INDEX_CREATE) && $outerFields->count() > 0) {
+            $table->index($outerFields->getColumnNames());
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignKey($registry, $source, $target, $innerField, $outerField);
+            $this->createForeignCompositeKey($registry, $source, $target, $innerFields, $outerFields);
         }
     }
 

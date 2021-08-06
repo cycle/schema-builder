@@ -25,34 +25,60 @@ class User implements AuthorInterface
         ;
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
         $entity->getFields()->set(
-            'name',
+            'p_name',
             (new Field())->setType('string(32)')->setColumn('user_name')
         );
 
         $entity->getFields()->set(
-            'active',
+            'p_active',
             (new Field())->setType('bool')->setColumn('active')
         );
 
         $entity->getFields()->set(
-            'balance',
+            'p_balance',
             (new Field())->setType('float')->setColumn('balance')
         );
 
 
         $entity->getFields()->set(
-            'created_at',
+            'p_created_at',
             (new Field())->setType('datetime')->setColumn('created_at')
         );
 
         $entity->getRelations()->set(
             'plain',
             (new Relation())->setTarget('plain')->setType('hasOne')
+        );
+
+        return $entity;
+    }
+
+    public static function defineCompositePK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'p_slug',
+            (new Field())->setType('string')->setColumn('slug')->setPrimary(true)
+        );
+
+        return $entity;
+    }
+
+    public static function defineWithoutPK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        $entity->getFields()->set(
+            'p_id',
+            (new Field())->setColumn('id')
         );
 
         return $entity;

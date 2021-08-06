@@ -14,6 +14,8 @@ namespace Cycle\Schema\Tests;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
+use Cycle\Schema\Exception\EntityException;
+use Cycle\Schema\Exception\FieldException;
 use Cycle\Schema\Exception\RelationException;
 use PHPUnit\Framework\TestCase;
 
@@ -36,6 +38,74 @@ class EntityTest extends TestCase
         $this->assertTrue($e->getFields()->has('id'));
         $e->getFields()->remove('id');
         $this->assertFalse($e->getFields()->has('id'));
+    }
+
+    public function testPrimaryFields(): void
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('id', (new Field())->setPrimary(true));
+        $e->getFields()->set('name', new Field());
+        $e->getFields()->set('alternate_primary', (new Field())->setType('primary'));
+        $e->getFields()->set('another_primary', (new Field())->setType('bigPrimary'));
+
+        $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryFields()->getNames());
+        $this->assertTrue($e->hasPrimaryKey());
+    }
+
+    public function testSetPrimaryKeys(): void
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id'));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryColumns(['id', 'slug']);
+
+        $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
+    }
+
+    public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn(): void
+    {
+        $this->expectException(FieldException::class);
+        $this->expectErrorMessage('Undefined field with column name `test`.');
+
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id'));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryColumns(['test', 'test1', 'slug']);
+    }
+
+    public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
+    {
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('id', new Field());
+
+        $this->assertSame([], $e->getPrimaryFields()->getNames());
+        $this->assertFalse($e->hasPrimaryKey());
+    }
+
+    public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches(): void
+    {
+        $this->expectException(EntityException::class);
+        $this->expectErrorMessage('Ambiguous primary key definition for `role`.');
+
+        $e = new Entity();
+        $e->setRole('role');
+
+        $e->getFields()->set('p_id', (new Field())->setColumn('id')->setPrimary(true));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryColumns(['id', 'slug']);
+
+        $e->getPrimaryFields();
     }
 
     public function testFieldOptions(): void

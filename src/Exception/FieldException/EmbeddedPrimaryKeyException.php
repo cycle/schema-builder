@@ -10,7 +10,6 @@ use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
 final class EmbeddedPrimaryKeyException extends FieldException implements FriendlyExceptionInterface
 {
-
     public function __construct(Entity $embed, string $fieldName)
     {
         parent::__construct("Entity `{$embed->getRole()}` has conflicted field `{$fieldName}`.");

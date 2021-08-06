@@ -1,17 +1,12 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\MySQL;
 
-class HasOneRelationTest extends \Cycle\Schema\Tests\Relation\HasOneRelationTest
+use Cycle\Schema\Tests\Relation\HasOneRelationTest as BaseTest;
+
+class HasOneRelationTest extends BaseTest
 {
     public const DRIVER = 'mysql';
 }

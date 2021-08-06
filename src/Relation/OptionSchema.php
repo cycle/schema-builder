@@ -145,19 +145,26 @@ final class OptionSchema
             return $value;
         }
 
-        return $this->calculate($option, $value);
+        $value = $this->calculate($option, $value);
+
+        if (strpos($value, '|') !== false) {
+            return array_filter(explode('|', $value));
+        }
+
+        return $value;
     }
 
     /**
      * Calculate option value using templating.
      *
-     * @param int    $option
+     * @param int $option
      * @param string $value
      * @return string
      */
     private function calculate(int $option, string $value): string
     {
         foreach ($this->context as $name => $ctxValue) {
+            $ctxValue = is_array($ctxValue) ? implode('|', $ctxValue) . '|' : $ctxValue;
             $value = $this->injectValue($name, $ctxValue, $value);
         }
 
@@ -172,7 +179,7 @@ final class OptionSchema
 
     /**
      * @param string $name
-     * @param int    $option
+     * @param int $option
      * @param string $target
      * @return string
      */
@@ -182,7 +189,15 @@ final class OptionSchema
             return $target;
         }
 
-        return str_replace("{{$name}}", $this->get($option), $target);
+        $name = "{{$name}}";
+        $replace = $this->get($option);
+        if (is_array($replace)) {
+            return implode('|', array_map(static function (string $replace) use ($name, $target) {
+                return str_replace($name, $replace, $target);
+            }, $replace));
+        }
+
+        return str_replace($name, $replace, $target);
     }
 
     /**

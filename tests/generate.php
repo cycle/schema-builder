@@ -19,7 +19,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 $tokenizer = new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
     'directories' => [__DIR__],
-    'exclude'     => []
+    'exclude'     => [__DIR__ . '/Schema/Relation/Traits']
 ]));
 
 $databases = [
@@ -53,27 +53,28 @@ foreach ($classes as $class) {
     echo "Found {$class->getName()}\n";
     foreach ($databases as $driver => $details) {
         $filename = sprintf('%s/%s.php', $details['directory'], $class->getShortName());
+        $baseTestName = 'BaseTest';
 
         file_put_contents(
             $filename,
             sprintf(
-                '<?php
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
+                "<?php
+
 declare(strict_types=1);
+
 namespace %s;
 
-class %s extends \%s
+use %s;
+
+class %s extends %s
 {
-    const DRIVER = "%s";
-}',
+    public const DRIVER = '%s';
+}
+",
                 $details['namespace'],
+                $class->getName() . ' as ' . $baseTestName,
                 $class->getShortName(),
-                $class->getName(),
+                $baseTestName,
                 $driver
             )
         );

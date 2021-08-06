@@ -23,8 +23,8 @@ class TagContext
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
-            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+            'p_id',
+            (new Field())->setType('bigPrimary')->setColumn('id')->setPrimary(true)
         );
 
         return $entity;

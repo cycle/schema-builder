@@ -61,11 +61,11 @@ final class MorphedHasMany extends RelationSchema
         $target = $registry->getEntity($this->target);
 
         // create target outer field
-        $this->ensureField(
+        $this->createRelatedFields(
+            $source,
+            Relation::INNER_KEY,
             $target,
-            $this->options->get(Relation::OUTER_KEY),
-            $this->getField($source, Relation::INNER_KEY),
-            $this->options->get(Relation::NULLABLE)
+            Relation::OUTER_KEY
         );
 
         // create target outer field
@@ -77,20 +77,12 @@ final class MorphedHasMany extends RelationSchema
         );
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function render(Registry $registry): void
     {
         $target = $registry->getEntity($this->target);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
+        $morphFields = $this->getFields($target, Relation::MORPH_KEY);
 
-        $outerField = $this->getField($target, Relation::OUTER_KEY);
-        $morphField = $this->getField($target, Relation::MORPH_KEY);
-
-        $table = $registry->getTableSchema($target);
-
-        if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$outerField->getColumn(), $morphField->getColumn()]);
-        }
+        $this->mergeIndex($registry, $target, $outerFields, $morphFields);
     }
 }

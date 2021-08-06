@@ -13,6 +13,7 @@ namespace Cycle\Schema\Definition\Map;
 
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\FieldException;
+use Traversable;
 
 /**
  * Manage the set of fields associated with the entity.
@@ -41,6 +42,24 @@ final class FieldMap implements \IteratorAggregate, \Countable
     }
 
     /**
+     * Get field column names
+     */
+    public function getColumnNames(): array
+    {
+        return array_values(array_map(static function (Field $field) {
+            return $field->getColumn();
+        }, $this->fields));
+    }
+
+    /**
+     * Get property names
+     */
+    public function getNames(): array
+    {
+        return array_keys($this->fields);
+    }
+
+    /**
      * @param string $name
      * @return bool
      */
@@ -50,8 +69,21 @@ final class FieldMap implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param string $name
-     * @return Field
+     * Check if field with given column name exist
+     */
+    public function hasColumn(string $name): bool
+    {
+        foreach ($this->fields as $field) {
+            if ($field->getColumn() === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get field by property name
      */
     public function get(string $name): Field
     {
@@ -60,6 +92,34 @@ final class FieldMap implements \IteratorAggregate, \Countable
         }
 
         return $this->fields[$name];
+    }
+
+    /**
+     * Get property name by column name
+     */
+    public function getKeyByColumnName(string $name): string
+    {
+        foreach ($this->fields as $key => $field) {
+            if ($field->getColumn() === $name) {
+                return $key;
+            }
+        }
+
+        throw new FieldException("Undefined field with column name `{$name}`.");
+    }
+
+    /**
+     * Get field by column name
+     */
+    public function getByColumnName(string $name): Field
+    {
+        foreach ($this->fields as $field) {
+            if ($field->getColumn() === $name) {
+                return $field;
+            }
+        }
+
+        throw new FieldException("Undefined field with column name `{$name}`.");
     }
 
     /**
@@ -89,9 +149,9 @@ final class FieldMap implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return Field[]|\Traversable
+     * @return Field[]|Traversable
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->fields);
     }

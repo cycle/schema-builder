@@ -23,8 +23,20 @@ class In2 implements ParentInterface
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'uuid',
-            (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+            'p_id',
+            (new Field())->setType('primary')->setColumn('uuid')->setPrimary(true)
+        );
+
+        return $entity;
+    }
+
+    public static function defineCompositePK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'p_slug',
+            (new Field())->setType('string')->setColumn('slug')->setPrimary(true)
         );
 
         return $entity;

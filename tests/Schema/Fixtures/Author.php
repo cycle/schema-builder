@@ -23,13 +23,34 @@ class Author implements AuthorInterface, ParentInterface
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
         );
 
         $entity->getFields()->set(
-            'name',
+            'p_name',
             (new Field())->setType('string(32)')->setColumn('author_name')
+        );
+
+        return $entity;
+    }
+
+    public static function defineWithoutPK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        return $entity;
+    }
+
+    public static function defineCompositePK(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'p_slug',
+            (new Field())->setType('string')->setColumn('slug')->setPrimary(true)
         );
 
         return $entity;

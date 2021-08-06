@@ -16,6 +16,7 @@ use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\FieldException\EmbeddedPrimaryKeyException;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
@@ -44,6 +45,26 @@ abstract class EmbeddedTest extends BaseTest
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
 
         $this->assertInstanceOf(Embedded::class, $r->getRelation($c, 'embedded'));
+    }
+
+    public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Entity `composite` must have defined primary key');
+
+        $c = Composite::defineWithoutPk();
+        $e = EmbeddedEntity::define();
+
+        $c->getRelations()->set(
+            'embedded',
+            (new Relation())->setTarget('embedded')->setType('embedded')
+        );
+
+        $r = new Registry($this->dbal);
+        $r->register($c)->linkTable($c, 'default', 'composite');
+        $r->register($e);
+
+        (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
     }
 
     public function testPackSchema(): void
@@ -78,13 +99,13 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
-            'embedded' => 'embedded_column',
-            'id'       => 'id'
+            'p_embedded' => 'embedded_column',
+            'p_id'       => 'id'
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -122,13 +143,13 @@ abstract class EmbeddedTest extends BaseTest
         );
 
         $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame('id', $schema['composite:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
         $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
         $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
 
         $this->assertSame([
-            'embedded' => 'embedded_column',
-            'id'       => 'id'
+            'p_embedded' => 'embedded_column',
+            'p_id'       => 'id'
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -168,7 +189,7 @@ abstract class EmbeddedTest extends BaseTest
         $c = Composite::define();
         $e = EmbeddedEntity::define();
 
-        $e->getFields()->set('id', (new Field())->setColumn('embedded_id')->setType('int'));
+        $e->getFields()->set('p_id', (new Field())->setColumn('embedded_id')->setType('int'));
 
         $c->getRelations()->set(
             'embedded',
@@ -180,7 +201,7 @@ abstract class EmbeddedTest extends BaseTest
         $r->register($e);
 
         $this->expectException(EmbeddedPrimaryKeyException::class);
-        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `id`.');
+        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `p_id`.');
 
         (new Compiler())->compile(
             $r,

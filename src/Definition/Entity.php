@@ -14,6 +14,7 @@ namespace Cycle\Schema\Definition;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
+use Cycle\Schema\Exception\EntityException;
 
 /**
  * Contains information about specific entity definition.
@@ -23,7 +24,7 @@ final class Entity
     /** @var OptionMap */
     private $options;
 
-    /** @var string */
+    /** @var string|null */
     private $role;
 
     /** @var string|null */
@@ -50,13 +51,14 @@ final class Entity
     /** @var array */
     private $schema = [];
 
-    /**
-     * Entity constructor.
-     */
+    /** @var FieldMap */
+    private $primaryFields;
+
     public function __construct()
     {
         $this->options = new OptionMap();
         $this->fields = new FieldMap();
+        $this->primaryFields = new FieldMap();
         $this->relations = new RelationMap();
     }
 
@@ -67,21 +69,15 @@ final class Entity
     {
         $this->options = clone $this->options;
         $this->fields = clone $this->fields;
+        $this->primaryFields = clone $this->primaryFields;
         $this->relations = clone $this->relations;
     }
 
-    /**
-     * @return OptionMap
-     */
     public function getOptions(): OptionMap
     {
         return $this->options;
     }
 
-    /**
-     * @param string $role
-     * @return Entity
-     */
     public function setRole(string $role): self
     {
         $this->role = $role;
@@ -89,18 +85,11 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /***
-     * @param string $class
-     * @return Entity
-     */
     public function setClass(string $class): self
     {
         $this->class = $class;
@@ -108,18 +97,11 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getClass(): ?string
     {
         return $this->class;
     }
 
-    /**
-     * @param string|null $mapper
-     * @return Entity
-     */
     public function setMapper(?string $mapper): self
     {
         $this->mapper = $mapper;
@@ -127,18 +109,11 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMapper(): ?string
     {
         return $this->normalizeClass($this->mapper);
     }
 
-    /**
-     * @param string|null $source
-     * @return Entity
-     */
     public function setSource(?string $source): self
     {
         $this->source = $source;
@@ -146,18 +121,11 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSource(): ?string
     {
         return $this->normalizeClass($this->source);
     }
 
-    /**
-     * @param string|null $constrain
-     * @return Entity
-     */
     public function setConstrain(?string $constrain): self
     {
         $this->constrain = $constrain;
@@ -165,18 +133,11 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getConstrain(): ?string
     {
         return $this->normalizeClass($this->constrain);
     }
 
-    /**
-     * @param string|null $repository
-     * @return Entity
-     */
     public function setRepository(?string $repository): self
     {
         $this->repository = $repository;
@@ -184,34 +145,21 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRepository(): ?string
     {
         return $this->normalizeClass($this->repository);
     }
 
-    /**
-     * @return FieldMap
-     */
     public function getFields(): FieldMap
     {
         return $this->fields;
     }
 
-    /**
-     * @return RelationMap
-     */
     public function getRelations(): RelationMap
     {
         return $this->relations;
     }
 
-    /**
-     * @param array $schema
-     * @return Entity
-     */
     public function setSchema(array $schema): Entity
     {
         $this->schema = $schema;
@@ -219,9 +167,6 @@ final class Entity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getSchema(): array
     {
         return $this->schema;
@@ -229,8 +174,6 @@ final class Entity
 
     /**
      * Merge entity relations and fields.
-     *
-     * @param Entity $entity
      */
     public function merge(Entity $entity): void
     {
@@ -248,9 +191,66 @@ final class Entity
     }
 
     /**
-     * @param string|null $class
-     * @return string|null
+     * Check if entity has primary key
      */
+    public function hasPrimaryKey(): bool
+    {
+        if ($this->primaryFields->count() > 0) {
+            return true;
+        }
+
+        foreach ($this->getFields() as $field) {
+            if ($field->isPrimary()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Set primary key using column list
+     *
+     * @param string[] $columns
+     */
+    public function setPrimaryColumns(array $columns): void
+    {
+        $this->primaryFields = new FieldMap();
+
+        foreach ($columns as $column) {
+            $name = $this->fields->getKeyByColumnName($column);
+            $this->primaryFields->set($name, $this->fields->get($name));
+        }
+    }
+
+    /**
+     * Get entity primary key property names
+     */
+    public function getPrimaryFields(): FieldMap
+    {
+        $map = new FieldMap();
+
+        foreach ($this->getFields() as $name => $field) {
+            if ($field->isPrimary()) {
+                $map->set($name, $field);
+            }
+        }
+
+        if ($this->primaryFields->count() === 0 xor $map->count() === 0) {
+            return $map->count() === 0 ? $this->primaryFields : $map;
+        }
+
+        if (
+            $this->primaryFields->count() !== $map->count()
+            || array_diff($map->getColumnNames(), $this->primaryFields->getColumnNames()) !== []
+        ) {
+            // todo make friendly exception
+            throw new EntityException("Ambiguous primary key definition for `{$this->getRole()}`.");
+        }
+
+        return $this->primaryFields;
+    }
+
     private function normalizeClass(string $class = null): ?string
     {
         if ($class === null) {

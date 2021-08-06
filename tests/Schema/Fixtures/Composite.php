@@ -23,8 +23,22 @@ class Composite
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'id',
+            'p_id',
             (new Field())->setType('primary')->setColumn('id')->setPrimary(true)
+        );
+
+        return $entity;
+    }
+
+    public static function defineWithoutPk(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->remove('p_id');
+
+        $entity->getFields()->set(
+            'p_id',
+            (new Field())->setColumn('id')
         );
 
         return $entity;

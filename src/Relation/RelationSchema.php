@@ -16,6 +16,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\RelationInterface;
+use Cycle\Schema\Tests\Fixtures\Plain;
 
 /**
  * Defines relation options, renders needed columns and other options.
@@ -65,18 +66,15 @@ abstract class RelationSchema implements RelationInterface
         return $relation;
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
+            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source))
         ]);
 
         if ($registry->hasEntity($this->target)) {
             $this->options = $this->options->withContext([
-                'target:primaryKey' => $this->getPrimary($registry->getEntity($this->target))
+                'target:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->target))
             ]);
         }
     }
@@ -107,9 +105,6 @@ abstract class RelationSchema implements RelationInterface
         ];
     }
 
-    /**
-     * @return int|null
-     */
     protected function getLoadMethod(): ?int
     {
         if (!$this->options->has(Relation::LOAD)) {
@@ -125,28 +120,22 @@ abstract class RelationSchema implements RelationInterface
         }
     }
 
-    /**
-     * @return OptionSchema
-     */
     protected function getOptions(): OptionSchema
     {
         return $this->options;
     }
 
     /**
-     * @param Entity $entity
-     * @return string
-     *
      * @throws RegistryException
      */
-    protected function getPrimary(Entity $entity): string
+    protected function getPrimaryColumns(Entity $entity): array
     {
-        foreach ($entity->getFields() as $name => $field) {
-            if ($field->isPrimary()) {
-                return $name;
-            }
+        $columns = $entity->getPrimaryFields()->getColumnNames();
+
+        if ($columns == []) {
+            throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
         }
 
-        throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
+        return $columns;
     }
 }
