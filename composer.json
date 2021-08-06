@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Cycle ORM Schema Builder",
   "require": {
-    "php": ">=7.2",
+    "php": "^8.0",
     "cycle/orm": "2.0.x-dev",
     "yiisoft/friendly-exception": "^1.0"
   },
