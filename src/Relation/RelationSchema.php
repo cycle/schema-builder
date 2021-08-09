@@ -134,6 +134,8 @@ abstract class RelationSchema implements RelationInterface
     }
 
     /**
+     * @deprecated will be replaced with Entity::getPrimaryFields since v2.0
+     *
      * @param Entity $entity
      * @return string
      *
