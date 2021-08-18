@@ -73,24 +73,25 @@ trait MorphTrait
     /**
      * @param Entity $target
      * @param string $name
-     * @param int    $lenght
+     * @param int    $length
      * @param bool   $nullable
      */
-    protected function ensureMorphField(Entity $target, string $name, int $lenght, bool $nullable = false): void
+    protected function ensureMorphField(Entity $target, string $name, int $length, bool $nullable = false): void
     {
         if ($target->getFields()->has($name)) {
-            // field already exists and defined by the user
-            return;
+            // field already exists and defined previously or by the user
+            $field = $target->getFields()->get($name);
+        } else {
+            $field = new Field();
+            $field->setColumn($name);
+            $field->setType(sprintf('string(%s)', $length));
+
+            $target->getFields()->set($name, $field);
         }
 
-        $field = new Field();
-        $field->setColumn($name);
-        $field->setType(sprintf('string(%s)', $lenght));
-
+        // If on of relations requires nullable type then making it nullable
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
-
-        $target->getFields()->set($name, $field);
     }
 }

@@ -55,30 +55,31 @@ trait FieldTrait
         $outer->setReferenced(true);
 
         if ($target->getFields()->has($name)) {
-            // field already exists and defined by the user
-            return;
+            // field already exists and defined previously or by the user
+            $field = $target->getFields()->get($name);
+        } else {
+            $field = new Field();
+            $field->setColumn($name);
+            $field->setTypecast($outer->getTypecast());
+
+            switch ($outer->getType()) {
+                case 'primary':
+                    $field->setType('int');
+                    break;
+                case 'bigPrimary':
+                    $field->setType('bigint');
+                    break;
+                default:
+                    $field->setType($outer->getType());
+            }
+
+            $target->getFields()->set($name, $field);
         }
 
-        $field = new Field();
-        $field->setColumn($name);
-        $field->setTypecast($outer->getTypecast());
-
-        switch ($outer->getType()) {
-            case 'primary':
-                $field->setType('int');
-                break;
-            case 'bigPrimary':
-                $field->setType('bigint');
-                break;
-            default:
-                $field->setType($outer->getType());
-        }
-
+        // If on of relations requires nullable type then making it nullable
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
-
-        $target->getFields()->set($name, $field);
     }
 
     /**
