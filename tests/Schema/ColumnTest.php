@@ -14,7 +14,7 @@ namespace Cycle\Schema\Tests;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\ColumnException;
 use Cycle\Schema\Table\Column;
-use Spiral\Database\Schema\AbstractTable;
+use Cycle\Database\Schema\AbstractTable;
 
 abstract class ColumnTest extends BaseTest
 {

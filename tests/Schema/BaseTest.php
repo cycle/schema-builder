@@ -17,11 +17,11 @@ use Cycle\ORM\ORM;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Tests\Fixtures\TestLogger;
 use PHPUnit\Framework\TestCase;
-use Spiral\Database\Config\DatabaseConfig;
-use Spiral\Database\Database;
-use Spiral\Database\DatabaseManager;
-use Spiral\Database\Driver\Driver;
-use Spiral\Database\Driver\Handler;
+use Cycle\Database\Config\DatabaseConfig;
+use Cycle\Database\Database;
+use Cycle\Database\DatabaseManager;
+use Cycle\Database\Driver\Driver;
+use Cycle\Database\Driver\Handler;
 
 abstract class BaseTest extends TestCase
 {

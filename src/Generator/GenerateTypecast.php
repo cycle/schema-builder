@@ -14,7 +14,7 @@ namespace Cycle\Schema\Generator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Spiral\Database\Schema\AbstractColumn;
+use Cycle\Database\Schema\AbstractColumn;
 
 /**
  * Must be run after RenderTable.

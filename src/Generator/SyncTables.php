@@ -14,7 +14,7 @@ namespace Cycle\Schema\Generator;
 use Cycle\Schema\Exception\SyncException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Spiral\Database\Schema\Reflector;
+use Cycle\Database\Schema\Reflector;
 
 /**
  * Sync table schemas with database.

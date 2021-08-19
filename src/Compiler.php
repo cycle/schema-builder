@@ -18,7 +18,7 @@ use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
-use Spiral\Database\Exception\CompilerException;
+use Cycle\Database\Exception\CompilerException;
 
 final class Compiler
 {

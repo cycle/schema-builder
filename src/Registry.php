@@ -14,9 +14,9 @@ namespace Cycle\Schema;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
-use Spiral\Database\DatabaseProviderInterface;
-use Spiral\Database\Exception\DBALException;
-use Spiral\Database\Schema\AbstractTable;
+use Cycle\Database\DatabaseProviderInterface;
+use Cycle\Database\Exception\DBALException;
+use Cycle\Database\Schema\AbstractTable;
 use Traversable;
 
 final class Registry implements \IteratorAggregate

@@ -13,7 +13,7 @@ namespace Cycle\Schema\Table;
 
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\ColumnException;
-use Spiral\Database\Schema\AbstractColumn;
+use Cycle\Database\Schema\AbstractColumn;
 
 /**
  * Carries information about column definition.

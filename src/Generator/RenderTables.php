@@ -16,8 +16,8 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\Column;
-use Spiral\Database\Schema\AbstractTable;
-use Spiral\Database\Schema\Reflector;
+use Cycle\Database\Schema\AbstractTable;
+use Cycle\Database\Schema\Reflector;
 
 /**
  * Generate table columns based on entity definition.
