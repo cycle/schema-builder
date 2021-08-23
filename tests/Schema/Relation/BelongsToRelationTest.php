@@ -251,4 +251,67 @@ abstract class BelongsToRelationTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
+
+    public function testRelatedFieldShouldBeCreated()
+    {
+        $e = Post::define();
+        $u = Author::define();
+
+        $e->getRelations()->get('author')->setInverse('post', 'hasMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany'   => new HasMany()]),
+        ]);
+
+        $this->assertTrue($e->getFields()->has('author_id'));
+        $this->assertFalse($e->getFields()->get('author_id')->getOptions()->has('nullable'));
+    }
+
+    public function testRelatedFieldShouldBeNullableIfBelongsToHasNullableOption()
+    {
+        $e = Post::define();
+        $u = Author::define();
+
+        $e->getRelations()->get('author')->setInverse('post', 'hasMany')->getOptions()->set('nullable', true);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()]),
+        ]);
+
+        $this->assertTrue($e->getFields()->has('author_id'));
+        $this->assertTrue($e->getFields()->get('author_id')->getOptions()->get('nullable'));
+    }
+
+    public function testRelatedFieldShouldBeNullableIHasManyHasNullableOption()
+    {
+        $e = Post::define();
+        $u = Author::define();
+
+        $hasMany = (new \Cycle\Schema\Definition\Relation())
+            ->setTarget(Post::class)
+            ->setType('hasMany')
+            ->setInverse('author', 'belongsTo');
+        $hasMany->getOptions()->set('nullable', true);
+        $u->getRelations()->set('posts', $hasMany);
+        $e->getRelations()->get('author')->setInverse('post', 'hasMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()]),
+        ]);
+
+        $this->assertTrue($e->getFields()->has('author_id'));
+        $this->assertTrue($e->getFields()->get('author_id')->getOptions()->get('nullable'));
+    }
 }
