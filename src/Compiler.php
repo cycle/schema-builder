@@ -30,7 +30,7 @@ final class Compiler
         Schema::MAPPER => Mapper::class,
         Schema::REPOSITORY => Repository::class,
         Schema::SOURCE => Source::class,
-        Schema::CONSTRAIN => null,
+        Schema::SCOPE => null,
     ];
 
     /** @var \Doctrine\Inflector\Inflector */
