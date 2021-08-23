@@ -263,7 +263,9 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        (new Compiler())->compile($r, [new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany'   => new HasMany()])]);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany'   => new HasMany()]),
+        ]);
 
         $this->assertTrue($e->getFields()->has('author_id'));
         $this->assertFalse($e->getFields()->get('author_id')->getOptions()->has('nullable'));
@@ -280,7 +282,9 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        (new Compiler())->compile($r, [new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()])]);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()]),
+        ]);
 
         $this->assertTrue($e->getFields()->has('author_id'));
         $this->assertTrue($e->getFields()->get('author_id')->getOptions()->get('nullable'));
@@ -291,7 +295,10 @@ abstract class BelongsToRelationTest extends BaseTest
         $e = Post::define();
         $u = Author::define();
 
-        $hasMany = (new \Cycle\Schema\Definition\Relation())->setTarget(Post::class)->setType('hasMany')->setInverse('author', 'belongsTo');
+        $hasMany = (new \Cycle\Schema\Definition\Relation())
+            ->setTarget(Post::class)
+            ->setType('hasMany')
+            ->setInverse('author', 'belongsTo');
         $hasMany->getOptions()->set('nullable', true);
         $u->getRelations()->set('posts', $hasMany);
         $e->getRelations()->get('author')->setInverse('post', 'hasMany');
@@ -300,7 +307,9 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        (new Compiler())->compile($r, [new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()])]);
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo(), 'hasMany' => new HasMany()]),
+        ]);
 
         $this->assertTrue($e->getFields()->has('author_id'));
         $this->assertTrue($e->getFields()->get('author_id')->getOptions()->get('nullable'));
