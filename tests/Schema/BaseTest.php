@@ -90,7 +90,8 @@ abstract class BaseTest extends TestCase
             new Factory(
                 $this->dbal,
                 RelationConfig::getDefault()
-            ), new Schema([])
+            ),
+            new Schema([])
         );
     }
 
