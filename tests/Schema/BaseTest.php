@@ -14,6 +14,7 @@ namespace Cycle\Schema\Tests;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORM;
+use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Tests\Fixtures\TestLogger;
 use PHPUnit\Framework\TestCase;
@@ -89,7 +90,7 @@ abstract class BaseTest extends TestCase
             new Factory(
                 $this->dbal,
                 RelationConfig::getDefault()
-            )
+            ), new Schema([])
         );
     }
 
