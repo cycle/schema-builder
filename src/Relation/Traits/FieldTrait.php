@@ -23,6 +23,7 @@ trait FieldTrait
     /**
      * @param Entity $entity
      * @param int $field
+     *
      * @return Field
      */
     protected function getField(Entity $entity, int $field): Field

@@ -22,6 +22,7 @@ trait MorphTrait
     /**
      * @param Registry $registry
      * @param string   $interface
+     *
      * @return \Generator
      */
     protected function findTargets(Registry $registry, string $interface): \Generator
@@ -39,9 +40,10 @@ trait MorphTrait
     /**
      * @param Registry $registry
      * @param string   $interface
-     * @return array Tuple [name, Field]
      *
      * @throws RelationException
+     *
+     * @return array Tuple [name, Field]
      */
     protected function findOuterKey(Registry $registry, string $interface): array
     {
@@ -53,7 +55,7 @@ trait MorphTrait
             $primaryKey = $this->getPrimary($entity);
             $primaryField = $entity->getFields()->get($primaryKey);
 
-            if (is_null($field)) {
+            if (null === $field) {
                 $key = $primaryKey;
                 $field = $primaryField;
             } else {
@@ -63,7 +65,7 @@ trait MorphTrait
             }
         }
 
-        if (is_null($field)) {
+        if (null === $field) {
             throw new RelationException('Unable to find morphed parent');
         }
 

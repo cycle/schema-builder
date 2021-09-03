@@ -53,19 +53,19 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'plain' => [
-                Schema::ENTITY       => Plain::class,
-                Schema::MAPPER       => Mapper::class,
-                Schema::SOURCE       => Source::class,
-                Schema::REPOSITORY   => Repository::class,
-                Schema::DATABASE     => 'default',
-                Schema::TABLE        => 'plain',
-                Schema::PRIMARY_KEY  => 'id',
+                Schema::ENTITY => Plain::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'plain',
+                Schema::PRIMARY_KEY => 'id',
                 Schema::FIND_BY_KEYS => ['id'],
-                Schema::COLUMNS      => ['id' => 'id'],
-                Schema::RELATIONS    => [],
-                Schema::CONSTRAIN    => null,
-                Schema::TYPECAST     => [],
-                Schema::SCHEMA       => []
+                Schema::COLUMNS => ['id' => 'id'],
+                Schema::RELATIONS => [],
+                Schema::CONSTRAIN => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
             ],
         ], $schema);
     }
@@ -112,25 +112,25 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'user' => [
-                Schema::ENTITY       => User::class,
-                Schema::MAPPER       => Mapper::class,
-                Schema::SOURCE       => Source::class,
-                Schema::REPOSITORY   => Repository::class,
-                Schema::DATABASE     => 'default',
-                Schema::TABLE        => 'user',
-                Schema::PRIMARY_KEY  => 'id',
+                Schema::ENTITY => User::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'user',
+                Schema::PRIMARY_KEY => 'id',
                 Schema::FIND_BY_KEYS => ['id'],
-                Schema::COLUMNS      => [
-                    'id'         => 'id',
-                    'name'       => 'user_name',
-                    'active'     => 'active',
-                    'balance'    => 'balance',
-                    'created_at' => 'created_at'
+                Schema::COLUMNS => [
+                    'id' => 'id',
+                    'name' => 'user_name',
+                    'active' => 'active',
+                    'balance' => 'balance',
+                    'created_at' => 'created_at',
                 ],
-                Schema::RELATIONS    => [],
-                Schema::CONSTRAIN    => null,
-                Schema::TYPECAST     => [],
-                Schema::SCHEMA       => []
+                Schema::RELATIONS => [],
+                Schema::CONSTRAIN => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
             ],
         ], $c->getSchema());
     }

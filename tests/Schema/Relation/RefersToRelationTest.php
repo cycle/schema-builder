@@ -53,7 +53,7 @@ abstract class RefersToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['refersTo' => new RefersTo()])
+            new GenerateRelations(['refersTo' => new RefersTo()]),
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -79,7 +79,7 @@ abstract class RefersToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['refersTo' => new RefersTo()])
+            new GenerateRelations(['refersTo' => new RefersTo()]),
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -103,7 +103,7 @@ abstract class RefersToRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['refersTo' => new RefersTo()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -131,7 +131,7 @@ abstract class RefersToRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['refersTo' => new RefersTo()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!

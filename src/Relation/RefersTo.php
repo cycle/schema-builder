@@ -30,24 +30,24 @@ final class RefersTo extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE => true,
 
         // do not pre-load relation by default
-        Relation::LOAD               => Relation::LOAD_PROMISE,
+        Relation::LOAD => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE           => true,
+        Relation::NULLABLE => true,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY          => '{relation}_{outerKey}',
+        Relation::INNER_KEY => '{relation}_{outerKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY          => '{target:primaryKey}',
+        Relation::OUTER_KEY => '{target:primaryKey}',
 
         // rendering options
         RelationSchema::INDEX_CREATE => true,
-        RelationSchema::FK_CREATE    => true,
-        RelationSchema::FK_ACTION    => 'SET NULL'
+        RelationSchema::FK_CREATE => true,
+        RelationSchema::FK_ACTION => 'SET NULL',
     ];
 
     /**

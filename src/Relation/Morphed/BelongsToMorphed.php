@@ -31,26 +31,26 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE                => true,
+        Relation::CASCADE => true,
 
         // do not pre-load relation by default
-        Relation::LOAD                   => Relation::LOAD_PROMISE,
+        Relation::LOAD => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE               => true,
+        Relation::NULLABLE => true,
 
         // default field name for inner key
-        Relation::OUTER_KEY              => '{target:primaryKey}',
+        Relation::OUTER_KEY => '{target:primaryKey}',
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY              => '{relation}_{outerKey}',
+        Relation::INNER_KEY => '{relation}_{outerKey}',
 
         // link to parent entity primary key by default
-        Relation::MORPH_KEY              => '{relation}_role',
+        Relation::MORPH_KEY => '{relation}_role',
 
         // rendering options
-        RelationSchema::INDEX_CREATE     => true,
-        RelationSchema::MORPH_KEY_LENGTH => 32
+        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::MORPH_KEY_LENGTH => 32,
     ];
 
     /**
@@ -60,12 +60,12 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     {
         // compute local key
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source))
+            'source:primaryKey' => $this->getPrimary($registry->getEntity($this->source)),
         ]);
 
         $source = $registry->getEntity($this->source);
 
-        list($outerKey, $outerField) = $this->findOuterKey($registry, $this->target);
+        [$outerKey, $outerField] = $this->findOuterKey($registry, $this->target);
 
         // register primary key reference
         $this->options = $this->options->withContext(['target:primaryKey' => $outerKey]);
@@ -105,6 +105,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
 
     /**
      * @param Registry $registry
+     *
      * @return array
      */
     public function inverseTargets(Registry $registry): array
@@ -116,9 +117,10 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
      * @param RelationInterface $relation
      * @param string            $into
      * @param int|null          $load
-     * @return RelationInterface
      *
      * @throws RelationException
+     *
+     * @return RelationInterface
      */
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
@@ -133,7 +135,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD      => $load,
+                Relation::LOAD => $load,
                 Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
                 Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
             ])

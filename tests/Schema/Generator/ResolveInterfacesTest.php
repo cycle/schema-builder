@@ -40,7 +40,7 @@ abstract class ResolveInterfacesTest extends BaseTest
 
         $schema = (new Compiler())->compile($r, [
             new ResolveInterfaces(),
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -65,7 +65,7 @@ abstract class ResolveInterfacesTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
     }
 
@@ -84,7 +84,7 @@ abstract class ResolveInterfacesTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
     }
 
@@ -106,7 +106,7 @@ abstract class ResolveInterfacesTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
     }
 }

@@ -221,7 +221,7 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         (new GenerateRelations([
             'manyToMany' => new ManyToMany(),
-            'belongsTo'  => new BelongsTo()
+            'belongsTo' => new BelongsTo(),
         ]))->run($r);
     }
 

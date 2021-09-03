@@ -20,6 +20,7 @@ final class OptionMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function has(string $name): bool
@@ -29,6 +30,7 @@ final class OptionMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return mixed
      */
     public function get(string $name)
@@ -43,6 +45,7 @@ final class OptionMap implements \IteratorAggregate
     /**
      * @param string $name
      * @param mixed  $value
+     *
      * @return OptionMap
      */
     public function set(string $name, $value): self
@@ -54,6 +57,7 @@ final class OptionMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return OptionMap
      */
     public function remove(string $name): self

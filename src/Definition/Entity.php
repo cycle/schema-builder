@@ -80,6 +80,7 @@ final class Entity
 
     /**
      * @param string $role
+     *
      * @return Entity
      */
     public function setRole(string $role): self
@@ -118,6 +119,7 @@ final class Entity
 
     /**
      * @param string|null $mapper
+     *
      * @return Entity
      */
     public function setMapper(?string $mapper): self
@@ -137,6 +139,7 @@ final class Entity
 
     /**
      * @param string|null $source
+     *
      * @return Entity
      */
     public function setSource(?string $source): self
@@ -156,6 +159,7 @@ final class Entity
 
     /**
      * @param string|null $constrain
+     *
      * @return Entity
      */
     public function setConstrain(?string $constrain): self
@@ -175,6 +179,7 @@ final class Entity
 
     /**
      * @param string|null $repository
+     *
      * @return Entity
      */
     public function setRepository(?string $repository): self
@@ -210,9 +215,10 @@ final class Entity
 
     /**
      * @param array $schema
+     *
      * @return Entity
      */
-    public function setSchema(array $schema): Entity
+    public function setSchema(array $schema): self
     {
         $this->schema = $schema;
 
@@ -232,7 +238,7 @@ final class Entity
      *
      * @param Entity $entity
      */
-    public function merge(Entity $entity): void
+    public function merge(self $entity): void
     {
         foreach ($entity->getRelations() as $name => $relation) {
             if (!$this->relations->has($name)) {
@@ -249,6 +255,7 @@ final class Entity
 
     /**
      * @param string|null $class
+     *
      * @return string|null
      */
     private function normalizeClass(string $class = null): ?string

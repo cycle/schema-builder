@@ -60,9 +60,10 @@ final class Relation
 
     /**
      * @param string $type
+     *
      * @return Relation
      */
-    public function setType(string $type): Relation
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -83,9 +84,10 @@ final class Relation
 
     /**
      * @param string $target
+     *
      * @return Relation
      */
-    public function setTarget(string $target): Relation
+    public function setTarget(string $target): self
     {
         $this->target = $target;
 
@@ -108,9 +110,10 @@ final class Relation
      * @param string $into
      * @param string $as
      * @param int    $load
+     *
      * @return Relation
      */
-    public function setInverse(string $into, string $as, ?int $load = null): Relation
+    public function setInverse(string $into, string $as, ?int $load = null): self
     {
         $this->inverse = $into;
         $this->inverseType = $as;

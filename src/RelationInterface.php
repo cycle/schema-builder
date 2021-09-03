@@ -28,16 +28,17 @@ interface RelationInterface
      * @param string       $source
      * @param string       $target
      * @param OptionSchema $options
-     * @return RelationInterface
      *
      * @throws RelationException
+     *
+     * @return RelationInterface
      */
     public function withContext(
         string $name,
         string $source,
         string $target,
         OptionSchema $options
-    ): RelationInterface;
+    ): self;
 
     /**
      * Compute relation references (column names and etc). Also ensures existence of fields in every

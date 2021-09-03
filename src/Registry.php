@@ -48,9 +48,10 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
+     *
      * @return Registry
      */
-    public function register(Entity $entity): Registry
+    public function register(Entity $entity): self
     {
         foreach ($this->entities as $e) {
             if ($e->getRole() == $entity->getRole()) {
@@ -68,6 +69,7 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param string $role Entity role of class.
+     *
      * @return bool
      */
     public function hasEntity(string $role): bool
@@ -85,9 +87,10 @@ final class Registry implements \IteratorAggregate
      * Get entity by it's role.
      *
      * @param string $role Entity role or class name.
-     * @return Entity
      *
      * @throws RegistryException
+     *
+     * @return Entity
      */
     public function getEntity(string $role): Entity
     {
@@ -134,6 +137,7 @@ final class Registry implements \IteratorAggregate
      * Get all assigned children entities.
      *
      * @param Entity $entity
+     *
      * @return Entity[]
      */
     public function getChildren(Entity $entity): array
@@ -151,12 +155,13 @@ final class Registry implements \IteratorAggregate
      * @param Entity      $entity
      * @param string|null $database
      * @param string      $table
-     * @return Registry
      *
      * @throws RegistryException
      * @throws DBALException
+     *
+     * @return Registry
      */
-    public function linkTable(Entity $entity, ?string $database, string $table): Registry
+    public function linkTable(Entity $entity, ?string $database, string $table): self
     {
         if (!$this->hasInstance($entity)) {
             throw new RegistryException("Undefined entity `{$entity->getRole()}`");
@@ -179,14 +184,14 @@ final class Registry implements \IteratorAggregate
             }
         }
 
-        if (is_null($schema)) {
+        if (null === $schema) {
             $schema = $this->dbal->database($database)->table($table)->getSchema();
         }
 
         $this->tables[$entity] = [
             'database' => $database,
-            'table'    => $table,
-            'schema'   => $schema
+            'table' => $table,
+            'schema' => $schema,
         ];
 
         return $this;
@@ -194,9 +199,10 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return bool
      *
      * @throws RegistryException
+     *
+     * @return bool
      */
     public function hasTable(Entity $entity): bool
     {
@@ -209,9 +215,10 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return string
      *
      * @throws RegistryException
+     *
+     * @return string
      */
     public function getDatabase(Entity $entity): string
     {
@@ -224,9 +231,10 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return string
      *
      * @throws RegistryException
+     *
+     * @return string
      */
     public function getTable(Entity $entity): string
     {
@@ -239,9 +247,10 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return AbstractTable
      *
      * @throws RegistryException
+     *
+     * @return AbstractTable
      */
     public function getTableSchema(Entity $entity): AbstractTable
     {
@@ -276,9 +285,10 @@ final class Registry implements \IteratorAggregate
     /**
      * @param Entity $entity
      * @param string $name
-     * @return bool
      *
      * @throws RegistryException
+     *
+     * @return bool
      */
     public function hasRelation(Entity $entity, string $name): bool
     {
@@ -292,6 +302,7 @@ final class Registry implements \IteratorAggregate
     /**
      * @param Entity $entity
      * @param string $name
+     *
      * @return RelationInterface
      */
     public function getRelation(Entity $entity, string $name): RelationInterface
@@ -307,6 +318,7 @@ final class Registry implements \IteratorAggregate
      * Get all relations assigned with given entity.
      *
      * @param Entity $entity
+     *
      * @return RelationInterface[]
      */
     public function getRelations(Entity $entity): array
@@ -320,6 +332,7 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param Entity $entity
+     *
      * @return bool
      */
     protected function hasInstance(Entity $entity): bool

@@ -30,24 +30,24 @@ final class HasOne extends RelationSchema implements InversableInterface
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE => true,
 
         // do not pre-load relation by default
-        Relation::LOAD               => Relation::LOAD_PROMISE,
+        Relation::LOAD => Relation::LOAD_PROMISE,
 
         // not nullable by default
-        Relation::NULLABLE           => false,
+        Relation::NULLABLE => false,
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY          => '{source:primaryKey}',
+        Relation::INNER_KEY => '{source:primaryKey}',
 
         // default field name for inner key
-        Relation::OUTER_KEY          => '{source:role}_{innerKey}',
+        Relation::OUTER_KEY => '{source:role}_{innerKey}',
 
         // rendering options
         RelationSchema::INDEX_CREATE => true,
-        RelationSchema::FK_CREATE    => true,
-        RelationSchema::FK_ACTION    => 'CASCADE'
+        RelationSchema::FK_CREATE => true,
+        RelationSchema::FK_ACTION => 'CASCADE',
     ];
 
     /**
@@ -93,12 +93,13 @@ final class HasOne extends RelationSchema implements InversableInterface
 
     /**
      * @param Registry $registry
+     *
      * @return array
      */
     public function inverseTargets(Registry $registry): array
     {
         return [
-            $registry->getEntity($this->target)
+            $registry->getEntity($this->target),
         ];
     }
 
@@ -106,9 +107,10 @@ final class HasOne extends RelationSchema implements InversableInterface
      * @param RelationInterface $relation
      * @param string            $into
      * @param int|null          $load
-     * @return RelationInterface
      *
      * @throws RelationException
+     *
+     * @return RelationInterface
      */
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
@@ -121,7 +123,7 @@ final class HasOne extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD      => $load,
+                Relation::LOAD => $load,
                 Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
                 Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
             ])

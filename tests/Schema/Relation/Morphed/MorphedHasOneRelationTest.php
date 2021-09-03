@@ -75,7 +75,7 @@ abstract class MorphedHasOneRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasOne' => new MorphedHasOne()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!

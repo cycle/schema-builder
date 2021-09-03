@@ -47,8 +47,8 @@ final class Compiler
      * @param Registry $registry
      * @param GeneratorInterface[] $generators
      * @param array $defaults
-     * @return array
      *
+     * @return array
      */
     public function compile(Registry $registry, array $generators = [], array $defaults = []): array
     {
@@ -96,17 +96,17 @@ final class Compiler
     protected function compute(Registry $registry, Entity $entity): void
     {
         $schema = [
-            Schema::ENTITY       => $entity->getClass(),
-            Schema::SOURCE       => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
-            Schema::MAPPER       => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
-            Schema::REPOSITORY   => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
-            Schema::CONSTRAIN    => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
-            Schema::SCHEMA       => $entity->getSchema(),
-            Schema::PRIMARY_KEY  => $this->getPrimary($entity),
-            Schema::COLUMNS      => $this->renderColumns($entity),
+            Schema::ENTITY => $entity->getClass(),
+            Schema::SOURCE => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
+            Schema::MAPPER => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
+            Schema::REPOSITORY => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
+            Schema::CONSTRAIN => $entity->getConstrain() ?? $this->defaults[Schema::CONSTRAIN],
+            Schema::SCHEMA => $entity->getSchema(),
+            Schema::PRIMARY_KEY => $this->getPrimary($entity),
+            Schema::COLUMNS => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
-            Schema::TYPECAST     => $this->renderTypecast($entity),
-            Schema::RELATIONS    => $this->renderRelations($registry, $entity)
+            Schema::TYPECAST => $this->renderTypecast($entity),
+            Schema::RELATIONS => $this->renderRelations($registry, $entity),
         ];
 
         if ($registry->hasTable($entity)) {
@@ -126,6 +126,7 @@ final class Compiler
 
     /**
      * @param Entity $entity
+     *
      * @return array
      */
     protected function renderColumns(Entity $entity): array
@@ -167,6 +168,7 @@ final class Compiler
 
     /**
      * @param Entity $entity
+     *
      * @return array
      */
     protected function renderTypecast(Entity $entity): array
@@ -183,6 +185,7 @@ final class Compiler
 
     /**
      * @param Entity $entity
+     *
      * @return array
      */
     protected function renderReferences(Entity $entity): array
@@ -201,6 +204,7 @@ final class Compiler
     /**
      * @param Registry $registry
      * @param Entity   $entity
+     *
      * @return array
      */
     protected function renderRelations(Registry $registry, Entity $entity): array
@@ -217,6 +221,7 @@ final class Compiler
      * @deprecated will be replaced with Entity::getPrimaryFields since v2.0
      *
      * @param Entity $entity
+     *
      * @return string|null
      */
     protected function getPrimary(Entity $entity): ?string
@@ -234,6 +239,7 @@ final class Compiler
      * Return the unique alias for the child entity.
      *
      * @param Entity $entity
+     *
      * @return string
      */
     protected function childAlias(Entity $entity): string

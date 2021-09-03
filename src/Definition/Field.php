@@ -75,9 +75,10 @@ final class Field
 
     /**
      * @param string $type
+     *
      * @return Field
      */
-    public function setType(string $type): Field
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -86,9 +87,10 @@ final class Field
 
     /**
      * @param bool $primary
+     *
      * @return Field
      */
-    public function setPrimary(bool $primary): Field
+    public function setPrimary(bool $primary): self
     {
         $this->primary = $primary;
 
@@ -105,9 +107,10 @@ final class Field
 
     /**
      * @param string $column
+     *
      * @return Field
      */
-    public function setColumn(string $column): Field
+    public function setColumn(string $column): self
     {
         $this->column = $column;
 
@@ -115,9 +118,9 @@ final class Field
     }
 
     /**
-     * @return string
-     *
      * @throws FieldException
+     *
+     * @return string
      */
     public function getColumn(): string
     {
@@ -130,6 +133,7 @@ final class Field
 
     /**
      * @param array|string $typecast
+     *
      * @return Field
      */
     public function setTypecast($typecast)
@@ -157,9 +161,10 @@ final class Field
 
     /**
      * @param bool $indexed
+     *
      * @return Field
      */
-    public function setReferenced(bool $indexed): Field
+    public function setReferenced(bool $indexed): self
     {
         $this->referenced = $indexed;
 

@@ -28,26 +28,26 @@ final class MorphedHasOne extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE                => true,
+        Relation::CASCADE => true,
 
         // do not pre-load relation by default
-        Relation::LOAD                   => Relation::LOAD_PROMISE,
+        Relation::LOAD => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE               => false,
+        Relation::NULLABLE => false,
 
         // default field name for inner key
-        Relation::OUTER_KEY              => '{relation}_{source:primaryKey}',
+        Relation::OUTER_KEY => '{relation}_{source:primaryKey}',
 
         // link to parent entity primary key by default
-        Relation::INNER_KEY              => '{source:primaryKey}',
+        Relation::INNER_KEY => '{source:primaryKey}',
 
         // link to parent entity primary key by default
-        Relation::MORPH_KEY              => '{relation}_role',
+        Relation::MORPH_KEY => '{relation}_role',
 
         // rendering options
-        RelationSchema::INDEX_CREATE     => true,
-        RelationSchema::MORPH_KEY_LENGTH => 32
+        RelationSchema::INDEX_CREATE => true,
+        RelationSchema::MORPH_KEY_LENGTH => 32,
     ];
 
     /**

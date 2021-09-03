@@ -28,7 +28,6 @@ use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\In2;
 use Cycle\Schema\Tests\Fixtures\MorphedTo;
 use Cycle\Schema\Tests\Fixtures\Post;
-use Cycle\Schema\Tests\Fixtures\Tag;
 
 abstract class BelongsToMorphedRelationTest extends BaseTest
 {
@@ -83,7 +82,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $r->register($p)->linkTable($p, 'default', 'post');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()])
+            new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]),
         ]);
 
         $this->assertArrayHasKey('morphed', $schema);
@@ -114,7 +113,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -152,8 +151,8 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsToMorphed' => new BelongsToMorphed(),
-                'hasOne'           => new HasOne()
-            ])
+                'hasOne' => new HasOne(),
+            ]),
         ]);
     }
 
@@ -175,8 +174,8 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $schema = (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsToMorphed' => new BelongsToMorphed(),
-                'morphedHasOne'    => new MorphedHasOne()
-            ])
+                'morphedHasOne' => new MorphedHasOne(),
+            ]),
         ]);
 
         $this->assertArrayHasKey('morphed', $schema['author'][Schema::RELATIONS]);
@@ -226,8 +225,8 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         $schema = (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsToMorphed' => new BelongsToMorphed(),
-                'morphedHasMany'    => new MorphedHasMany()
-            ])
+                'morphedHasMany' => new MorphedHasMany(),
+            ]),
         ]);
 
         $this->assertArrayHasKey('morphed', $schema['author'][Schema::RELATIONS]);

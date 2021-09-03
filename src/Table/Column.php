@@ -94,9 +94,9 @@ final class Column
     }
 
     /**
-     * @return mixed
-     *
      * @throws ColumnException
+     *
+     * @return mixed
      */
     public function getDefault()
     {
@@ -148,13 +148,14 @@ final class Column
      * Parse field definition into table definition.
      *
      * @param Field $field
-     * @return Column
      *
      * @throws ColumnException
+     *
+     * @return Column
      */
     public static function parse(Field $field): self
     {
-        $column = new Column();
+        $column = new self();
         $column->field = $field;
 
         if (!preg_match(self::DEFINITION, $field->getType(), $type)) {
@@ -171,6 +172,7 @@ final class Column
 
     /**
      * @param AbstractColumn $column
+     *
      * @return bool|float|int|string
      */
     private function castDefault(AbstractColumn $column)
@@ -198,6 +200,7 @@ final class Column
 
     /**
      * @param string $option
+     *
      * @return bool
      */
     private function hasOption(string $option): bool

@@ -19,9 +19,10 @@ final class ValidateEntities implements GeneratorInterface
 {
     /**
      * @param Registry $registry
-     * @return Registry
      *
      * @throws EntityException
+     *
+     * @return Registry
      */
     public function run(Registry $registry): Registry
     {
