@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -31,45 +30,45 @@ final class ManyToMany extends RelationSchema implements InversableInterface
     // relation schema options
     protected const RELATION_SCHEMA = [
         // save with parent
-        Relation::CASCADE            => true,
+        Relation::CASCADE => true,
 
         // do not pre-load relation by default
-        Relation::LOAD               => Relation::LOAD_PROMISE,
+        Relation::LOAD => Relation::LOAD_PROMISE,
 
         // nullable by default
-        Relation::NULLABLE           => false,
+        Relation::NULLABLE => false,
 
         // custom where condition
-        Relation::WHERE              => [],
+        Relation::WHERE => [],
 
         // custom orderBy rules
-        Relation::ORDER_BY           => [],
+        Relation::ORDER_BY => [],
 
         // inner key of parent record will be used to fill "THROUGH_INNER_KEY" in pivot table
-        Relation::INNER_KEY          => '{source:primaryKey}',
+        Relation::INNER_KEY => '{source:primaryKey}',
 
         // we are going to use primary key of outer table to fill "THROUGH_OUTER_KEY" in pivot table
         // this is technically "inner" key of outer record, we will name it "outer key" for simplicity
-        Relation::OUTER_KEY          => '{target:primaryKey}',
+        Relation::OUTER_KEY => '{target:primaryKey}',
 
         // through entity role name
-        Relation::THROUGH_ENTITY     => null,
+        Relation::THROUGH_ENTITY => null,
 
         // name field where parent record inner key will be stored in pivot table, role + innerKey
         // by default
-        Relation::THROUGH_INNER_KEY  => '{source:role}_{innerKey}',
+        Relation::THROUGH_INNER_KEY => '{source:role}_{innerKey}',
 
         // name field where inner key of outer record (outer key) will be stored in pivot table,
         // role + outerKey by default
-        Relation::THROUGH_OUTER_KEY  => '{target:role}_{outerKey}',
+        Relation::THROUGH_OUTER_KEY => '{target:role}_{outerKey}',
 
         // custom pivot where
-        Relation::THROUGH_WHERE      => [],
+        Relation::THROUGH_WHERE => [],
 
         // rendering options
         RelationSchema::INDEX_CREATE => true,
-        RelationSchema::FK_CREATE    => true,
-        RelationSchema::FK_ACTION    => 'CASCADE'
+        RelationSchema::FK_CREATE => true,
+        RelationSchema::FK_ACTION => 'CASCADE',
     ];
 
     /**
@@ -147,12 +146,13 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
     /**
      * @param Registry $registry
+     *
      * @return array
      */
     public function inverseTargets(Registry $registry): array
     {
         return [
-            $registry->getEntity($this->target)
+            $registry->getEntity($this->target),
         ];
     }
 
@@ -160,9 +160,10 @@ final class ManyToMany extends RelationSchema implements InversableInterface
      * @param RelationInterface $relation
      * @param string $into
      * @param int|null $load
-     * @return RelationInterface
      *
      * @throws RelationException
+     *
+     * @return RelationInterface
      */
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
@@ -179,9 +180,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             $this->target,
             $this->source,
             $this->options->withOptions([
-                Relation::LOAD              => $load,
-                Relation::INNER_KEY         => $this->options->get(Relation::OUTER_KEY),
-                Relation::OUTER_KEY         => $this->options->get(Relation::INNER_KEY),
+                Relation::LOAD => $load,
+                Relation::INNER_KEY => $this->options->get(Relation::OUTER_KEY),
+                Relation::OUTER_KEY => $this->options->get(Relation::INNER_KEY),
                 Relation::THROUGH_INNER_KEY => $this->options->get(Relation::THROUGH_OUTER_KEY),
                 Relation::THROUGH_OUTER_KEY => $this->options->get(Relation::THROUGH_INNER_KEY),
             ])

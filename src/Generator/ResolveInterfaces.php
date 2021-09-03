@@ -24,6 +24,7 @@ final class ResolveInterfaces implements GeneratorInterface
 
     /**
      * @param Registry $registry
+     *
      * @return Registry
      */
     public function run(Registry $registry): Registry
@@ -62,6 +63,7 @@ final class ResolveInterfaces implements GeneratorInterface
     /**
      * @param Registry $registry
      * @param string   $target
+     *
      * @return string
      */
     protected function resolve(Registry $registry, string $target): string

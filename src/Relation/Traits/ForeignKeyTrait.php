@@ -40,7 +40,6 @@ trait ForeignKeyTrait
         $this->createForeignCompositeKey($registry, $source, $target, $outerFields, $innerFields);
     }
 
-
     /**
      * Create foreign key between two entities with composite fields. Only when both entities are located
      * in a same database.

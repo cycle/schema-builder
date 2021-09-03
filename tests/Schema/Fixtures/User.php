@@ -22,7 +22,7 @@ class User implements AuthorInterface
         $entity = new Entity();
         $entity->setRole('user');
         $entity->setClass(self::class);
-        ;
+
 
         $entity->getFields()->set(
             'p_id',

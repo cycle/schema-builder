@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
@@ -54,19 +53,19 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'plain' => [
-                SchemaInterface::ENTITY       => Plain::class,
-                SchemaInterface::MAPPER       => Mapper::class,
-                SchemaInterface::SOURCE       => Source::class,
-                SchemaInterface::REPOSITORY   => Repository::class,
-                SchemaInterface::DATABASE     => 'default',
-                SchemaInterface::TABLE        => 'plain',
-                SchemaInterface::PRIMARY_KEY  => ['p_id'],
+                SchemaInterface::ENTITY => Plain::class,
+                SchemaInterface::MAPPER => Mapper::class,
+                SchemaInterface::SOURCE => Source::class,
+                SchemaInterface::REPOSITORY => Repository::class,
+                SchemaInterface::DATABASE => 'default',
+                SchemaInterface::TABLE => 'plain',
+                SchemaInterface::PRIMARY_KEY => ['p_id'],
                 SchemaInterface::FIND_BY_KEYS => ['p_id'],
-                SchemaInterface::COLUMNS      => ['p_id' => 'id'],
-                SchemaInterface::RELATIONS    => [],
-                SchemaInterface::SCOPE        => null,
-                SchemaInterface::TYPECAST     => [],
-                SchemaInterface::SCHEMA       => []
+                SchemaInterface::COLUMNS => ['p_id' => 'id'],
+                SchemaInterface::RELATIONS => [],
+                SchemaInterface::SCOPE => null,
+                SchemaInterface::TYPECAST => [],
+                SchemaInterface::SCHEMA => [],
             ],
         ], $schema);
     }
@@ -113,25 +112,25 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'user' => [
-                SchemaInterface::ENTITY       => User::class,
-                SchemaInterface::MAPPER       => Mapper::class,
-                SchemaInterface::SOURCE       => Source::class,
-                SchemaInterface::REPOSITORY   => Repository::class,
-                SchemaInterface::DATABASE     => 'default',
-                SchemaInterface::TABLE        => 'user',
-                SchemaInterface::PRIMARY_KEY  => ['p_id'],
+                SchemaInterface::ENTITY => User::class,
+                SchemaInterface::MAPPER => Mapper::class,
+                SchemaInterface::SOURCE => Source::class,
+                SchemaInterface::REPOSITORY => Repository::class,
+                SchemaInterface::DATABASE => 'default',
+                SchemaInterface::TABLE => 'user',
+                SchemaInterface::PRIMARY_KEY => ['p_id'],
                 SchemaInterface::FIND_BY_KEYS => ['p_id'],
-                SchemaInterface::COLUMNS      => [
-                    'p_id'         => 'id',
-                    'p_name'       => 'user_name',
-                    'p_active'     => 'active',
-                    'p_balance'    => 'balance',
-                    'p_created_at' => 'created_at'
+                SchemaInterface::COLUMNS => [
+                    'p_id' => 'id',
+                    'p_name' => 'user_name',
+                    'p_active' => 'active',
+                    'p_balance' => 'balance',
+                    'p_created_at' => 'created_at',
                 ],
-                SchemaInterface::RELATIONS    => [],
-                SchemaInterface::SCOPE        => null,
-                SchemaInterface::TYPECAST     => [],
-                SchemaInterface::SCHEMA       => []
+                SchemaInterface::RELATIONS => [],
+                SchemaInterface::SCOPE => null,
+                SchemaInterface::TYPECAST => [],
+                SchemaInterface::SCHEMA => [],
             ],
         ], $c->getSchema());
     }

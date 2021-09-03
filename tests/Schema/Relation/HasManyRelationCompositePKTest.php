@@ -89,7 +89,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['hasMany' => new HasMany()])
+            new GenerateRelations(['hasMany' => new HasMany()]),
         ]);
     }
 
@@ -107,7 +107,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['hasMany' => new HasMany()])
+            new GenerateRelations(['hasMany' => new HasMany()]),
         ]);
 
         $this->assertArrayHasKey('user', $schema);
@@ -132,7 +132,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasMany' => new HasMany()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -160,7 +160,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasMany' => new HasMany()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -189,8 +189,8 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $this->expectException(SchemaException::class);
 
         (new GenerateRelations([
-            'hasMany'    => new HasMany(),
-            'manyToMany' => new ManyToMany()
+            'hasMany' => new HasMany(),
+            'manyToMany' => new ManyToMany(),
         ]))->run($r);
     }
 
@@ -208,8 +208,8 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         (new GenerateRelations([
-            'hasMany'   => new HasMany(),
-            'belongsTo' => new BelongsTo()
+            'hasMany' => new HasMany(),
+            'belongsTo' => new BelongsTo(),
         ]))->run($r);
         $schema = $c->compile($r);
 
@@ -246,8 +246,8 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         (new GenerateRelations([
-            'hasMany'  => new HasMany(),
-            'refersTo' => new RefersTo()
+            'hasMany' => new HasMany(),
+            'refersTo' => new RefersTo(),
         ]))->run($r);
         $schema = $c->compile($r);
 

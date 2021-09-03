@@ -61,6 +61,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function has(string $name): bool
@@ -125,6 +126,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
     /**
      * @param string $name
      * @param Field  $field
+     *
      * @return FieldMap
      */
     public function set(string $name, Field $field): self
@@ -140,6 +142,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
 
     /**
      * @param string $name
+     *
      * @return FieldMap
      */
     public function remove(string $name): self

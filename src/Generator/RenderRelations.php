@@ -22,6 +22,7 @@ final class RenderRelations implements GeneratorInterface
 {
     /**
      * @param Registry $registry
+     *
      * @return Registry
      */
     public function run(Registry $registry): Registry

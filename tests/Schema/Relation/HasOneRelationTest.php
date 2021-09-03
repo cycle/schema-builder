@@ -167,7 +167,7 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['hasOne' => new HasOne()])
+            new GenerateRelations(['hasOne' => new HasOne()]),
         ]);
 
         $this->assertArrayHasKey('user', $schema);
@@ -189,7 +189,7 @@ abstract class HasOneRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasOne' => new HasOne()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -215,7 +215,7 @@ abstract class HasOneRelationTest extends BaseTest
             new GenerateRelations(['hasOne' => new HasOne()]),
             $t = new RenderTables(),
             new RenderRelations(),
-            new SyncTables()
+            new SyncTables(),
         ]);
 
         $table = $this->getDriver()->getSchema('plain');
@@ -238,7 +238,7 @@ abstract class HasOneRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasOne' => new HasOne()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -266,8 +266,8 @@ abstract class HasOneRelationTest extends BaseTest
         $this->expectException(SchemaException::class);
 
         (new GenerateRelations([
-            'hasOne'     => new HasOne(),
-            'manyToMany' => new ManyToMany()
+            'hasOne' => new HasOne(),
+            'manyToMany' => new ManyToMany(),
         ]))->run($r);
     }
 
@@ -285,8 +285,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         (new GenerateRelations([
-            'hasOne'    => new HasOne(),
-            'belongsTo' => new BelongsTo()
+            'hasOne' => new HasOne(),
+            'belongsTo' => new BelongsTo(),
         ]))->run($r);
         $schema = $c->compile($r);
 
@@ -324,8 +324,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         (new GenerateRelations([
-            'hasOne'    => new HasOne(),
-            'belongsTo' => new BelongsTo()
+            'hasOne' => new HasOne(),
+            'belongsTo' => new BelongsTo(),
         ]))->run($r);
         $schema = $c->compile($r);
 
@@ -363,8 +363,8 @@ abstract class HasOneRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'user');
 
         (new GenerateRelations([
-            'hasOne'   => new HasOne(),
-            'refersTo' => new RefersTo()
+            'hasOne' => new HasOne(),
+            'refersTo' => new RefersTo(),
         ]))->run($r);
         $schema = $c->compile($r);
 

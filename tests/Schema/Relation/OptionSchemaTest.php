@@ -22,17 +22,17 @@ class OptionSchemaTest extends TestCase
     public function testAliases(): void
     {
         $options = new OptionSchema([
-            'alias' => Relation::TYPE
+            'alias' => Relation::TYPE,
         ]);
 
         $options = $options->withTemplate([
-            Relation::TYPE => 200
+            Relation::TYPE => 200,
         ]);
 
         $this->assertSame(200, $options->get(Relation::TYPE));
 
         $options = $options->withOptions([
-            'alias' => 100
+            'alias' => 100,
         ]);
 
         $this->assertSame(100, $options->get(Relation::TYPE));
@@ -41,30 +41,30 @@ class OptionSchemaTest extends TestCase
     public function testInvalidAlias(): void
     {
         $options = new OptionSchema([
-            'alias' => Relation::TYPE
+            'alias' => Relation::TYPE,
         ]);
 
         $options = $options->withTemplate([
-            Relation::TYPE => 200
+            Relation::TYPE => 200,
         ]);
 
         $this->expectException(OptionException::class);
 
         $options->withOptions([
-            'unknown' => 100
+            'unknown' => 100,
         ]);
     }
 
     public function testInvalidAlias2(): void
     {
         $options = new OptionSchema([
-            'alias' => Relation::TYPE
+            'alias' => Relation::TYPE,
         ]);
 
         $options = $options->withTemplate([
-            Relation::TYPE => 200
+            Relation::TYPE => 200,
         ])->withOptions([
-            'alias' => 100
+            'alias' => 100,
         ]);
 
         $this->expectException(OptionException::class);
@@ -75,17 +75,17 @@ class OptionSchemaTest extends TestCase
     public function testDebugInfo(): void
     {
         $options = new OptionSchema([
-            'alias' => Relation::TYPE
+            'alias' => Relation::TYPE,
         ]);
 
         $options = $options->withTemplate([
-            Relation::TYPE => 200
+            Relation::TYPE => 200,
         ])->withOptions([
-            'alias' => 100
+            'alias' => 100,
         ]);
 
         $this->assertSame([
-            'alias' => 100
+            'alias' => 100,
         ], $options->__debugInfo());
     }
 }

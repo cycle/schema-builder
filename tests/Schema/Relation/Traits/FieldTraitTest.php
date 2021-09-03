@@ -27,7 +27,7 @@ class FieldTraitTest extends TestCase
 
         $this->options = (new OptionSchema([]))->withTemplate([
             123 => 'id',
-            234 => ['id', 'slug']
+            234 => ['id', 'slug'],
         ]);
 
         $this->source = 'test';
@@ -147,7 +147,7 @@ class FieldTraitTest extends TestCase
         return [
             ['primary', 'int', false],
             ['bigPrimary', 'bigint', true],
-            ['test', 'test', true]
+            ['test', 'test', true],
         ];
     }
 

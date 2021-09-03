@@ -31,6 +31,7 @@ final class RelationMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function has(string $name): bool
@@ -40,6 +41,7 @@ final class RelationMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return Relation
      */
     public function get(string $name): Relation
@@ -54,6 +56,7 @@ final class RelationMap implements \IteratorAggregate
     /**
      * @param string   $name
      * @param Relation $relation
+     *
      * @return RelationMap
      */
     public function set(string $name, Relation $relation): self
@@ -69,6 +72,7 @@ final class RelationMap implements \IteratorAggregate
 
     /**
      * @param string $name
+     *
      * @return RelationMap
      */
     public function remove(string $name): self

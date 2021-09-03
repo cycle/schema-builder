@@ -105,7 +105,7 @@ abstract class EmbeddedTest extends BaseTest
 
         $this->assertSame([
             'p_embedded' => 'embedded_column',
-            'p_id'       => 'id'
+            'p_id' => 'id',
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -149,7 +149,7 @@ abstract class EmbeddedTest extends BaseTest
 
         $this->assertSame([
             'p_embedded' => 'embedded_column',
-            'p_id'       => 'id'
+            'p_id' => 'id',
         ], $schema['composite:embedded'][Schema::COLUMNS]);
     }
 
@@ -172,7 +172,7 @@ abstract class EmbeddedTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['embedded' => new Embedded()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -208,7 +208,7 @@ abstract class EmbeddedTest extends BaseTest
             [
                 new GenerateRelations(['embedded' => new Embedded()]),
                 $t = new RenderTables(),
-                new RenderRelations()
+                new RenderRelations(),
             ]
         );
     }

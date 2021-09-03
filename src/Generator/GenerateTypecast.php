@@ -23,6 +23,7 @@ final class GenerateTypecast implements GeneratorInterface
 {
     /**
      * @param Registry $registry
+     *
      * @return Registry
      */
     public function run(Registry $registry): Registry
@@ -61,7 +62,8 @@ final class GenerateTypecast implements GeneratorInterface
 
     /**
      * @param AbstractColumn $column
-     * @return string|callable
+     *
+     * @return callable|string
      */
     private function typecast(AbstractColumn $column)
     {

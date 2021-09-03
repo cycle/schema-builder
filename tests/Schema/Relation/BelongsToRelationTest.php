@@ -85,7 +85,7 @@ abstract class BelongsToRelationTest extends BaseTest
 
         $schema = (new Compiler())->compile($r, [
             new ResolveInterfaces(),
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -109,7 +109,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
 
         $schema = (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
         $this->assertArrayHasKey('post', $schema);
@@ -131,7 +131,7 @@ abstract class BelongsToRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -157,7 +157,7 @@ abstract class BelongsToRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!
@@ -183,7 +183,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->expectException(RegistryException::class);
 
         (new Compiler())->compile($r, [
-            new GenerateRelations(['belongsTo' => new BelongsTo()])
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
     }
 
@@ -202,9 +202,9 @@ abstract class BelongsToRelationTest extends BaseTest
 
         (new Compiler())->compile($r, [
             new GenerateRelations([
-                'belongsTo'  => new BelongsTo(),
-                'manyToMany' => new ManyToMany()
-            ])
+                'belongsTo' => new BelongsTo(),
+                'manyToMany' => new ManyToMany(),
+            ]),
         ]);
     }
 
@@ -222,8 +222,8 @@ abstract class BelongsToRelationTest extends BaseTest
         $schema = (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsTo' => new BelongsTo(),
-                'hasOne'    => new HasOne()
-            ])
+                'hasOne' => new HasOne(),
+            ]),
         ]);
 
         $this->assertArrayHasKey('post', $schema['author'][Schema::RELATIONS]);
@@ -259,8 +259,8 @@ abstract class BelongsToRelationTest extends BaseTest
         $schema = (new Compiler())->compile($r, [
             new GenerateRelations([
                 'belongsTo' => new BelongsTo(),
-                'hasMany'   => new HasMany()
-            ])
+                'hasMany' => new HasMany(),
+            ]),
         ]);
 
         $this->assertArrayHasKey('post', $schema['author'][Schema::RELATIONS]);

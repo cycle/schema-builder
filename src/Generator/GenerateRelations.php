@@ -31,28 +31,28 @@ final class GenerateRelations implements GeneratorInterface
 {
     // aliases between option names and their internal IDs
     public const OPTION_MAP = [
-        'nullable'        => Relation::NULLABLE,
-        'cascade'         => Relation::CASCADE,
-        'load'            => Relation::LOAD,
-        'innerKey'        => Relation::INNER_KEY,
-        'outerKey'        => Relation::OUTER_KEY,
-        'morphKey'        => Relation::MORPH_KEY,
-        'through'         => Relation::THROUGH_ENTITY,
+        'nullable' => Relation::NULLABLE,
+        'cascade' => Relation::CASCADE,
+        'load' => Relation::LOAD,
+        'innerKey' => Relation::INNER_KEY,
+        'outerKey' => Relation::OUTER_KEY,
+        'morphKey' => Relation::MORPH_KEY,
+        'through' => Relation::THROUGH_ENTITY,
         'throughInnerKey' => Relation::THROUGH_INNER_KEY,
         'throughOuterKey' => Relation::THROUGH_OUTER_KEY,
-        'throughWhere'    => Relation::THROUGH_WHERE,
-        'where'           => Relation::WHERE,
-        'orderBy'         => Relation::ORDER_BY,
-        'fkCreate'        => RelationSchema::FK_CREATE,
-        'fkAction'        => RelationSchema::FK_ACTION,
-        'indexCreate'     => RelationSchema::INDEX_CREATE,
-        'morphKeyLength'  => RelationSchema::MORPH_KEY_LENGTH,
+        'throughWhere' => Relation::THROUGH_WHERE,
+        'where' => Relation::WHERE,
+        'orderBy' => Relation::ORDER_BY,
+        'fkCreate' => RelationSchema::FK_CREATE,
+        'fkAction' => RelationSchema::FK_ACTION,
+        'indexCreate' => RelationSchema::INDEX_CREATE,
+        'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH,
 
         // deprecated
-        'though'          => Relation::THROUGH_ENTITY,
-        'thoughInnerKey'  => Relation::THROUGH_INNER_KEY,
-        'thoughOuterKey'  => Relation::THROUGH_OUTER_KEY,
-        'thoughWhere'     => Relation::THROUGH_WHERE,
+        'though' => Relation::THROUGH_ENTITY,
+        'thoughInnerKey' => Relation::THROUGH_INNER_KEY,
+        'thoughOuterKey' => Relation::THROUGH_OUTER_KEY,
+        'thoughWhere' => Relation::THROUGH_WHERE,
     ];
 
     /** @var OptionSchema */
@@ -84,6 +84,7 @@ final class GenerateRelations implements GeneratorInterface
 
     /**
      * @param Registry $registry
+     *
      * @return Registry
      */
     public function run(Registry $registry): Registry
@@ -166,6 +167,7 @@ final class GenerateRelations implements GeneratorInterface
 
     /**
      * @param string $type
+     *
      * @return RelationInterface
      */
     protected function initRelation(string $type): RelationInterface
@@ -183,15 +185,15 @@ final class GenerateRelations implements GeneratorInterface
     protected static function getDefaultRelations(): array
     {
         return [
-            'embedded'         => new Definition\Embedded(),
-            'belongsTo'        => new Definition\BelongsTo(),
-            'hasOne'           => new Definition\HasOne(),
-            'hasMany'          => new Definition\HasMany(),
-            'refersTo'         => new Definition\RefersTo(),
-            'manyToMany'       => new Definition\ManyToMany(),
+            'embedded' => new Definition\Embedded(),
+            'belongsTo' => new Definition\BelongsTo(),
+            'hasOne' => new Definition\HasOne(),
+            'hasMany' => new Definition\HasMany(),
+            'refersTo' => new Definition\RefersTo(),
+            'manyToMany' => new Definition\ManyToMany(),
             'belongsToMorphed' => new Definition\Morphed\BelongsToMorphed(),
-            'morphedHasOne'    => new Definition\Morphed\MorphedHasOne(),
-            'morphedHasMany'   => new Definition\Morphed\MorphedHasMany(),
+            'morphedHasOne' => new Definition\Morphed\MorphedHasOne(),
+            'morphedHasMany' => new Definition\Morphed\MorphedHasMany(),
         ];
     }
 }

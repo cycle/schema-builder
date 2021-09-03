@@ -59,6 +59,7 @@ final class OptionSchema
      * Create new option set with user provided options.
      *
      * @param iterable $options
+     *
      * @return OptionSchema
      */
     public function withOptions(iterable $options): self
@@ -81,6 +82,7 @@ final class OptionSchema
      * relation options only in a integer constants.
      *
      * @param array $template
+     *
      * @return OptionSchema
      */
     public function withTemplate(array $template): self
@@ -95,6 +97,7 @@ final class OptionSchema
      * Create new option set with relation context values (i.e. relation name, target name and etc).
      *
      * @param array $context
+     *
      * @return OptionSchema
      */
     public function withContext(array $context): self
@@ -109,6 +112,7 @@ final class OptionSchema
      * Check if option has been defined.
      *
      * @param int $option
+     *
      * @return bool
      */
     public function has(int $option): bool
@@ -120,6 +124,7 @@ final class OptionSchema
      * Get calculated option value.
      *
      * @param int $option
+     *
      * @return mixed
      */
     public function get(int $option)
@@ -159,6 +164,7 @@ final class OptionSchema
      *
      * @param int $option
      * @param string $value
+     *
      * @return string
      */
     private function calculate(int $option, string $value): string
@@ -181,6 +187,7 @@ final class OptionSchema
      * @param string $name
      * @param int $option
      * @param string $target
+     *
      * @return string
      */
     private function injectOption(string $name, int $option, string $target): string
@@ -204,6 +211,7 @@ final class OptionSchema
      * @param string $name
      * @param string $value
      * @param string $target
+     *
      * @return string
      */
     private function injectValue(string $name, string $value, string $target): string

@@ -81,7 +81,7 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         (new Compiler())->compile($r, [
             new GenerateRelations(['hasMany' => new MorphedHasMany()]),
             $t = new RenderTables(),
-            new RenderRelations()
+            new RenderRelations(),
         ]);
 
         // RENDER!

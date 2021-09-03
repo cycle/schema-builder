@@ -160,7 +160,7 @@ final class Entity
         return $this->relations;
     }
 
-    public function setSchema(array $schema): Entity
+    public function setSchema(array $schema): self
     {
         $this->schema = $schema;
 
@@ -175,7 +175,7 @@ final class Entity
     /**
      * Merge entity relations and fields.
      */
-    public function merge(Entity $entity): void
+    public function merge(self $entity): void
     {
         foreach ($entity->getRelations() as $name => $relation) {
             if (!$this->relations->has($name)) {

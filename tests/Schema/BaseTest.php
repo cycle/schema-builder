@@ -25,7 +25,6 @@ use Cycle\Database\Driver\Handler;
 
 abstract class BaseTest extends TestCase
 {
-
     // currently active driver
     public const DRIVER = null;
     // tests configuration
@@ -109,7 +108,8 @@ abstract class BaseTest extends TestCase
      * Calculates missing parameters for typecasting.
      *
      * @param SchemaInterface $schema
-     * @return ORM|\Cycle\ORM\ORMInterface
+     *
+     * @return \Cycle\ORM\ORMInterface|ORM
      */
     public function withSchema(SchemaInterface $schema)
     {
@@ -133,9 +133,9 @@ abstract class BaseTest extends TestCase
             $this->driver = new $class(
                 [
                     'connection' => $config['conn'],
-                    'username'   => $config['user'],
-                    'password'   => $config['pass'],
-                    'options'    => []
+                    'username' => $config['user'],
+                    'password' => $config['pass'],
+                    'options' => [],
                 ]
             );
         }
@@ -184,7 +184,7 @@ abstract class BaseTest extends TestCase
      */
     protected function enableProfiling(): void
     {
-        if (!is_null($this->logger)) {
+        if (null !== $this->logger) {
             $this->logger->display();
         }
     }
@@ -194,7 +194,7 @@ abstract class BaseTest extends TestCase
      */
     protected function disableProfiling(): void
     {
-        if (!is_null($this->logger)) {
+        if (null !== $this->logger) {
             $this->logger->hide();
         }
     }

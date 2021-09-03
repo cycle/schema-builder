@@ -27,9 +27,9 @@ final class SyncTables implements GeneratorInterface
     /**
      * @param Registry $registry
      *
-     * @return Registry
-     *
      * @throws SyncException
+     *
+     * @return Registry
      */
     public function run(Registry $registry): Registry
     {
@@ -40,7 +40,7 @@ final class SyncTables implements GeneratorInterface
                 if (
                     !$registry->hasTable($regEntity)
                     || $registry->getDatabase($regEntity) !== $dbName
-                    || $regEntity->getOptions()->has(SyncTables::READONLY_SCHEMA)
+                    || $regEntity->getOptions()->has(self::READONLY_SCHEMA)
                 ) {
                     continue;
                 }

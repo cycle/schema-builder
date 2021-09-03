@@ -40,9 +40,9 @@ trait MorphTrait
     }
 
     /**
-     * @return array Tuple [name, Field]
-     *
      * @throws RelationException
+     *
+     * @return array Tuple [name, Field]
      */
     protected function findOuterKey(Registry $registry, string $interface): array
     {
@@ -54,7 +54,7 @@ trait MorphTrait
             $primaryFields = $entity->getPrimaryFields();
             $primaryKeys = $this->getPrimaryColumns($entity);
 
-            if (is_null($keys)) {
+            if (null === $keys) {
                 $keys = $primaryKeys;
                 $fields = $primaryFields;
                 $prevEntity = $entity;
@@ -69,7 +69,7 @@ trait MorphTrait
             }
         }
 
-        if (is_null($fields)) {
+        if (null === $fields) {
             throw new RelationException('Unable to find morphed parent.');
         }
 

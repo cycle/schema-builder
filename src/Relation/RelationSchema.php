@@ -16,7 +16,6 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
 use Cycle\Schema\RelationInterface;
-use Cycle\Schema\Tests\Fixtures\Plain;
 
 /**
  * Defines relation options, renders needed columns and other options.
@@ -24,10 +23,10 @@ use Cycle\Schema\Tests\Fixtures\Plain;
 abstract class RelationSchema implements RelationInterface
 {
     // relation rendering options
-    public const INDEX_CREATE     = 1001;
-    public const FK_CREATE        = 1002;
-    public const FK_ACTION        = 1003;
-    public const INVERSE          = 1005;
+    public const INDEX_CREATE = 1001;
+    public const FK_CREATE = 1002;
+    public const FK_ACTION = 1003;
+    public const INVERSE = 1005;
     public const MORPH_KEY_LENGTH = 1009;
 
     // options to be excluded from generated schema (helpers)
@@ -58,7 +57,7 @@ abstract class RelationSchema implements RelationInterface
         $relation->target = $target;
 
         $relation->options = $options->withTemplate(static::RELATION_SCHEMA)->withContext([
-            'relation'    => $name,
+            'relation' => $name,
             'source:role' => $source,
             'target:role' => $target,
         ]);
@@ -69,12 +68,12 @@ abstract class RelationSchema implements RelationInterface
     public function compute(Registry $registry): void
     {
         $this->options = $this->options->withContext([
-            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source))
+            'source:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->source)),
         ]);
 
         if ($registry->hasEntity($this->target)) {
             $this->options = $this->options->withContext([
-                'target:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->target))
+                'target:primaryKey' => $this->getPrimaryColumns($registry->getEntity($this->target)),
             ]);
         }
     }
@@ -98,10 +97,10 @@ abstract class RelationSchema implements RelationInterface
         unset($schema[Relation::LOAD]);
 
         return [
-            Relation::TYPE   => static::RELATION_TYPE,
+            Relation::TYPE => static::RELATION_TYPE,
             Relation::TARGET => $this->target,
-            Relation::LOAD   => $this->getLoadMethod(),
-            Relation::SCHEMA => $schema
+            Relation::LOAD => $this->getLoadMethod(),
+            Relation::SCHEMA => $schema,
         ];
     }
 
