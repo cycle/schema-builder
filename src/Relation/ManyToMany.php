@@ -176,7 +176,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         }
 
         if (!empty($this->options->get(Relation::THROUGH_WHERE)) || !empty($this->options->get(Relation::WHERE))) {
-            throw new RelationException('Unable to inverse ManyToMany relation with where constrain');
+            throw new RelationException('Unable to inverse ManyToMany relation with where scope.');
         }
 
         return $relation->withContext(

@@ -115,11 +115,11 @@ final class HasMany extends RelationSchema implements InversableInterface
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
         if (!$relation instanceof BelongsTo && !$relation instanceof RefersTo) {
-            throw new RelationException('HasMany relation can only be inversed into BelongsTo or RefersTo');
+            throw new RelationException('HasMany relation can only be inversed into BelongsTo or RefersTo.');
         }
 
         if (!empty($this->options->get(Relation::WHERE))) {
-            throw new RelationException('Unable to inverse HasMany relation with where constrain');
+            throw new RelationException('Unable to inverse HasMany relation with where scope.');
         }
 
         return $relation->withContext(

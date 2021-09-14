@@ -108,9 +108,9 @@ final class Entity
         return $this->normalizeClass($this->source);
     }
 
-    public function setScope(?string $constrain): self
+    public function setScope(?string $scope): self
     {
-        $this->scope = $constrain;
+        $this->scope = $scope;
 
         return $this;
     }
