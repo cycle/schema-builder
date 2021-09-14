@@ -16,17 +16,17 @@ final class Entity
 {
     private OptionMap $options;
 
-    private string|null $role = null;
+    private ?string $role = null;
 
-    private string|null $class = null;
+    private ?string $class = null;
 
-    private string|null $mapper = null;
+    private ?string $mapper = null;
 
-    private string|null $source = null;
+    private ?string $source = null;
 
-    private string|null $scope = null;
+    private ?string $scope = null;
 
-    private string|null $repository = null;
+    private ?string $repository = null;
 
     private array $schema = [];
 
