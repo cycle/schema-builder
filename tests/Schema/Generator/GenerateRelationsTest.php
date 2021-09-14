@@ -8,8 +8,9 @@ use Cycle\ORM\Relation;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Relation as RelationDefinition;
+use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
-use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
@@ -85,52 +86,33 @@ abstract class GenerateRelationsTest extends BaseTest
         $this->assertSame($optionValue, $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
     }
 
-    public function fkActionDataProvider(): array
+    public function testHasManyToManyWithoutThroughEntity(): void
     {
-        return [
-            'Default' => [false, false, 'CASCADE', 'CASCADE'],
-            'Only fkAction' => ['SET NULL', false, 'SET NULL', 'SET NULL'],
-            'Only onDelete' => [false, 'SET NULL', 'CASCADE', 'SET NULL'],
-            'Both' => ['NO ACTION', 'SET NULL', 'NO ACTION', 'SET NULL'],
-        ];
-    }
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
 
-    /**
-     * @dataProvider fkActionDataProvider
-     */
-    public function testDefaultFkActionAndDifferentFkOnDelete(
-        null|false|string $fkActionOption,
-        null|false|string $onDeleteOption,
-        string $onUpdateExpected,
-        string $onDeleteExpected
-    ): void {
-        $plain = Plain::define();
-        $user = User::define();
+        $post->getRelations()->remove('author');
 
-        $options = $user->getRelations()->get('plain')->getOptions();
-        $options->set('nullable', true);
-
-        if ($fkActionOption !== false) {
-            $options->set('fkAction', $fkActionOption);
-        }
-        if ($onDeleteOption !== false) {
-            $options->set('fkOnDelete', $onDeleteOption);
-        }
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions();
 
         $r = new Registry($this->dbal);
-        $r->register($plain)->linkTable($plain, 'default', 'plain');
-        $r->register($user)->linkTable($user, 'default', 'user');
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
-        (new GenerateRelations())->run($r);
-        (new RenderTables())->run($r);
-        (new RenderRelations())->run($r);
+        $this->expectException(SchemaException::class);
 
-        $table = $r->getTableSchema($plain);
-
-        $fks = $table->getForeignKeys();
-        $this->assertCount(1, $fks);
-        $fk = reset($fks);
-        $this->assertSame($onUpdateExpected, $fk->getUpdateRule());
-        $this->assertSame($onDeleteExpected, $fk->getDeleteRule());
+        try {
+            (new Compiler())->compile($r, [new RenderTables(), new GenerateRelations()]);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(RelationException::class, $e->getPrevious());
+            $this->assertStringContainsString('Relation ManyToMany must have the throughEntity declaration', $e->getPrevious()->getMessage());
+            throw $e;
+        }
     }
 }
