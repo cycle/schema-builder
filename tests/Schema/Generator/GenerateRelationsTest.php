@@ -111,7 +111,10 @@ abstract class GenerateRelationsTest extends BaseTest
             (new Compiler())->compile($r, [new RenderTables(), new GenerateRelations()]);
         } catch (\Exception $e) {
             $this->assertInstanceOf(RelationException::class, $e->getPrevious());
-            $this->assertStringContainsString('Relation ManyToMany must have the throughEntity declaration', $e->getPrevious()->getMessage());
+            $this->assertStringContainsString(
+                'Relation ManyToMany must have the throughEntity declaration',
+                $e->getPrevious()->getMessage()
+            );
             throw $e;
         }
     }
