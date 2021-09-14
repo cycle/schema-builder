@@ -9,8 +9,6 @@ use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
-use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
