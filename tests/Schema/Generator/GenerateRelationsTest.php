@@ -58,6 +58,7 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
+        // phpcs:ignore
         $this->assertSame($optionValue, $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
     }
 
@@ -80,6 +81,7 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
+        // phpcs:ignore
         $this->assertSame($optionValue, $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
     }
 
