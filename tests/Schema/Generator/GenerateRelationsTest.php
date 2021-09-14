@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Relation;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Definition\Relation as RelationDefinition;
 use Cycle\Schema\Generator\GenerateRelations;
+use Cycle\Schema\Generator\RenderRelations;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\BelongsTo;
+use Cycle\Schema\Relation\HasOne;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
 use Cycle\Schema\Tests\Fixtures\Post;
@@ -33,7 +38,7 @@ abstract class GenerateRelationsTest extends BaseTest
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyToManyRelationOptions(string $optionKey, $optionValue, int $relationKey): void
+    public function testHasManyToManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -57,13 +62,13 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
-        $this->assertSame($optionValue, $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
+        $this->assertSame($optionValue, $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
     }
 
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyRelationOptions(string $optionKey, $optionValue, int $relationKey): void
+    public function testHasManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -79,6 +84,55 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
-        $this->assertSame($optionValue, $schema['user'][Schema::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
+        $this->assertSame($optionValue, $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
+    }
+
+    public function fkActionDataProvider(): array
+    {
+        return [
+            'Default' => [false, false, 'CASCADE', 'CASCADE'],
+            'Only fkAction' => ['SET NULL', false, 'SET NULL', 'SET NULL'],
+            'Only onDelete' => [false, 'SET NULL', 'CASCADE', 'SET NULL'],
+            'Both' => ['NO ACTION', 'SET NULL', 'NO ACTION', 'SET NULL'],
+        ];
+    }
+
+    /**
+     * @dataProvider fkActionDataProvider
+     */
+    public function testDefaultFkActionAndDifferentFkOnDelete(
+        null|false|string $fkActionOption,
+        null|false|string $onDeleteOption,
+        string $onUpdateExpected,
+        string $onDeleteExpected
+    ): void {
+        $plain = Plain::define();
+        $user = User::define();
+
+        $options = $user->getRelations()->get('plain')->getOptions();
+        $options->set('nullable', true);
+
+        if ($fkActionOption !== false) {
+            $options->set('fkAction', $fkActionOption);
+        }
+        if ($onDeleteOption !== false) {
+            $options->set('fkOnDelete', $onDeleteOption);
+        }
+
+        $r = new Registry($this->dbal);
+        $r->register($plain)->linkTable($plain, 'default', 'plain');
+        $r->register($user)->linkTable($user, 'default', 'user');
+
+        (new GenerateRelations())->run($r);
+        (new RenderTables())->run($r);
+        (new RenderRelations())->run($r);
+
+        $table = $r->getTableSchema($plain);
+
+        $fks = $table->getForeignKeys();
+        $this->assertCount(1, $fks);
+        $fk = reset($fks);
+        $this->assertSame($onUpdateExpected, $fk->getUpdateRule());
+        $this->assertSame($onDeleteExpected, $fk->getDeleteRule());
     }
 }

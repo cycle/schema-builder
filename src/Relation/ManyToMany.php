@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -69,6 +62,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::FK_CREATE => true,
         RelationSchema::FK_ACTION => 'CASCADE',
+        RelationSchema::FK_ON_DELETE => null,
     ];
 
     /**
@@ -80,7 +74,17 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
-        $through = $registry->getEntity($this->options->get(Relation::THROUGH_ENTITY));
+        $throughEntity = $this->options->get(Relation::THROUGH_ENTITY);
+
+        if ($throughEntity === null) {
+            throw new RelationException(sprintf(
+                'Relation ManyToMany must have the throughEntity declaration (%s => ? => %s)',
+                $source->getRole(),
+                $target->getRole()
+            ));
+        }
+
+        $through = $registry->getEntity($throughEntity);
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
             throw new RelationException(sprintf(

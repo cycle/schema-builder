@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema;
@@ -24,14 +17,7 @@ interface RelationInterface
     /**
      * Create relation version linked to specific entity context.
      *
-     * @param string       $name
-     * @param string       $source
-     * @param string       $target
-     * @param OptionSchema $options
-     *
      * @throws RelationException
-     *
-     * @return RelationInterface
      */
     public function withContext(
         string $name,
@@ -44,11 +30,9 @@ interface RelationInterface
      * Compute relation references (column names and etc). Also ensures existence of fields in every
      * related object.
      *
-     * @param Registry $registry
-     *
      * @throws RelationException
      */
-    public function compute(Registry $registry);
+    public function compute(Registry $registry): void;
 
     /**
      * Render needed relation indexes and foreign keys into table.

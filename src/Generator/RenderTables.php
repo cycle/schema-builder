@@ -1,17 +1,9 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
-use Cycle\ORM\Mapper\Mapper;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
@@ -24,8 +16,7 @@ use Cycle\Database\Schema\Reflector;
  */
 final class RenderTables implements GeneratorInterface
 {
-    /** @var Reflector */
-    private $reflector;
+    private Reflector $reflector;
 
     /**
      * TableGenerator constructor.
@@ -35,11 +26,6 @@ final class RenderTables implements GeneratorInterface
         $this->reflector = new Reflector();
     }
 
-    /**
-     * @param Registry $registry
-     *
-     * @return Registry
-     */
     public function run(Registry $registry): Registry
     {
         foreach ($registry as $entity) {
@@ -59,9 +45,6 @@ final class RenderTables implements GeneratorInterface
         return $this->reflector->sortedTables();
     }
 
-    /**
-     * @return Reflector
-     */
     public function getReflector(): Reflector
     {
         return $this->reflector;
@@ -69,11 +52,8 @@ final class RenderTables implements GeneratorInterface
 
     /**
      * Generate table schema based on given entity definition.
-     *
-     * @param Registry $registry
-     * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity): void
+    private function compute(Registry $registry, Entity $entity): void
     {
         if (!$registry->hasTable($entity)) {
             // do not render entities without associated table

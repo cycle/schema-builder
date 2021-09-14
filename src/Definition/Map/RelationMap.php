@@ -1,27 +1,18 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Map;
 
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\RelationException;
+use Traversable;
 
 final class RelationMap implements \IteratorAggregate
 {
-    /** @var Relation[] */
-    private $relations = [];
+    /** @var array<string, Relation> */
+    private array $relations = [];
 
-    /**
-     * Cloning.
-     */
     public function __clone()
     {
         foreach ($this->relations as $name => $relation) {
@@ -29,21 +20,11 @@ final class RelationMap implements \IteratorAggregate
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return isset($this->relations[$name]);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return Relation
-     */
     public function get(string $name): Relation
     {
         if (!$this->has($name)) {
@@ -53,12 +34,6 @@ final class RelationMap implements \IteratorAggregate
         return $this->relations[$name];
     }
 
-    /**
-     * @param string   $name
-     * @param Relation $relation
-     *
-     * @return RelationMap
-     */
     public function set(string $name, Relation $relation): self
     {
         if ($this->has($name)) {
@@ -70,11 +45,6 @@ final class RelationMap implements \IteratorAggregate
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return RelationMap
-     */
     public function remove(string $name): self
     {
         unset($this->relations[$name]);
@@ -82,9 +52,9 @@ final class RelationMap implements \IteratorAggregate
     }
 
     /**
-     * @return Relation[]|\Traversable
+     * @return Traversable<string, Relation>
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->relations);
     }

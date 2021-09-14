@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -54,6 +47,7 @@ final class HasMany extends RelationSchema implements InversableInterface
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::FK_CREATE => true,
         RelationSchema::FK_ACTION => 'CASCADE',
+        RelationSchema::FK_ON_DELETE => null,
     ];
 
     /**

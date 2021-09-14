@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -48,11 +41,9 @@ final class RefersTo extends RelationSchema
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::FK_CREATE => true,
         RelationSchema::FK_ACTION => 'SET NULL',
+        RelationSchema::FK_ON_DELETE => null,
     ];
 
-    /**
-     * @param Registry $registry
-     */
     public function compute(Registry $registry): void
     {
         parent::compute($registry);
@@ -69,9 +60,6 @@ final class RefersTo extends RelationSchema
         );
     }
 
-    /**
-     * @param Registry $registry
-     */
     public function render(Registry $registry): void
     {
         $source = $registry->getEntity($this->source);

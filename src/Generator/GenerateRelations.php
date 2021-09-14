@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
@@ -45,6 +38,7 @@ final class GenerateRelations implements GeneratorInterface
         'orderBy' => Relation::ORDER_BY,
         'fkCreate' => RelationSchema::FK_CREATE,
         'fkAction' => RelationSchema::FK_ACTION,
+        'fkOnDelete' => RelationSchema::FK_ON_DELETE,
         'indexCreate' => RelationSchema::INDEX_CREATE,
         'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH,
 

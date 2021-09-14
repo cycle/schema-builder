@@ -1,18 +1,11 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\ORM\Relation;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Generator\GenerateRelations;

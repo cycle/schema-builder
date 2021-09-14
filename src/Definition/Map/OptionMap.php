@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Map;
@@ -15,8 +8,7 @@ use Cycle\Schema\Exception\OptionException;
 
 final class OptionMap implements \IteratorAggregate
 {
-    /** @var array */
-    private $options = [];
+    private array $options = [];
 
     /**
      * @param string $name
@@ -29,11 +21,9 @@ final class OptionMap implements \IteratorAggregate
     }
 
     /**
-     * @param string $name
-     *
-     * @return mixed
+     * @throws OptionException
      */
-    public function get(string $name)
+    public function get(string $name): mixed
     {
         if (!$this->has($name)) {
             throw new OptionException("Undefined option `{$name}`");
@@ -42,24 +32,13 @@ final class OptionMap implements \IteratorAggregate
         return $this->options[$name];
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return OptionMap
-     */
-    public function set(string $name, $value): self
+    public function set(string $name, mixed $value): self
     {
         $this->options[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return OptionMap
-     */
     public function remove(string $name): self
     {
         unset($this->options[$name]);

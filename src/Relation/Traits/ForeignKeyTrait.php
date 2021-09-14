@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
@@ -23,7 +16,7 @@ trait ForeignKeyTrait
     /**
      * Create foreign key between two entities. Only when both entities are located in a same database.
      */
-    protected function createForeignKey(
+    final protected function createForeignKey(
         Registry $registry,
         Entity $source,
         Entity $target,
@@ -44,7 +37,7 @@ trait ForeignKeyTrait
      * Create foreign key between two entities with composite fields. Only when both entities are located
      * in a same database.
      */
-    protected function createForeignCompositeKey(
+    final protected function createForeignCompositeKey(
         Registry $registry,
         Entity $source,
         Entity $target,
@@ -55,11 +48,12 @@ trait ForeignKeyTrait
             return;
         }
 
+        $fkAction = $this->getOptions()->get(RelationSchema::FK_ACTION);
         $registry->getTableSchema($target)
             ->foreignKey($outerFields->getColumnNames())
             ->references($registry->getTable($source), $innerFields->getColumnNames())
-            ->onUpdate($this->getOptions()->get(RelationSchema::FK_ACTION))
-            ->onDelete($this->getOptions()->get(RelationSchema::FK_ACTION));
+            ->onUpdate($fkAction)
+            ->onDelete($this->getOptions()->get(RelationSchema::FK_ON_DELETE) ?? $fkAction);
     }
 
     abstract protected function getOptions(): OptionSchema;
