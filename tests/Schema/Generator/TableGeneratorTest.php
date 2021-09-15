@@ -1,18 +1,11 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\SchemaInterface;
+use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 use Cycle\Schema\Compiler;
@@ -53,19 +46,19 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'plain' => [
-                SchemaInterface::ENTITY => Plain::class,
-                SchemaInterface::MAPPER => Mapper::class,
-                SchemaInterface::SOURCE => Source::class,
-                SchemaInterface::REPOSITORY => Repository::class,
-                SchemaInterface::DATABASE => 'default',
-                SchemaInterface::TABLE => 'plain',
-                SchemaInterface::PRIMARY_KEY => ['p_id'],
-                SchemaInterface::FIND_BY_KEYS => ['p_id'],
-                SchemaInterface::COLUMNS => ['p_id' => 'id'],
-                SchemaInterface::RELATIONS => [],
-                SchemaInterface::SCOPE => null,
-                SchemaInterface::TYPECAST => [],
-                SchemaInterface::SCHEMA => [],
+                Schema::ENTITY => Plain::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'plain',
+                Schema::PRIMARY_KEY => ['p_id'],
+                Schema::FIND_BY_KEYS => ['p_id'],
+                Schema::COLUMNS => ['p_id' => 'id'],
+                Schema::RELATIONS => [],
+                Schema::SCOPE => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
             ],
         ], $schema);
     }
@@ -112,25 +105,25 @@ abstract class TableGeneratorTest extends BaseTest
 
         $this->assertSame([
             'user' => [
-                SchemaInterface::ENTITY => User::class,
-                SchemaInterface::MAPPER => Mapper::class,
-                SchemaInterface::SOURCE => Source::class,
-                SchemaInterface::REPOSITORY => Repository::class,
-                SchemaInterface::DATABASE => 'default',
-                SchemaInterface::TABLE => 'user',
-                SchemaInterface::PRIMARY_KEY => ['p_id'],
-                SchemaInterface::FIND_BY_KEYS => ['p_id'],
-                SchemaInterface::COLUMNS => [
+                Schema::ENTITY => User::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'user',
+                Schema::PRIMARY_KEY => ['p_id'],
+                Schema::FIND_BY_KEYS => ['p_id'],
+                Schema::COLUMNS => [
                     'p_id' => 'id',
                     'p_name' => 'user_name',
                     'p_active' => 'active',
                     'p_balance' => 'balance',
                     'p_created_at' => 'created_at',
                 ],
-                SchemaInterface::RELATIONS => [],
-                SchemaInterface::SCOPE => null,
-                SchemaInterface::TYPECAST => [],
-                SchemaInterface::SCHEMA => [],
+                Schema::RELATIONS => [],
+                Schema::SCOPE => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
             ],
         ], $c->getSchema());
     }

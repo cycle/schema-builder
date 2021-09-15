@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
@@ -204,12 +197,12 @@ class EntityTest extends TestCase
         $this->assertSame('source', $e->getSource());
     }
 
-    public function testConstrain(): void
+    public function testScope(): void
     {
         $e = new Entity();
-        $e->setConstrain('constrain');
+        $e->setScope('constrain');
 
-        $this->assertSame('constrain', $e->getConstrain());
+        $this->assertSame('constrain', $e->getScope());
     }
 
     public function testRepository(): void

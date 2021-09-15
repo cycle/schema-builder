@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Cycle\Schema\Tests\Generator;
 
 use Cycle\ORM\Relation;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Relation as RelationDefinition;
+use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
@@ -33,7 +35,7 @@ abstract class GenerateRelationsTest extends BaseTest
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyToManyRelationOptions(string $optionKey, $optionValue, int $relationKey): void
+    public function testHasManyToManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -57,13 +59,14 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
-        $this->assertSame($optionValue, $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
+        // phpcs:ignore
+        $this->assertSame($optionValue, $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
     }
 
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyRelationOptions(string $optionKey, $optionValue, int $relationKey): void
+    public function testHasManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
     {
         $e = Plain::define();
         $u = User::define();
@@ -79,6 +82,40 @@ abstract class GenerateRelationsTest extends BaseTest
         $c = new Compiler();
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
-        $this->assertSame($optionValue, $schema['user'][Schema::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
+        // phpcs:ignore
+        $this->assertSame($optionValue, $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
+    }
+
+    public function testHasManyToManyWithoutThroughEntity(): void
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions();
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        $this->expectException(SchemaException::class);
+
+        try {
+            (new Compiler())->compile($r, [new RenderTables(), new GenerateRelations()]);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(RelationException::class, $e->getPrevious());
+            $this->assertStringContainsString(
+                'Relation ManyToMany must have the throughEntity declaration',
+                $e->getPrevious()->getMessage()
+            );
+            throw $e;
+        }
     }
 }

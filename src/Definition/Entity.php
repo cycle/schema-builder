@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
@@ -21,38 +14,27 @@ use Cycle\Schema\Exception\EntityException;
  */
 final class Entity
 {
-    /** @var OptionMap */
-    private $options;
+    private OptionMap $options;
 
-    /** @var string|null */
-    private $role;
+    private ?string $role = null;
 
-    /** @var string|null */
-    private $class;
+    private ?string $class = null;
 
-    /** @var string|null */
-    private $mapper;
+    private ?string $mapper = null;
 
-    /** @var string|null */
-    private $source;
+    private ?string $source = null;
 
-    /** @var string|null */
-    private $constrain;
+    private ?string $scope = null;
 
-    /** @var string|null */
-    private $repository;
+    private ?string $repository = null;
 
-    /** @var FieldMap */
-    private $fields;
+    private array $schema = [];
 
-    /** @var RelationMap */
-    private $relations;
+    private FieldMap $fields;
 
-    /** @var array */
-    private $schema = [];
+    private RelationMap $relations;
 
-    /** @var FieldMap */
-    private $primaryFields;
+    private FieldMap $primaryFields;
 
     public function __construct()
     {
@@ -126,16 +108,16 @@ final class Entity
         return $this->normalizeClass($this->source);
     }
 
-    public function setConstrain(?string $constrain): self
+    public function setScope(?string $scope): self
     {
-        $this->constrain = $constrain;
+        $this->scope = $scope;
 
         return $this;
     }
 
-    public function getConstrain(): ?string
+    public function getScope(): ?string
     {
-        return $this->normalizeClass($this->constrain);
+        return $this->normalizeClass($this->scope);
     }
 
     public function setRepository(?string $repository): self

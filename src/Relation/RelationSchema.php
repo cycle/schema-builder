@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
@@ -26,11 +19,12 @@ abstract class RelationSchema implements RelationInterface
     public const INDEX_CREATE = 1001;
     public const FK_CREATE = 1002;
     public const FK_ACTION = 1003;
+    public const FK_ON_DELETE = 1004;
     public const INVERSE = 1005;
     public const MORPH_KEY_LENGTH = 1009;
 
     // options to be excluded from generated schema (helpers)
-    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::INDEX_CREATE];
+    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::FK_ON_DELETE, self::INDEX_CREATE];
 
     // exported relation type
     protected const RELATION_TYPE = null;
@@ -48,7 +42,7 @@ abstract class RelationSchema implements RelationInterface
     protected $options;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function withContext(string $name, string $source, string $target, OptionSchema $options): RelationInterface
     {
@@ -78,15 +72,12 @@ abstract class RelationSchema implements RelationInterface
         }
     }
 
-    /**
-     * @return array
-     */
     public function packSchema(): array
     {
         $schema = [];
 
         foreach (static::RELATION_SCHEMA as $option => $template) {
-            if (in_array($option, static::EXCLUDE)) {
+            if (in_array($option, static::EXCLUDE, true)) {
                 continue;
             }
 
@@ -131,7 +122,7 @@ abstract class RelationSchema implements RelationInterface
     {
         $columns = $entity->getPrimaryFields()->getColumnNames();
 
-        if ($columns == []) {
+        if ($columns === []) {
             throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");
         }
 

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Cycle ORM Schema Builder.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema;
@@ -100,7 +93,7 @@ final class Compiler
             Schema::SOURCE => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
             Schema::MAPPER => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
             Schema::REPOSITORY => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
-            Schema::SCOPE => $entity->getConstrain() ?? $this->defaults[Schema::SCOPE],
+            Schema::SCOPE => $entity->getScope() ?? $this->defaults[Schema::SCOPE],
             Schema::SCHEMA => $entity->getSchema(),
             Schema::PRIMARY_KEY => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS => $this->renderColumns($entity),
