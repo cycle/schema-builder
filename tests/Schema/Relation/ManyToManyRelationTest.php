@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
+use Cycle\Database\Schema\AbstractIndex;
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
@@ -217,7 +219,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $post->getRelations()->get('tags')
             ->setType('manyToMany')
             ->setTarget('tag')
-            ->getOptions()->set('though', 'tagContext');
+            ->getOptions()->set('through', 'tagContext');
 
         $r = new Registry($this->dbal);
         $r->register($post)->linkTable($post, 'default', 'post');
@@ -234,11 +236,69 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('tag_context');
 
+        $this->assertTrue($table->hasColumn('id'));
         $this->assertTrue($table->hasColumn('post_id'));
         $this->assertTrue($table->hasColumn('tag_id'));
         $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
         $this->assertTrue($table->hasForeignKey(['post_id']));
         $this->assertTrue($table->hasForeignKey(['tag_id']));
+    }
+
+    /**
+     * Unique indexes shouldn't be duplicated. Second unique index should be converted into not unique index
+     */
+    public function testDuplicatedUniqueIndexes(): void
+    {
+        $tag = Tag::define();
+        $post = Post::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()
+            ->set('through', 'tagContext')
+            ->set('indexCreate', true);
+
+        $tag->getRelations()->set('posts', new RelationDefinition());
+        $tag->getRelations()->get('posts')
+            ->setType('manyToMany')
+            ->setTarget('post')
+            ->getOptions()
+            ->set('through', 'tagContext')
+            ->set('indexCreate', true);
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new Compiler())->compile($r, [
+            (new GenerateRelations(['manyToMany' => new ManyToMany()])),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('tag_context');
+        assert($table instanceof AbstractTable);
+
+        $uniques = array_filter($table->getIndexes(), static fn (AbstractIndex $index): bool => $index->isUnique());
+
+        $this->assertTrue($table->hasColumn('id'));
+        $this->assertTrue($table->hasColumn('post_id'));
+        $this->assertTrue($table->hasColumn('tag_id'));
+        $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
+        $this->assertTrue($table->hasIndex(['tag_id', 'post_id']));
+        $this->assertTrue($table->hasForeignKey(['post_id']));
+        $this->assertTrue($table->hasForeignKey(['tag_id']));
+        // Unique indexes shouldn't be duplicated
+        $this->assertCount(1, $uniques);
+        $this->assertCount(4, $table->getIndexes());
     }
 
     public function testInverseInvalidType(): void

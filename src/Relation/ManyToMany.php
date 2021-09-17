@@ -66,7 +66,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
     ];
 
     /**
-     * @param Registry $registry
+     * @psalm-suppress PossiblyNullArgument
      */
     public function compute(Registry $registry): void
     {
@@ -78,7 +78,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         if ($throughEntity === null) {
             throw new RelationException(sprintf(
-                'Relation ManyToMany must have the throughEntity declaration (%s => ? => %s)',
+                'Relation ManyToMany must have the throughEntity declaration (%s => ? => %s).',
                 $source->getRole(),
                 $target->getRole()
             ));
@@ -88,7 +88,7 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         if ($registry->getDatabase($source) !== $registry->getDatabase($target)) {
             throw new RelationException(sprintf(
-                'Relation ManyToMany can only link entities from same database (%s, %s)',
+                'Relation ManyToMany can only link entities from same database (%s, %s).',
                 $source->getRole(),
                 $target->getRole()
             ));
@@ -137,8 +137,8 @@ final class ManyToMany extends RelationSchema implements InversableInterface
 
         if ($this->options->get(self::INDEX_CREATE)) {
             $index = array_merge($throughSourceFields->getColumnNames(), $throughTargetFields->getColumnNames());
-            if (count($index) > 0) {
-                $table->index($index)->unique(true);
+            if (count($index) > 0 && !$this->hasIndex($table, $index)) {
+                $table->index($index)->unique(!$this->hasIndex($table, $index, strictOrder: false, unique: true));
             }
         }
 
