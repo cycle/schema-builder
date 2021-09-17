@@ -134,7 +134,7 @@ abstract class RelationSchema implements RelationInterface
      * @param array<string> $columns
      * @param bool $strictOrder True means that fields order in the {@see $columns} argument is matter
      * @param bool $withSorting True means that fields will be compared taking into account the column values sorting
-     * @param null|bool $unique Unique index or not. Null means both
+     * @param bool|null $unique Unique index or not. Null means both
      */
     protected function hasIndex(
         AbstractTable $table,
@@ -154,12 +154,11 @@ abstract class RelationSchema implements RelationInterface
             }
             $tableColumns = $withSorting ? $index->getColumnsWithSort() : $index->getColumns();
 
-            if (count($columns) === count($tableColumns) && (
-                $strictOrder
-                    ? $columns === $tableColumns
-                    : array_diff($columns, $tableColumns) === []
-                )
-            ) {
+            if (count($columns) !== count($tableColumns)) {
+                continue;
+            }
+
+            if ($strictOrder ? $columns === $tableColumns : array_diff($columns, $tableColumns) === []) {
                 return true;
             }
         }
