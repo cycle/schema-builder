@@ -103,7 +103,8 @@ trait FieldTrait
 
         if (count($targetColumns) !== count($sourceFieldNames)) {
             throw new RegistryException(sprintf(
-                'Inconsistent amount of primary fields. Source entity `%s` - PKs `%s`. Target entity `%s` - PKs `%s`.',
+                'Inconsistent amount of related fields. '
+                . 'Source entity: `%s`; keys: `%s`. Target entity: `%s`; keys: `%s`.',
                 $source->getRole(),
                 implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
                 $target->getRole(),
