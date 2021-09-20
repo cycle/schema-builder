@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation;
 
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
@@ -127,5 +128,40 @@ abstract class RelationSchema implements RelationInterface
         }
 
         return $columns;
+    }
+
+    /**
+     * @param array<string> $columns
+     * @param bool $strictOrder True means that fields order in the {@see $columns} argument is matter
+     * @param bool $withSorting True means that fields will be compared taking into account the column values sorting
+     * @param bool|null $unique Unique index or not. Null means both
+     */
+    protected function hasIndex(
+        AbstractTable $table,
+        array $columns,
+        bool $strictOrder = true,
+        bool $withSorting = true,
+        bool $unique = null
+    ): bool {
+        if ($strictOrder && $withSorting && $unique === null) {
+            return $table->hasIndex($columns);
+        }
+        $indexes = $table->getIndexes();
+
+        foreach ($indexes as $index) {
+            if ($unique !== null && $index->isUnique() !== $unique) {
+                continue;
+            }
+            $tableColumns = $withSorting ? $index->getColumnsWithSort() : $index->getColumns();
+
+            if (count($columns) !== count($tableColumns)) {
+                continue;
+            }
+
+            if ($strictOrder ? $columns === $tableColumns : array_diff($columns, $tableColumns) === []) {
+                return true;
+            }
+        }
+        return false;
     }
 }

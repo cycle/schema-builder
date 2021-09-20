@@ -12,8 +12,7 @@ use Cycle\Schema\Exception\FieldException;
  */
 final class Field
 {
-    /** @var OptionMap */
-    private $options;
+    private OptionMap $options;
 
     /** @var string */
     private $column;
@@ -21,42 +20,27 @@ final class Field
     /** @var string */
     private $type;
 
-    /** @var bool */
-    private $primary = false;
+    private bool $primary = false;
 
-    /** @var array|string */
-    private $typecast;
+    private array|string|null $typecast = null;
 
-    /** @var bool */
-    private $referenced = false;
+    private bool $referenced = false;
 
-    /**
-     * Field constructor.
-     */
     public function __construct()
     {
         $this->options = new OptionMap();
     }
 
-    /**
-     * Cloning.
-     */
     public function __clone()
     {
         $this->options = clone $this->options;
     }
 
-    /**
-     * @return OptionMap
-     */
     public function getOptions(): OptionMap
     {
         return $this->options;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         if (empty($this->column)) {
@@ -66,11 +50,6 @@ final class Field
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return Field
-     */
     public function setType(string $type): self
     {
         $this->type = $type;
@@ -78,11 +57,6 @@ final class Field
         return $this;
     }
 
-    /**
-     * @param bool $primary
-     *
-     * @return Field
-     */
     public function setPrimary(bool $primary): self
     {
         $this->primary = $primary;
@@ -90,19 +64,11 @@ final class Field
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isPrimary(): bool
     {
         return $this->primary || in_array($this->type, ['primary', 'bigPrimary']);
     }
 
-    /**
-     * @param string $column
-     *
-     * @return Field
-     */
     public function setColumn(string $column): self
     {
         $this->column = $column;
@@ -112,8 +78,6 @@ final class Field
 
     /**
      * @throws FieldException
-     *
-     * @return string
      */
     public function getColumn(): string
     {
@@ -124,39 +88,23 @@ final class Field
         return $this->column;
     }
 
-    /**
-     * @param array|string $typecast
-     *
-     * @return Field
-     */
-    public function setTypecast($typecast)
+    public function setTypecast(array|string|null $typecast): self
     {
         $this->typecast = $typecast;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasTypecast(): bool
     {
         return $this->typecast !== null;
     }
 
-    /**
-     * @return array|string
-     */
-    public function getTypecast()
+    public function getTypecast(): array|string|null
     {
         return $this->typecast;
     }
 
-    /**
-     * @param bool $indexed
-     *
-     * @return Field
-     */
     public function setReferenced(bool $indexed): self
     {
         $this->referenced = $indexed;
@@ -164,9 +112,6 @@ final class Field
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isReferenced(): bool
     {
         return $this->referenced;
