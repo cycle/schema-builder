@@ -42,6 +42,13 @@ abstract class RelationSchema implements RelationInterface
     /** @var OptionSchema */
     protected $options;
 
+    public function withRole(string $role): static
+    {
+        $relation = clone $this;
+        $relation->source = $role;
+        return $relation;
+    }
+
     /**
      * @inheritDoc
      */
