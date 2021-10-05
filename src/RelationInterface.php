@@ -25,9 +25,4 @@ interface RelationInterface extends SchemaModifierInterface
         string $target,
         OptionSchema $options
     ): self;
-
-    /**
-     * @return array
-     */
-    public function packSchema(): array;
 }

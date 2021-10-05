@@ -30,4 +30,11 @@ interface SchemaModifierInterface
      * @throws DBALException
      */
     public function render(Registry $registry): void;
+
+    /**
+     * Modify Entity schema array
+     *
+     * @param array $schema Entity schema
+     */
+    public function modifySchema(array &$schema): void;
 }
