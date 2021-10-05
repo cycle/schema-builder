@@ -6,7 +6,6 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
-use Cycle\Database\Exception\DBALException;
 
 /**
  * Carries information about particular relation and table declaration required to properly
