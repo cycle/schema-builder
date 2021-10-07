@@ -12,9 +12,9 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\SchemaModifierInterface;
 
 /**
- * Generate modifiers based on their schematic definitions.
+ * Renders all required schema modifiers things based on computed entities and tables.
  */
-final class GenerateModifiers implements GeneratorInterface
+final class RenderModifiers implements GeneratorInterface
 {
     public function run(Registry $registry): Registry
     {
@@ -32,10 +32,10 @@ final class GenerateModifiers implements GeneratorInterface
         foreach ($entity->getSchemaModifiers() as $modifier) {
             \assert($modifier instanceof SchemaModifierInterface);
             try {
-                $modifier->withRole($role)->compute($registry);
+                $modifier->withRole($role)->render($registry);
             } catch (SchemaModifierException $e) {
                 throw new SchemaException(
-                    sprintf('Unable to compute modifier `%s` for the `%s` role.', $modifier::class, $role),
+                    sprintf('Unable to render modifier `%s` for the `%s` role.', $modifier::class, $role),
                     (int)$e->getCode(),
                     $e
                 );

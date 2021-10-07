@@ -151,7 +151,7 @@ final class Entity
     }
 
     /**
-     * @return \Traversable<SchemaModifierInterface>
+     * @return \Traversable<array-key, SchemaModifierInterface>
      */
     public function getSchemaModifiers(): \Traversable
     {

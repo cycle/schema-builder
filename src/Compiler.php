@@ -12,6 +12,8 @@ use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Database\Exception\CompilerException;
+use Cycle\Schema\Exception\SchemaModifierException;
+use Throwable;
 
 final class Compiler
 {
@@ -117,11 +119,20 @@ final class Compiler
 
         // Apply modifiers
         foreach ($entity->getSchemaModifiers() as $modifier) {
-            $modifier->modifySchema($schema);
+            try {
+                $modifier->modifySchema($schema);
+            } catch (Throwable $e) {
+                throw new SchemaModifierException(sprintf(
+                    'Unable to apply schema modifier `%s` for the `%s` role. %s',
+                    $modifier::class,
+                    (string)$entity->getRole(),
+                    $e->getMessage()
+                ), (int)$e->getCode(), $e);
+            }
         }
 
         ksort($schema);
-        $this->result[$entity->getRole()] = $schema;
+        $this->result[(string)$entity->getRole()] = $schema;
     }
 
     /**
@@ -150,7 +161,7 @@ final class Compiler
             }
             try {
                 $comparator->compare();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw new Exception\CompilerException(
                     sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
                     $e->getCode()
