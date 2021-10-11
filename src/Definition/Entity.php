@@ -8,6 +8,7 @@ use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
 use Cycle\Schema\Exception\EntityException;
+use Cycle\Schema\SchemaModifierInterface;
 
 /**
  * Contains information about specific entity definition.
@@ -35,6 +36,7 @@ final class Entity
     private RelationMap $relations;
 
     private FieldMap $primaryFields;
+    private array $schemaModifiers = [];
 
     public function __construct()
     {
@@ -140,6 +142,21 @@ final class Entity
     public function getRelations(): RelationMap
     {
         return $this->relations;
+    }
+
+    public function addSchemaModifier(SchemaModifierInterface $modifier): self
+    {
+        $this->schemaModifiers[] = $modifier;
+        return $this;
+    }
+
+    /**
+     * @return \Traversable<array-key, SchemaModifierInterface>
+     */
+    public function getSchemaModifiers(): \Traversable
+    {
+        // yield from $this->getRelations();
+        yield from $this->schemaModifiers;
     }
 
     public function setSchema(array $schema): self

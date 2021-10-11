@@ -12,6 +12,8 @@ use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Database\Exception\CompilerException;
+use Cycle\Schema\Exception\SchemaModifierException;
+use Throwable;
 
 final class Compiler
 {
@@ -50,7 +52,7 @@ final class Compiler
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
                 throw new CompilerException(sprintf(
-                    'Invalid generator `%s`',
+                    'Invalid generator `%s`.',
                     is_object($generator) ? get_class($generator) : gettype($generator)
                 ));
             }
@@ -86,7 +88,7 @@ final class Compiler
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity): void
+    private function compute(Registry $registry, Entity $entity): void
     {
         $schema = [
             Schema::ENTITY => $entity->getClass(),
@@ -99,8 +101,10 @@ final class Compiler
             Schema::COLUMNS => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST => $this->renderTypecast($entity),
-            Schema::RELATIONS => $this->renderRelations($registry, $entity),
+            Schema::RELATIONS => [],
         ];
+
+        $this->renderRelations($registry, $entity, $schema);
 
         if ($registry->hasTable($entity)) {
             $schema[Schema::DATABASE] = $registry->getDatabase($entity);
@@ -113,8 +117,22 @@ final class Compiler
             $schema[Schema::CHILDREN][$this->childAlias($child)] = $child->getClass();
         }
 
+        // Apply modifiers
+        foreach ($entity->getSchemaModifiers() as $modifier) {
+            try {
+                $modifier->modifySchema($schema);
+            } catch (Throwable $e) {
+                throw new SchemaModifierException(sprintf(
+                    'Unable to apply schema modifier `%s` for the `%s` role. %s',
+                    $modifier::class,
+                    (string)$entity->getRole(),
+                    $e->getMessage()
+                ), (int)$e->getCode(), $e);
+            }
+        }
+
         ksort($schema);
-        $this->result[$entity->getRole()] = $schema;
+        $this->result[(string)$entity->getRole()] = $schema;
     }
 
     /**
@@ -122,7 +140,7 @@ final class Compiler
      *
      * @return array
      */
-    protected function renderColumns(Entity $entity): array
+    private function renderColumns(Entity $entity): array
     {
         // Check field duplicates
         /** @var Field[][] $fieldGroups */
@@ -143,7 +161,7 @@ final class Compiler
             }
             try {
                 $comparator->compare();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw new Exception\CompilerException(
                     sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
                     $e->getCode()
@@ -164,7 +182,7 @@ final class Compiler
      *
      * @return array
      */
-    protected function renderTypecast(Entity $entity): array
+    private function renderTypecast(Entity $entity): array
     {
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
@@ -181,7 +199,7 @@ final class Compiler
      *
      * @return array
      */
-    protected function renderReferences(Entity $entity): array
+    private function renderReferences(Entity $entity): array
     {
         $schema = $entity->getPrimaryFields()->getNames();
 
@@ -194,20 +212,11 @@ final class Compiler
         return array_unique($schema);
     }
 
-    /**
-     * @param Registry $registry
-     * @param Entity   $entity
-     *
-     * @return array
-     */
-    protected function renderRelations(Registry $registry, Entity $entity): array
+    private function renderRelations(Registry $registry, Entity $entity, array &$schema): void
     {
-        $result = [];
-        foreach ($registry->getRelations($entity) as $name => $relation) {
-            $result[$name] = $relation->packSchema();
+        foreach ($registry->getRelations($entity) as $relation) {
+            $relation->modifySchema($schema);
         }
-
-        return $result;
     }
 
     /**
@@ -219,7 +228,7 @@ final class Compiler
      *
      * @return string
      */
-    protected function childAlias(Entity $entity): string
+    private function childAlias(Entity $entity): string
     {
         $r = new \ReflectionClass($entity->getClass());
 

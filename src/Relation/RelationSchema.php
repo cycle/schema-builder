@@ -6,6 +6,7 @@ namespace Cycle\Schema\Relation;
 
 use Cycle\Database\Schema\AbstractTable;
 use Cycle\ORM\Relation;
+use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
@@ -33,14 +34,28 @@ abstract class RelationSchema implements RelationInterface
     // name of all required relation options
     protected const RELATION_SCHEMA = [];
 
-    /** @var string */
-    protected $source;
+    /**
+     * Relation container name in the entity
+     */
+    protected string $name;
 
-    /** @var string */
-    protected $target;
+    protected string $source;
 
-    /** @var OptionSchema */
-    protected $options;
+    protected string $target;
+
+    protected OptionSchema $options;
+
+    public function withRole(string $role): static
+    {
+        $relation = clone $this;
+        $relation->source = $role;
+        return $relation;
+    }
+
+    public function modifySchema(array &$schema): void
+    {
+        $schema[SchemaInterface::RELATIONS][$this->name] = $this->packSchema();
+    }
 
     /**
      * @inheritDoc
@@ -50,6 +65,7 @@ abstract class RelationSchema implements RelationInterface
         $relation = clone $this;
         $relation->source = $source;
         $relation->target = $target;
+        $relation->name = $name;
 
         $relation->options = $options->withTemplate(static::RELATION_SCHEMA)->withContext([
             'relation' => $name,
@@ -73,7 +89,7 @@ abstract class RelationSchema implements RelationInterface
         }
     }
 
-    public function packSchema(): array
+    private function packSchema(): array
     {
         $schema = [];
 

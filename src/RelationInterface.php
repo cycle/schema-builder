@@ -6,13 +6,12 @@ namespace Cycle\Schema;
 
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Relation\OptionSchema;
-use Cycle\Database\Exception\DBALException;
 
 /**
  * Carries information about particular relation and table declaration required to properly
  * map two or more entities.
  */
-interface RelationInterface
+interface RelationInterface extends SchemaModifierInterface
 {
     /**
      * Create relation version linked to specific entity context.
@@ -25,27 +24,4 @@ interface RelationInterface
         string $target,
         OptionSchema $options
     ): self;
-
-    /**
-     * Compute relation references (column names and etc). Also ensures existence of fields in every
-     * related object.
-     *
-     * @throws RelationException
-     */
-    public function compute(Registry $registry): void;
-
-    /**
-     * Render needed relation indexes and foreign keys into table.
-     *
-     * @param Registry $registry
-     *
-     * @throws RelationException
-     * @throws DBALException
-     */
-    public function render(Registry $registry);
-
-    /**
-     * @return array
-     */
-    public function packSchema(): array;
 }
