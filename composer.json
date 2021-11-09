@@ -9,8 +9,7 @@
     "php": ">=8.0",
     "cycle/orm": "2.0.x-dev",
     "vimeo/psalm": "^4.10",
-    "yiisoft/friendly-exception": "^1.0",
-    "cycle/database": "2.0.x-dev#99a857789170baf6b47c5dde85115aef5c381728"
+    "yiisoft/friendly-exception": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",
