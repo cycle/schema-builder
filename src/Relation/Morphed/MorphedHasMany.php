@@ -38,6 +38,9 @@ final class MorphedHasMany extends RelationSchema
         // link to parent entity primary key by default
         Relation::MORPH_KEY => '{relation}_role',
 
+        // default collection.
+        Relation::COLLECTION_TYPE => null,
+
         // rendering options
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::MORPH_KEY_LENGTH => 32,

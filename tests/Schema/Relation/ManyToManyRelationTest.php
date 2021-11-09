@@ -6,6 +6,7 @@ namespace Cycle\Schema\Tests\Relation;
 
 use Cycle\Database\Schema\AbstractIndex;
 use Cycle\Database\Schema\AbstractTable;
+use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
@@ -159,7 +160,9 @@ abstract class ManyToManyRelationTest extends BaseTest
         $post->getRelations()->get('tags')
             ->setType('manyToMany')
             ->setTarget('tag')
-            ->getOptions()->set('though', 'tagContext');
+            ->getOptions()
+            ->set('though', 'tagContext')
+            ->set('collection', ArrayCollectionFactory::class);
 
         $r = new Registry($this->dbal);
         $r->register($post)->linkTable($post, 'default', 'post');
@@ -179,6 +182,11 @@ abstract class ManyToManyRelationTest extends BaseTest
         $this->assertSame(
             Relation::MANY_TO_MANY,
             $schema['post'][Schema::RELATIONS]['tags'][Relation::TYPE]
+        );
+
+        $this->assertSame(
+            ArrayCollectionFactory::class,
+            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::COLLECTION_TYPE]
         );
 
         $this->assertSame(

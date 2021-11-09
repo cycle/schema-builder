@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Generator;
 
+use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Relation;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Compiler;
@@ -29,13 +30,14 @@ abstract class GenerateRelationsTest extends BaseTest
             'custom orderBy' => ['orderBy', ['id' => 'DESC'], Relation::ORDER_BY],
             'default where' => ['where', [], Relation::WHERE],
             'custom where' => ['where', ['id' => '1'], Relation::WHERE],
+            'collection' => ['collection', ArrayCollectionFactory::class, Relation::COLLECTION_TYPE],
         ];
     }
 
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyToManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
+    public function testHasManyToManyRelationOptions(string $optionKey, array|string $optionValue, int $relationKey): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -66,7 +68,7 @@ abstract class GenerateRelationsTest extends BaseTest
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyRelationOptions(string $optionKey, array $optionValue, int $relationKey): void
+    public function testHasManyRelationOptions(string $optionKey, array|string $optionValue, int $relationKey): void
     {
         $e = Plain::define();
         $u = User::define();

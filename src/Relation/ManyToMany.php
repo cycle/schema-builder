@@ -58,6 +58,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         // custom pivot where
         Relation::THROUGH_WHERE => [],
 
+        // default collection.
+        Relation::COLLECTION_TYPE => null,
+
         // rendering options
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::FK_CREATE => true,

@@ -43,6 +43,9 @@ final class HasMany extends RelationSchema implements InversableInterface
         // default field name for inner key
         Relation::OUTER_KEY => '{source:role}_{innerKey}',
 
+        // default collection.
+        Relation::COLLECTION_TYPE => null,
+
         // rendering options
         RelationSchema::INDEX_CREATE => true,
         RelationSchema::FK_CREATE => true,
