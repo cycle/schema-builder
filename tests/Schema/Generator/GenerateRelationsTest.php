@@ -37,7 +37,9 @@ abstract class GenerateRelationsTest extends BaseTest
     /**
      * @dataProvider relationOptionsDataProvider
      */
-    public function testHasManyToManyRelationOptions(string $optionKey, array|string $optionValue, int $relationKey): void
+    public function testHasManyToManyRelationOptions(
+        string $optionKey, array|string $optionValue, int $relationKey
+    ): void
     {
         $post = Post::define();
         $tag = Tag::define();
@@ -62,7 +64,10 @@ abstract class GenerateRelationsTest extends BaseTest
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
         // phpcs:ignore
-        $this->assertSame($optionValue, $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]);
+        $this->assertSame(
+            $optionValue,
+            $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey]
+        );
     }
 
     /**
@@ -85,7 +90,10 @@ abstract class GenerateRelationsTest extends BaseTest
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
         // phpcs:ignore
-        $this->assertSame($optionValue, $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]);
+        $this->assertSame(
+            $optionValue,
+            $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey]
+        );
     }
 
     public function testHasManyToManyWithoutThroughEntity(): void
