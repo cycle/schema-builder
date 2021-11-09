@@ -38,9 +38,10 @@ abstract class GenerateRelationsTest extends BaseTest
      * @dataProvider relationOptionsDataProvider
      */
     public function testHasManyToManyRelationOptions(
-        string $optionKey, array|string $optionValue, int $relationKey
-    ): void
-    {
+        string $optionKey,
+        array|string $optionValue,
+        int $relationKey
+    ): void {
         $post = Post::define();
         $tag = Tag::define();
         $tagContext = TagContext::define();
