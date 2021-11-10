@@ -136,6 +136,11 @@ final class Entity
         return $this->normalizeClass($this->repository);
     }
 
+    /**
+     * @param non-empty-string[]|class-string[]|non-empty-string|class-string|null $typecast
+     *
+     * @return $this
+     */
     public function setTypecast(array|string|null $typecast): self
     {
         $this->typecast = $typecast;
@@ -143,6 +148,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return non-empty-string[]|class-string[]|non-empty-string|class-string|null
+     */
     public function getTypecast(): array|string|null
     {
         return $this->typecast;
