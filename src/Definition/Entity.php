@@ -29,6 +29,8 @@ final class Entity
 
     private ?string $repository = null;
 
+    private array|string|null $typecast = null;
+
     private array $schema = [];
 
     private FieldMap $fields;
@@ -132,6 +134,18 @@ final class Entity
     public function getRepository(): ?string
     {
         return $this->normalizeClass($this->repository);
+    }
+
+    public function setTypecast(array|string|null $typecast): self
+    {
+        $this->typecast = $typecast;
+
+        return $this;
+    }
+
+    public function getTypecast(): array|string|null
+    {
+        return $this->typecast;
     }
 
     public function getFields(): FieldMap

@@ -13,6 +13,8 @@ use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Plain;
+use Cycle\Schema\Tests\Fixtures\Post;
+use Cycle\Schema\Tests\Fixtures\Typecaster;
 use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class TableGeneratorTest extends BaseTest
@@ -59,6 +61,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::SCOPE => null,
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
+                Schema::TYPECAST_HANDLER => Typecaster::class,
             ],
         ], $schema);
     }
@@ -124,6 +127,41 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::SCOPE => null,
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
+                Schema::TYPECAST_HANDLER => [
+                    Typecaster::class
+                ],
+            ],
+        ], $c->getSchema());
+    }
+
+    public function testCompiledPost(): void
+    {
+        $e = Post::define();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+
+        $c = new Compiler();
+        $c->compile($r, [new RenderTables()]);
+
+        $this->assertSame([
+            'post' => [
+                Schema::ENTITY => Post::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'post',
+                Schema::PRIMARY_KEY => ['p_id'],
+                Schema::FIND_BY_KEYS => ['p_id'],
+                Schema::COLUMNS => [
+                    'p_id' => 'id',
+                ],
+                Schema::RELATIONS => [],
+                Schema::SCOPE => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
+                Schema::TYPECAST_HANDLER => null
             ],
         ], $c->getSchema());
     }

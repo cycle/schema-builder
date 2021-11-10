@@ -21,6 +21,27 @@ class EntityTest extends TestCase
         $this->assertSame('role', $e->getRole());
     }
 
+    public function testTypecast(): void
+    {
+        $e = new Entity();
+        $e->setTypecast('FooTypecaster');
+        $this->assertSame('FooTypecaster', $e->getTypecast());
+    }
+
+    public function testTypecastAsArray(): void
+    {
+        $e = new Entity();
+        $e->setTypecast(['FooTypecaster', 'BarTypecaster']);
+        $this->assertSame(['FooTypecaster', 'BarTypecaster'], $e->getTypecast());
+    }
+
+    public function testTypecastAsNull(): void
+    {
+        $e = new Entity();
+        $e->setTypecast(null);
+        $this->assertNull($e->getTypecast());
+    }
+
     public function testFields(): void
     {
         $e = new Entity();
