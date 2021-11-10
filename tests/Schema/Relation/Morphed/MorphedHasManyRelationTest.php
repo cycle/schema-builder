@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation\Morphed;
 
+use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
@@ -41,7 +42,11 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         $e = Plain::define();
         $u = User::define();
 
-        $u->getRelations()->get('plain')->setType('hasMany');
+        $u->getRelations()
+            ->get('plain')
+            ->setType('hasMany')
+            ->getOptions()
+            ->set('collection', ArrayCollectionFactory::class);
 
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'plain');
@@ -58,6 +63,11 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema);
         $this->assertArrayHasKey('plain_id', $schema['plain'][Schema::COLUMNS]);
         $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
+
+        $this->assertSame(
+            ArrayCollectionFactory::class,
+            $schema['user'][Schema::RELATIONS]['plain'][Relation::SCHEMA][Relation::COLLECTION_TYPE]
+        );
     }
 
     public function testRenderTable(): void
