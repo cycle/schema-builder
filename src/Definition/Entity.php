@@ -137,7 +137,7 @@ final class Entity
     }
 
     /**
-     * @param non-empty-string[]|class-string[]|non-empty-string|class-string|null $typecast
+     * @param class-string|class-string[]|non-empty-string|non-empty-string[]|null $typecast
      *
      * @return $this
      */
@@ -149,7 +149,7 @@ final class Entity
     }
 
     /**
-     * @return non-empty-string[]|class-string[]|non-empty-string|class-string|null
+     * @return class-string|class-string[]|non-empty-string|non-empty-string[]|null
      */
     public function getTypecast(): array|string|null
     {
