@@ -14,6 +14,7 @@ class Plain
         $entity = new Entity();
         $entity->setRole('plain');
         $entity->setClass(self::class);
+        $entity->setTypecast(Typecaster::class);
 
         $entity->getFields()->set(
             'p_id',
