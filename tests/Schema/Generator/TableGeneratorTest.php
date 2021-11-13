@@ -47,7 +47,7 @@ abstract class TableGeneratorTest extends BaseTest
         $schema = $c->compile(
             (new RenderTables())->run($r),
             defaults: [
-                Schema::TYPECAST_HANDLER => 'default_typecaster'
+                Schema::TYPECAST_HANDLER => 'default_typecaster',
             ]
         );
 
