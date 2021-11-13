@@ -98,7 +98,7 @@ final class Compiler
             Schema::REPOSITORY => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
             Schema::SCOPE => $entity->getScope() ?? $this->defaults[Schema::SCOPE],
             Schema::SCHEMA => $entity->getSchema(),
-            Schema::TYPECAST_HANDLER => $entity->getTypecast(),
+            Schema::TYPECAST_HANDLER => $entity->getTypecast() ?? $this->defaults[Schema::TYPECAST_HANDLER],
             Schema::PRIMARY_KEY => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
