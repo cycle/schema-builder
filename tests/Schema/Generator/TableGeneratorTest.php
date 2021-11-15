@@ -44,7 +44,12 @@ abstract class TableGeneratorTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
 
         $c = new Compiler();
-        $schema = $c->compile((new RenderTables())->run($r));
+        $schema = $c->compile(
+            (new RenderTables())->run($r),
+            defaults: [
+                Schema::TYPECAST_HANDLER => 'default_typecaster',
+            ]
+        );
 
         $this->assertSame([
             'plain' => [
@@ -54,6 +59,42 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::REPOSITORY => Repository::class,
                 Schema::DATABASE => 'default',
                 Schema::TABLE => 'plain',
+                Schema::PRIMARY_KEY => ['p_id'],
+                Schema::FIND_BY_KEYS => ['p_id'],
+                Schema::COLUMNS => ['p_id' => 'id'],
+                Schema::RELATIONS => [],
+                Schema::SCOPE => null,
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
+                Schema::TYPECAST_HANDLER => Typecaster::class,
+            ],
+        ], $schema);
+    }
+
+    public function testCompiledWithPassedDefaultTypecastHandler(): void
+    {
+        $e = Post::define();
+        $e->setTypecast(null);
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+
+        $c = new Compiler();
+        $schema = $c->compile(
+            (new RenderTables())->run($r),
+            defaults: [
+                Schema::TYPECAST_HANDLER => Typecaster::class,
+            ]
+        );
+
+        $this->assertSame([
+            'post' => [
+                Schema::ENTITY => Post::class,
+                Schema::MAPPER => Mapper::class,
+                Schema::SOURCE => Source::class,
+                Schema::REPOSITORY => Repository::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'post',
                 Schema::PRIMARY_KEY => ['p_id'],
                 Schema::FIND_BY_KEYS => ['p_id'],
                 Schema::COLUMNS => ['p_id' => 'id'],
