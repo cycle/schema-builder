@@ -15,15 +15,17 @@ use Cycle\Database\Exception\CompilerException;
 use Cycle\Schema\Definition\Inheritance\JoinedTable;
 use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Exception\SchemaModifierException;
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Throwable;
 
 final class Compiler
 {
-    /** @var array */
-    private $result = [];
+    /** @var array<non-empty-string, array<int, mixed>> */
+    private array $result = [];
 
-    /** @var array */
-    private $defaults = [
+    /** @var array<int, mixed> */
+    private array $defaults = [
         Schema::MAPPER => Mapper::class,
         Schema::REPOSITORY => Repository::class,
         Schema::SOURCE => Source::class,
@@ -31,22 +33,17 @@ final class Compiler
         Schema::TYPECAST_HANDLER => null,
     ];
 
-    /** @var \Doctrine\Inflector\Inflector */
-    private $inflector;
+    private Inflector $inflector;
 
     public function __construct()
     {
-        $this->inflector = (new \Doctrine\Inflector\Rules\English\InflectorFactory())->build();
+        $this->inflector = (new InflectorFactory())->build();
     }
 
     /**
      * Compile the registry schema.
      *
-     * @param Registry $registry
      * @param GeneratorInterface[] $generators
-     * @param array $defaults
-     *
-     * @return array
      */
     public function compile(Registry $registry, array $generators = [], array $defaults = []): array
     {
@@ -77,8 +74,6 @@ final class Compiler
 
     /**
      * Get compiled schema result.
-     *
-     * @return array
      */
     public function getSchema(): array
     {
@@ -87,9 +82,6 @@ final class Compiler
 
     /**
      * Compile entity and relation definitions into packed ORM schema.
-     *
-     * @param Registry $registry
-     * @param Entity $entity
      */
     private function compute(Registry $registry, Entity $entity): void
     {
@@ -120,6 +112,13 @@ final class Compiler
 
         $this->renderRelations($registry, $entity, $schema);
 
+        // Note: backward compatibility for ORM v1
+//        foreach ($registry->getChildren($entity) as $child) {
+//            $this->result[$child->getClass()] = [
+//                Schema::ROLE => $entity->getRole(),
+//            ];
+//        }
+
         if ($registry->hasTable($entity)) {
             $schema[Schema::DATABASE] = $registry->getDatabase($entity);
             $schema[Schema::TABLE] = $registry->getTable($entity);
@@ -148,11 +147,6 @@ final class Compiler
         $this->result[(string)$entity->getRole()] = $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderColumns(Entity $entity): array
     {
         // Check field duplicates
@@ -190,11 +184,6 @@ final class Compiler
         return $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderTypecast(Entity $entity): array
     {
         $schema = [];
@@ -207,11 +196,6 @@ final class Compiler
         return $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderReferences(Entity $entity): array
     {
         $schema = $entity->getPrimaryFields()->getNames();
@@ -234,12 +218,6 @@ final class Compiler
 
     /**
      * Return the unique alias for the child entity.
-     *
-     * @param Entity $entity
-     *
-     * @throws \ReflectionException
-     *
-     * @return string
      */
     private function childAlias(Entity $entity): string
     {
