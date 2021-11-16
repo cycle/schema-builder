@@ -13,8 +13,8 @@ use Cycle\Schema\Exception\FieldException;
 final class Field
 {
     private OptionMap $options;
-    private string $column;
-    private string $type;
+    private ?string $column = null;
+    private ?string $type = null;
     private bool $primary = false;
     private array|string|null $typecast = null;
     private bool $referenced = false;
