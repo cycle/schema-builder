@@ -15,6 +15,9 @@ use Cycle\Database\Exception\CompilerException;
 use Cycle\Schema\Definition\Inheritance\JoinedTable;
 use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Exception\SchemaModifierException;
+use Cycle\Schema\Exception\TableInheritance\DiscriminatorColumnNotPresentException;
+use Cycle\Schema\Exception\TableInheritance\WrongDiscriminatorColumnException;
+use Cycle\Schema\Exception\TableInheritance\WrongParentKeyColumnException;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Throwable;
@@ -51,10 +54,12 @@ final class Compiler
 
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
-                throw new CompilerException(sprintf(
-                    'Invalid generator `%s`.',
-                    is_object($generator) ? get_class($generator) : gettype($generator)
-                ));
+                throw new CompilerException(
+                    sprintf(
+                        'Invalid generator `%s`.',
+                        is_object($generator) ? get_class($generator) : gettype($generator)
+                    )
+                );
             }
 
             $registry = $generator->run($registry);
@@ -103,11 +108,25 @@ final class Compiler
         // For table inheritance we need to fill specific schema segments
         $inheritance = $entity->getInheritance();
         if ($inheritance instanceof SingleTable) {
+            // Check if discriminator column defined and is not null or empty
+            if ($inheritance->getDiscriminator() === null || $inheritance->getDiscriminator() === '') {
+                throw new DiscriminatorColumnNotPresentException($entity);
+            } elseif (!$entity->getFields()->has($inheritance->getDiscriminator())) {
+                throw new WrongDiscriminatorColumnException($entity, $inheritance->getDiscriminator());
+            }
+
             $schema[Schema::CHILDREN] = $inheritance->getChildren();
             $schema[Schema::DISCRIMINATOR] = $inheritance->getDiscriminator();
         } elseif ($inheritance instanceof JoinedTable) {
             $schema[Schema::PARENT] = $inheritance->getParent()->getRole();
-            $schema[Schema::PARENT_KEY] = $inheritance->getOuterKey();
+
+            $parent = $registry->getEntity($inheritance->getParent()->getRole());
+            if ($inheritance->getOuterKey()) {
+                if (!$parent->getFields()->has($inheritance->getOuterKey())) {
+                    throw new WrongParentKeyColumnException($parent, $inheritance->getOuterKey());
+                }
+                $schema[Schema::PARENT_KEY] = $inheritance->getOuterKey();
+            }
         }
 
         $this->renderRelations($registry, $entity, $schema);
@@ -129,17 +148,19 @@ final class Compiler
             try {
                 $modifier->modifySchema($schema);
             } catch (Throwable $e) {
-                throw new SchemaModifierException(sprintf(
-                    'Unable to apply schema modifier `%s` for the `%s` role. %s',
-                    $modifier::class,
-                    (string)$entity->getRole(),
-                    $e->getMessage()
-                ), (int)$e->getCode(), $e);
+                throw new SchemaModifierException(
+                    sprintf(
+                        'Unable to apply schema modifier `%s` for the `%s` role. %s',
+                        $modifier::class,
+                        (string)$entity->getRole(),
+                        $e->getMessage()
+                    ), (int)$e->getCode(), $e
+                );
             }
         }
 
         // For STI child we need only schema role as a key and entity segment
-        if ($entity->hasStiParent()) {
+        if ($entity->isChildOfSingleTableInheritance()) {
             $schema = array_intersect_key($schema, [Schema::ENTITY, Schema::ROLE]);
         }
 

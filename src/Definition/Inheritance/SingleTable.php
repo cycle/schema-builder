@@ -12,11 +12,6 @@ final class SingleTable extends Inheritance
     private array $children = [];
     private ?string $discriminator = null;
 
-    public function __construct()
-    {
-        parent::__construct('single_table');
-    }
-
     public function addChild(string $discriminatorValue, string $class): void
     {
         $this->children[$discriminatorValue] = $class;

@@ -13,7 +13,6 @@ final class JoinedTable extends Inheritance
         private Entity $parent,
         private ?string $outerKey = null
     ) {
-        parent::__construct('joined_table');
     }
 
     public function getOuterKey(): ?string

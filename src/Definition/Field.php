@@ -116,8 +116,10 @@ final class Field
         return $this->entityClass;
     }
 
-    public function setEntityClass(?string $entityClass): void
+    public function setEntityClass(?string $entityClass): self
     {
         $this->entityClass = $entityClass;
+
+        return $this;
     }
 }

@@ -6,6 +6,8 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Inheritance\JoinedTable;
+use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\EntityException;
 use Cycle\Schema\Exception\FieldException;
@@ -240,5 +242,22 @@ class EntityTest extends TestCase
         $e->setSchema(['schema']);
 
         $this->assertSame(['schema'], $e->getSchema());
+    }
+
+    public function testSingleTableInheritance(): void
+    {
+        $e = new Entity();
+        $e->setInheritance($inheritance = new SingleTable());
+
+        $this->assertSame($inheritance, $e->getInheritance());
+    }
+
+    public function testJoinedTableInheritance(): void
+    {
+        $e = new Entity();
+        $parent = new Entity();
+        $e->setInheritance($inheritance = new JoinedTable($parent));
+
+        $this->assertSame($inheritance, $e->getInheritance());
     }
 }
