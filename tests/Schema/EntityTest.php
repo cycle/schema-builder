@@ -267,7 +267,7 @@ class EntityTest extends TestCase
     public function testSchemaModifier(): void
     {
         $e = new Entity();
-        $e->addSchemaModifier($modifier =$this->createMock(SchemaModifierInterface::class));
+        $e->addSchemaModifier($modifier = $this->createMock(SchemaModifierInterface::class));
 
         $this->assertSame([$modifier], iterator_to_array($e->getSchemaModifiers()));
     }
