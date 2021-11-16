@@ -112,7 +112,6 @@ final class Compiler
             if ($inheritance->getDiscriminator() === null || $inheritance->getDiscriminator() === '') {
                 throw new DiscriminatorColumnNotPresentException($entity);
             }
-
             if (!$entity->getFields()->has($inheritance->getDiscriminator())) {
                 throw new WrongDiscriminatorColumnException($entity, $inheritance->getDiscriminator());
             }
