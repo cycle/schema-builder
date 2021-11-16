@@ -6,5 +6,4 @@ namespace Cycle\Schema\Exception;
 
 class TableInheritanceException extends CompilerException
 {
-
 }

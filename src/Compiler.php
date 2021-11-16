@@ -111,7 +111,8 @@ final class Compiler
             // Check if discriminator column defined and is not null or empty
             if ($inheritance->getDiscriminator() === null || $inheritance->getDiscriminator() === '') {
                 throw new DiscriminatorColumnNotPresentException($entity);
-            } elseif (!$entity->getFields()->has($inheritance->getDiscriminator())) {
+            }
+            if (!$entity->getFields()->has($inheritance->getDiscriminator())) {
                 throw new WrongDiscriminatorColumnException($entity, $inheritance->getDiscriminator());
             }
 
@@ -154,7 +155,9 @@ final class Compiler
                         $modifier::class,
                         (string)$entity->getRole(),
                         $e->getMessage()
-                    ), (int)$e->getCode(), $e
+                    ),
+                    (int)$e->getCode(),
+                    $e
                 );
             }
         }

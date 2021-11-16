@@ -18,7 +18,8 @@ class DiscriminatorColumnNotPresentException extends TableInheritanceException i
     public function getName(): string
     {
         return sprintf(
-            'Discriminator column for the `%s` role should be defined.', $this->entity->getRole()
+            'Discriminator column for the `%s` role should be defined.',
+            $this->entity->getRole()
         );
     }
 
