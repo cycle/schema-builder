@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition\Inheritance;
 
-use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Inheritance;
 
 final class SingleTable extends Inheritance
