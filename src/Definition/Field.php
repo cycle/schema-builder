@@ -13,18 +13,12 @@ use Cycle\Schema\Exception\FieldException;
 final class Field
 {
     private OptionMap $options;
-
-    /** @var string */
-    private $column;
-
-    /** @var string */
-    private $type;
-
+    private string $column;
+    private string $type;
     private bool $primary = false;
-
     private array|string|null $typecast = null;
-
     private bool $referenced = false;
+    private ?string $entityClass = null;
 
     public function __construct()
     {
@@ -115,5 +109,15 @@ final class Field
     public function isReferenced(): bool
     {
         return $this->referenced;
+    }
+
+    public function getEntityClass(): ?string
+    {
+        return $this->entityClass;
+    }
+
+    public function setEntityClass(?string $entityClass): void
+    {
+        $this->entityClass = $entityClass;
     }
 }

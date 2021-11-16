@@ -73,6 +73,7 @@ trait FieldTrait
         }
 
         $field = new Field();
+        $field->setEntityClass($target->getClass());
         $field->setColumn($column);
         $field->setTypecast($outer->getTypecast());
 

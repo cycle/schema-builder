@@ -12,6 +12,8 @@ use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Database\Exception\CompilerException;
+use Cycle\Schema\Definition\Inheritance\JoinedTable;
+use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Exception\SchemaModifierException;
 use Throwable;
 
@@ -87,7 +89,7 @@ final class Compiler
      * Compile entity and relation definitions into packed ORM schema.
      *
      * @param Registry $registry
-     * @param Entity   $entity
+     * @param Entity $entity
      */
     private function compute(Registry $registry, Entity $entity): void
     {
@@ -106,17 +108,21 @@ final class Compiler
             Schema::RELATIONS => [],
         ];
 
+        // For table inheritance we need to fill specific schema segments
+        $inheritance = $entity->getInheritance();
+        if ($inheritance instanceof SingleTable) {
+            $schema[Schema::CHILDREN] = $inheritance->getChildren();
+            $schema[Schema::DISCRIMINATOR] = $inheritance->getDiscriminator();
+        } elseif ($inheritance instanceof JoinedTable) {
+            $schema[Schema::PARENT] = $inheritance->getParent()->getRole();
+            $schema[Schema::PARENT_KEY] = $inheritance->getOuterKey();
+        }
+
         $this->renderRelations($registry, $entity, $schema);
 
         if ($registry->hasTable($entity)) {
             $schema[Schema::DATABASE] = $registry->getDatabase($entity);
             $schema[Schema::TABLE] = $registry->getTable($entity);
-        }
-
-        // table inheritance
-        foreach ($registry->getChildren($entity) as $child) {
-            $this->result[$child->getClass()] = [Schema::ROLE => $entity->getRole()];
-            $schema[Schema::CHILDREN][$this->childAlias($child)] = $child->getClass();
         }
 
         // Apply modifiers
@@ -131,6 +137,11 @@ final class Compiler
                     $e->getMessage()
                 ), (int)$e->getCode(), $e);
             }
+        }
+
+        // For STI child we need only schema role as a key and entity segment
+        if ($entity->hasStiParent()) {
+            $schema = array_intersect_key($schema, [Schema::ENTITY, Schema::ROLE]);
         }
 
         ksort($schema);
@@ -226,9 +237,9 @@ final class Compiler
      *
      * @param Entity $entity
      *
+     * @return string
      * @throws \ReflectionException
      *
-     * @return string
      */
     private function childAlias(Entity $entity): string
     {
