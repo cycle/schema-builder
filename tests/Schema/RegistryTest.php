@@ -31,6 +31,24 @@ abstract class RegistryTest extends BaseTest
         $this->assertFalse($r->hasEntity(Post::class));
     }
 
+    public function testDuplicateRoleShouldThrowAnException(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Duplicate entity `user`');
+
+        $r = new Registry($this->dbal);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('user')->setClass(Author::class);
+
+
+        $r->register($e);
+        $r->register($e2);
+    }
+
     public function testGetEntity(): void
     {
         $r = new Registry($this->dbal);
@@ -128,39 +146,37 @@ abstract class RegistryTest extends BaseTest
         $r->registerChild($e, $c);
     }
 
-//    public function testRegisterChild(): void
-//    {
-//        $e = new Entity();
-//        $e->setRole('parent');
-//        $e->setClass(Author::class);
-//
-//        $e->getFields()->set(
-//            'id',
-//            (new Field())->setType('primary')->setColumn('id')
-//        );
-//
-//        $r = new Registry($this->dbal);
-//        $r->register($e)->linkTable($e, 'default', 'table');
-//
-//        $c = new Entity();
-//        $c->setRole('parent');
-//        $c->setClass(User::class);
-//
-//        $c->getFields()->set(
-//            'id',
-//            (new Field())->setType('primary')->setColumn('id')
-//        );
-//
-//        $c->getFields()->set(
-//            'name',
-//            (new Field())->setType('string')->setColumn('name')
-//        );
-//
-//        $r->registerChild($e, $c);
-//        $this->assertTrue($e->getFields()->has('name'));
-//
-//        $schema = (new Compiler())->compile($r, []);
-//
-//        $this->assertSame('parent', $schema[User::class][Schema::ROLE]);
-//    }
+    public function testRegisterChild(): void
+    {
+        $e = new Entity();
+        $e->setRole('parent');
+        $e->setClass(Author::class);
+
+        $e->getFields()->set(
+            'id',
+            (new Field())->setType('primary')->setColumn('id')
+        );
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'table');
+
+        $c = new Entity();
+        $c->setRole('parent');
+        $c->setClass(User::class);
+
+        $c->getFields()->set(
+            'id',
+            (new Field())->setType('primary')->setColumn('id')
+        );
+
+        $c->getFields()->set(
+            'name',
+            (new Field())->setType('string')->setColumn('name')
+        );
+
+        $r->registerChild($e, $c);
+        $this->assertTrue($e->getFields()->has('name'));
+
+        $schema = (new Compiler())->compile($r, []);
+    }
 }
