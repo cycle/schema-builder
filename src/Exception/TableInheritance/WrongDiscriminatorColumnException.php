@@ -29,7 +29,7 @@ class WrongDiscriminatorColumnException extends TableInheritanceException implem
         $fields = implode('`, `', $this->entity->getFields()->getNames());
 
         return sprintf(
-            'You have to specify one of defined field of the `%s` role: `%s`',
+            'You have to specify one of the defined fields of the `%s` role: `%s`',
             $this->entity->getRole(),
             $fields
         );

@@ -39,7 +39,7 @@ class JoinedTableInheritanceTest extends TestCase
         $schema = (new Compiler())->compile($r);
 
         $this->assertSame('user', $schema['author'][SchemaInterface::PARENT]);
-        $this->assertSame('foo_bar', $schema['author'][SchemaInterface::PARENT_KEY]);
+        $this->assertSame('foo_bar', $schema['author'][SchemaInterface::PARENT_KEY] ?? null);
     }
 
     public function testJoinedTableWithoutOuterKeyShouldBeAddedToSchema()
@@ -63,7 +63,7 @@ class JoinedTableInheritanceTest extends TestCase
         $schema = (new Compiler())->compile($r);
 
         $this->assertSame('user', $schema['author'][SchemaInterface::PARENT]);
-        $this->assertEmpty($schema['author'][SchemaInterface::PARENT_KEY]);
+        $this->assertEmpty($schema['author'][SchemaInterface::PARENT_KEY] ?? null);
     }
 
     public function testJoinedTableWithNonExistsOuterKeyShouldThrowAnException()
