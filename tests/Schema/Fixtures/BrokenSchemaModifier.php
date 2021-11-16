@@ -9,7 +9,6 @@ use Cycle\Schema\SchemaModifierInterface;
 
 class BrokenSchemaModifier implements SchemaModifierInterface
 {
-
     public function withRole(string $role): static
     {
         // TODO: Implement withRole() method.
