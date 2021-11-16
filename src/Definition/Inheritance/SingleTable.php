@@ -17,11 +17,6 @@ final class SingleTable extends Inheritance
         $this->children[$discriminatorValue] = $class;
     }
 
-    public function hasChild(string $class): bool
-    {
-        return \in_array($class, $this->children, true);
-    }
-
     public function getChildren(): array
     {
         return $this->children;

@@ -11,9 +11,9 @@ use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
-use Cycle\Database\Exception\CompilerException;
 use Cycle\Schema\Definition\Inheritance\JoinedTable;
 use Cycle\Schema\Definition\Inheritance\SingleTable;
+use Cycle\Schema\Exception\CompilerException;
 use Cycle\Schema\Exception\SchemaModifierException;
 use Cycle\Schema\Exception\TableInheritance\DiscriminatorColumnNotPresentException;
 use Cycle\Schema\Exception\TableInheritance\WrongDiscriminatorColumnException;
@@ -56,8 +56,9 @@ final class Compiler
             if (!$generator instanceof GeneratorInterface) {
                 throw new CompilerException(
                     sprintf(
-                        'Invalid generator `%s`.',
-                        is_object($generator) ? get_class($generator) : gettype($generator)
+                        'Invalid generator `%s`. It should implement `%s` interface.',
+                        is_object($generator) ? $generator::class : $generator,
+                        GeneratorInterface::class
                     )
                 );
             }
