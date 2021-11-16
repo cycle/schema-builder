@@ -237,9 +237,9 @@ final class Compiler
      *
      * @param Entity $entity
      *
-     * @return string
      * @throws \ReflectionException
      *
+     * @return string
      */
     private function childAlias(Entity $entity): string
     {
