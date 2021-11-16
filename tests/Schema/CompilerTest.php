@@ -56,7 +56,7 @@ class CompilerTest extends TestCase
         $author->setRole('author')->setClass(Author::class);
         $author->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
 
-        $author->addSchemaModifier(new BrokenSchemaModifier(BrokenSchemaModifier::class.'::modifySchema'));
+        $author->addSchemaModifier(new BrokenSchemaModifier(BrokenSchemaModifier::class . '::modifySchema'));
 
         $r->register($author);
 
