@@ -18,8 +18,6 @@ use Cycle\Schema\Exception\SchemaModifierException;
 use Cycle\Schema\Exception\TableInheritance\DiscriminatorColumnNotPresentException;
 use Cycle\Schema\Exception\TableInheritance\WrongDiscriminatorColumnException;
 use Cycle\Schema\Exception\TableInheritance\WrongParentKeyColumnException;
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Throwable;
 
 final class Compiler
@@ -36,13 +34,6 @@ final class Compiler
         Schema::TYPECAST_HANDLER => null,
     ];
 
-    private Inflector $inflector;
-
-    public function __construct()
-    {
-        $this->inflector = (new InflectorFactory())->build();
-    }
-
     /**
      * Compile the registry schema.
      *
@@ -57,7 +48,7 @@ final class Compiler
                 throw new CompilerException(
                     sprintf(
                         'Invalid generator `%s`. It should implement `%s` interface.',
-                        is_object($generator) ? $generator::class : $generator,
+                        \is_object($generator) ? $generator::class : \var_export($generator, true),
                         GeneratorInterface::class
                     )
                 );
@@ -110,19 +101,21 @@ final class Compiler
         $inheritance = $entity->getInheritance();
         if ($inheritance instanceof SingleTable) {
             // Check if discriminator column defined and is not null or empty
-            if ($inheritance->getDiscriminator() === null || $inheritance->getDiscriminator() === '') {
+            $discriminator = $inheritance->getDiscriminator();
+            if ($discriminator === null || $discriminator === '') {
                 throw new DiscriminatorColumnNotPresentException($entity);
             }
-            if (!$entity->getFields()->has($inheritance->getDiscriminator())) {
-                throw new WrongDiscriminatorColumnException($entity, $inheritance->getDiscriminator());
+            if (!$entity->getFields()->has($discriminator)) {
+                throw new WrongDiscriminatorColumnException($entity, $discriminator);
             }
 
             $schema[Schema::CHILDREN] = $inheritance->getChildren();
-            $schema[Schema::DISCRIMINATOR] = $inheritance->getDiscriminator();
+            $schema[Schema::DISCRIMINATOR] = $discriminator;
         } elseif ($inheritance instanceof JoinedTable) {
             $schema[Schema::PARENT] = $inheritance->getParent()->getRole();
+            assert($schema[Schema::PARENT] !== null);
 
-            $parent = $registry->getEntity($inheritance->getParent()->getRole());
+            $parent = $registry->getEntity($schema[Schema::PARENT]);
             if ($inheritance->getOuterKey()) {
                 if (!$parent->getFields()->has($inheritance->getOuterKey())) {
                     throw new WrongParentKeyColumnException($parent, $inheritance->getOuterKey());
@@ -132,13 +125,6 @@ final class Compiler
         }
 
         $this->renderRelations($registry, $entity, $schema);
-
-        // Note: backward compatibility for ORM v1
-//        foreach ($registry->getChildren($entity) as $child) {
-//            $this->result[$child->getClass()] = [
-//                Schema::ROLE => $entity->getRole(),
-//            ];
-//        }
 
         if ($registry->hasTable($entity)) {
             $schema[Schema::DATABASE] = $registry->getDatabase($entity);
@@ -165,11 +151,14 @@ final class Compiler
 
         // For STI child we need only schema role as a key and entity segment
         if ($entity->isChildOfSingleTableInheritance()) {
-            $schema = array_intersect_key($schema, [Schema::ENTITY, Schema::ROLE]);
+            $schema = \array_intersect_key($schema, [Schema::ENTITY, Schema::ROLE]);
         }
 
+        /** @var array<int, mixed> $schema */
         ksort($schema);
-        $this->result[(string)$entity->getRole()] = $schema;
+        $role = $entity->getRole();
+        assert(!empty($role));
+        $this->result[$role] = $schema;
     }
 
     private function renderColumns(Entity $entity): array
@@ -181,7 +170,7 @@ final class Compiler
         foreach ($entity->getFields() as $name => $field) {
             $fieldGroups[$field->getColumn()][$name] = $field;
         }
-        foreach ($fieldGroups as $fieldName => $fields) {
+        foreach ($fieldGroups as $fields) {
             // We need duplicates only
             if (count($fields) === 1) {
                 continue;
@@ -195,7 +184,7 @@ final class Compiler
                 $comparator->compare();
             } catch (Throwable $e) {
                 throw new Exception\CompilerException(
-                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
+                    sprintf("Error compiling the `%s` role.\n\n%s", (string)$entity->getRole(), $e->getMessage()),
                     $e->getCode()
                 );
             }
@@ -239,15 +228,5 @@ final class Compiler
         foreach ($registry->getRelations($entity) as $relation) {
             $relation->modifySchema($schema);
         }
-    }
-
-    /**
-     * Return the unique alias for the child entity.
-     */
-    private function childAlias(Entity $entity): string
-    {
-        $r = new \ReflectionClass($entity->getClass());
-
-        return $this->inflector->classify($r->getShortName());
     }
 }

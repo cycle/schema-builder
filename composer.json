@@ -8,7 +8,6 @@
   "require": {
     "php": ">=8.0",
     "cycle/orm": "2.0.x-dev",
-    "doctrine/inflector": "^1.4|^2.0",
     "yiisoft/friendly-exception": "^1.0"
   },
   "require-dev": {
