@@ -69,7 +69,7 @@ class JoinedTableInheritanceTest extends TestCase
     public function testJoinedTableWithNonExistsOuterKeyShouldThrowAnException()
     {
         $this->expectException(WrongParentKeyColumnException::class);
-        $this->expectErrorMessage('Outer key column `foo_bar` not found among fields of the `user` role.');
+        $this->expectErrorMessage('Outer key column `foo_bar` is not found among fields of the `user` role.');
 
         $r = new Registry(
             $this->createMock(DatabaseProviderInterface::class)

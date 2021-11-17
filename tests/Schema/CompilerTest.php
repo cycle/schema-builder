@@ -21,7 +21,7 @@ class CompilerTest extends TestCase
     {
         $this->expectException(CompilerException::class);
         $this->expectErrorMessage(
-            'Invalid generator `Cycle\Schema\Tests\Fixtures\Author`. '
+            'Invalid generator `\'Cycle\\\\Schema\\\\Tests\\\\Fixtures\\\\Author\'`. '
             . 'It should implement `Cycle\Schema\GeneratorInterface` interface.'
         );
 

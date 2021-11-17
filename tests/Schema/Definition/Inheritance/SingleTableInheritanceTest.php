@@ -63,7 +63,7 @@ class SingleTableInheritanceTest extends TestCase
 
         $user = new Entity();
         $user->setRole('user')->setClass(User::class);
-        $user->setInheritance($inheritance = new SingleTable());
+        $user->setInheritance(new SingleTable());
 
         $user->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
 
@@ -75,7 +75,7 @@ class SingleTableInheritanceTest extends TestCase
     public function testSingleTableWithNonExistsDiscriminatorColumnShouldThrowAnException()
     {
         $this->expectException(WrongDiscriminatorColumnException::class);
-        $this->expectErrorMessage('Discriminator column `type` not found among fields of the `user` role.');
+        $this->expectErrorMessage('Discriminator column `type` is not found among fields of the `user` role.');
 
         $r = new Registry(
             $this->createMock(DatabaseProviderInterface::class)
