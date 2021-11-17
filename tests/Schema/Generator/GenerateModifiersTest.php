@@ -31,7 +31,7 @@ class GenerateModifiersTest extends TestCase
         $user->getFields()->set('foo_bar', (new Field())->setType('primary')->setColumn('id'));
 
         $user->addSchemaModifier(
-            new class() implements SchemaModifierInterface {
+            new class () implements SchemaModifierInterface {
                 private string $role;
 
                 public function withRole(string $role): static
