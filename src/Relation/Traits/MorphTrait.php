@@ -77,6 +77,7 @@ trait MorphTrait
         }
 
         $field = new Field();
+        $field->setEntityClass($target->getClass());
         $field->setColumn($column);
         $field->setType(sprintf('string(%s)', $length));
 

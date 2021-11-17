@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema;
@@ -21,20 +14,12 @@ use Traversable;
 
 final class Registry implements \IteratorAggregate
 {
-    /** @var DatabaseProviderInterface */
-    private $dbal;
-
     /** @var Entity[] */
-    private $entities = [];
-
-    /** @var \SplObjectStorage */
-    private $tables;
-
-    /** @var \SplObjectStorage */
-    private $children;
-
-    /** @var \SplObjectStorage */
-    private $relations;
+    private array $entities = [];
+    private DatabaseProviderInterface $dbal;
+    private \SplObjectStorage $tables;
+    private \SplObjectStorage $children;
+    private \SplObjectStorage $relations;
 
     /**
      * @param DatabaseProviderInterface $dbal
@@ -47,11 +32,6 @@ final class Registry implements \IteratorAggregate
         $this->relations = new \SplObjectStorage();
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return Registry
-     */
     public function register(Entity $entity): self
     {
         foreach ($this->entities as $e) {
@@ -70,8 +50,6 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @param string $role Entity role of class.
-     *
-     * @return bool
      */
     public function hasEntity(string $role): bool
     {
@@ -90,8 +68,6 @@ final class Registry implements \IteratorAggregate
      * @param string $role Entity role or class name.
      *
      * @throws RegistryException
-     *
-     * @return Entity
      */
     public function getEntity(string $role): Entity
     {
@@ -115,9 +91,6 @@ final class Registry implements \IteratorAggregate
     /**
      * Assign child entity to parent entity.
      *
-     * @param Entity $parent
-     * @param Entity $child
-     *
      * @throws RegistryException
      */
     public function registerChild(Entity $parent, Entity $child): void
@@ -137,8 +110,6 @@ final class Registry implements \IteratorAggregate
     /**
      * Get all assigned children entities.
      *
-     * @param Entity $entity
-     *
      * @return Entity[]
      */
     public function getChildren(Entity $entity): array
@@ -153,14 +124,8 @@ final class Registry implements \IteratorAggregate
     /**
      * Associate entity with table.
      *
-     * @param Entity      $entity
-     * @param string|null $database
-     * @param string      $table
-     *
      * @throws RegistryException
      * @throws DBALException
-     *
-     * @return Registry
      */
     public function linkTable(Entity $entity, ?string $database, string $table): self
     {
@@ -199,11 +164,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param Entity $entity
-     *
      * @throws RegistryException
-     *
-     * @return bool
      */
     public function hasTable(Entity $entity): bool
     {
@@ -215,11 +176,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param Entity $entity
-     *
      * @throws RegistryException
-     *
-     * @return string
      */
     public function getDatabase(Entity $entity): string
     {
@@ -231,11 +188,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param Entity $entity
-     *
      * @throws RegistryException
-     *
-     * @return string
      */
     public function getTable(Entity $entity): string
     {
@@ -247,11 +200,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param Entity $entity
-     *
      * @throws RegistryException
-     *
-     * @return AbstractTable
      */
     public function getTableSchema(Entity $entity): AbstractTable
     {
@@ -264,10 +213,6 @@ final class Registry implements \IteratorAggregate
 
     /**
      * Create entity relation.
-     *
-     * @param Entity            $entity
-     * @param string            $name
-     * @param RelationInterface $relation
      *
      * @throws RegistryException
      * @throws RelationException
@@ -284,12 +229,7 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @param Entity $entity
-     * @param string $name
-     *
      * @throws RegistryException
-     *
-     * @return bool
      */
     public function hasRelation(Entity $entity, string $name): bool
     {
@@ -300,12 +240,6 @@ final class Registry implements \IteratorAggregate
         return isset($this->relations[$entity][$name]);
     }
 
-    /**
-     * @param Entity $entity
-     * @param string $name
-     *
-     * @return RelationInterface
-     */
     public function getRelation(Entity $entity, string $name): RelationInterface
     {
         if (!$this->hasRelation($entity, $name)) {
@@ -318,8 +252,6 @@ final class Registry implements \IteratorAggregate
     /**
      * Get all relations assigned with given entity.
      *
-     * @param Entity $entity
-     *
      * @return RelationInterface[]
      */
     public function getRelations(Entity $entity): array
@@ -331,11 +263,6 @@ final class Registry implements \IteratorAggregate
         return $this->relations[$entity];
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     */
     protected function hasInstance(Entity $entity): bool
     {
         return array_search($entity, $this->entities, true) !== false;

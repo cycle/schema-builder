@@ -36,9 +36,11 @@ final class Entity
     private FieldMap $fields;
 
     private RelationMap $relations;
-
     private FieldMap $primaryFields;
     private array $schemaModifiers = [];
+    private ?Inheritance $inheritance = null;
+    /** @var class-string|null */
+    private ?string $stiParent = null;
 
     public function __construct()
     {
@@ -279,5 +281,31 @@ final class Entity
         }
 
         return ltrim($class, '\\');
+    }
+
+    public function setInheritance(Inheritance $inheritance): void
+    {
+        $this->inheritance = $inheritance;
+    }
+
+    public function getInheritance(): ?Inheritance
+    {
+        return $this->inheritance;
+    }
+
+    /**
+     * Check if entity is a child of STI
+     */
+    public function isChildOfSingleTableInheritance(): bool
+    {
+        return $this->stiParent !== null;
+    }
+
+    /**
+     * @param class-string|null $parentClass
+     */
+    public function markAsChildOfSingleTableInheritance(?string $parentClass): void
+    {
+        $this->stiParent = $parentClass;
     }
 }

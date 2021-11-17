@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
 
-use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
@@ -29,6 +28,24 @@ abstract class RegistryTest extends BaseTest
 
         $this->assertFalse($r->hasEntity('post'));
         $this->assertFalse($r->hasEntity(Post::class));
+    }
+
+    public function testDuplicateRoleShouldThrowAnException(): void
+    {
+        $this->expectException(RegistryException::class);
+        $this->expectErrorMessage('Duplicate entity `user`');
+
+        $r = new Registry($this->dbal);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('user')->setClass(Author::class);
+
+
+        $r->register($e);
+        $r->register($e2);
     }
 
     public function testGetEntity(): void
@@ -160,7 +177,5 @@ abstract class RegistryTest extends BaseTest
         $this->assertTrue($e->getFields()->has('name'));
 
         $schema = (new Compiler())->compile($r, []);
-
-        $this->assertSame('parent', $schema[User::class][Schema::ROLE]);
     }
 }

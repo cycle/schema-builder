@@ -80,6 +80,14 @@ class FieldsTest extends TestCase
         $this->assertSame(['id', 'name'], $m->getColumnNames());
     }
 
+    public function testGeEntityClass(): void
+    {
+        $m = new FieldMap();
+        $m->set('p_id', (new Field())->setColumn('id')->setEntityClass('test'));
+
+        $this->assertSame('test', $m->get('p_id')->getEntityClass());
+    }
+
     public function testGetNames(): void
     {
         $m = new FieldMap();

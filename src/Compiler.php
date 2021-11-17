@@ -11,17 +11,22 @@ use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
-use Cycle\Database\Exception\CompilerException;
+use Cycle\Schema\Definition\Inheritance\JoinedTable;
+use Cycle\Schema\Definition\Inheritance\SingleTable;
+use Cycle\Schema\Exception\CompilerException;
 use Cycle\Schema\Exception\SchemaModifierException;
+use Cycle\Schema\Exception\TableInheritance\DiscriminatorColumnNotPresentException;
+use Cycle\Schema\Exception\TableInheritance\WrongDiscriminatorColumnException;
+use Cycle\Schema\Exception\TableInheritance\WrongParentKeyColumnException;
 use Throwable;
 
 final class Compiler
 {
-    /** @var array */
-    private $result = [];
+    /** @var array<non-empty-string, array<int, mixed>> */
+    private array $result = [];
 
-    /** @var array */
-    private $defaults = [
+    /** @var array<int, mixed> */
+    private array $defaults = [
         Schema::MAPPER => Mapper::class,
         Schema::REPOSITORY => Repository::class,
         Schema::SOURCE => Source::class,
@@ -29,22 +34,10 @@ final class Compiler
         Schema::TYPECAST_HANDLER => null,
     ];
 
-    /** @var \Doctrine\Inflector\Inflector */
-    private $inflector;
-
-    public function __construct()
-    {
-        $this->inflector = (new \Doctrine\Inflector\Rules\English\InflectorFactory())->build();
-    }
-
     /**
      * Compile the registry schema.
      *
-     * @param Registry $registry
      * @param GeneratorInterface[] $generators
-     * @param array $defaults
-     *
-     * @return array
      */
     public function compile(Registry $registry, array $generators = [], array $defaults = []): array
     {
@@ -52,10 +45,13 @@ final class Compiler
 
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
-                throw new CompilerException(sprintf(
-                    'Invalid generator `%s`.',
-                    is_object($generator) ? get_class($generator) : gettype($generator)
-                ));
+                throw new CompilerException(
+                    sprintf(
+                        'Invalid generator `%s`. It should implement `%s` interface.',
+                        \is_object($generator) ? $generator::class : \var_export($generator, true),
+                        GeneratorInterface::class
+                    )
+                );
             }
 
             $registry = $generator->run($registry);
@@ -75,8 +71,6 @@ final class Compiler
 
     /**
      * Get compiled schema result.
-     *
-     * @return array
      */
     public function getSchema(): array
     {
@@ -85,9 +79,6 @@ final class Compiler
 
     /**
      * Compile entity and relation definitions into packed ORM schema.
-     *
-     * @param Registry $registry
-     * @param Entity   $entity
      */
     private function compute(Registry $registry, Entity $entity): void
     {
@@ -106,6 +97,33 @@ final class Compiler
             Schema::RELATIONS => [],
         ];
 
+        // For table inheritance we need to fill specific schema segments
+        $inheritance = $entity->getInheritance();
+        if ($inheritance instanceof SingleTable) {
+            // Check if discriminator column defined and is not null or empty
+            $discriminator = $inheritance->getDiscriminator();
+            if ($discriminator === null || $discriminator === '') {
+                throw new DiscriminatorColumnNotPresentException($entity);
+            }
+            if (!$entity->getFields()->has($discriminator)) {
+                throw new WrongDiscriminatorColumnException($entity, $discriminator);
+            }
+
+            $schema[Schema::CHILDREN] = $inheritance->getChildren();
+            $schema[Schema::DISCRIMINATOR] = $discriminator;
+        } elseif ($inheritance instanceof JoinedTable) {
+            $schema[Schema::PARENT] = $inheritance->getParent()->getRole();
+            assert($schema[Schema::PARENT] !== null);
+
+            $parent = $registry->getEntity($schema[Schema::PARENT]);
+            if ($inheritance->getOuterKey()) {
+                if (!$parent->getFields()->has($inheritance->getOuterKey())) {
+                    throw new WrongParentKeyColumnException($parent, $inheritance->getOuterKey());
+                }
+                $schema[Schema::PARENT_KEY] = $inheritance->getOuterKey();
+            }
+        }
+
         $this->renderRelations($registry, $entity, $schema);
 
         if ($registry->hasTable($entity)) {
@@ -113,35 +131,36 @@ final class Compiler
             $schema[Schema::TABLE] = $registry->getTable($entity);
         }
 
-        // table inheritance
-        foreach ($registry->getChildren($entity) as $child) {
-            $this->result[$child->getClass()] = [Schema::ROLE => $entity->getRole()];
-            $schema[Schema::CHILDREN][$this->childAlias($child)] = $child->getClass();
-        }
-
         // Apply modifiers
         foreach ($entity->getSchemaModifiers() as $modifier) {
             try {
                 $modifier->modifySchema($schema);
             } catch (Throwable $e) {
-                throw new SchemaModifierException(sprintf(
-                    'Unable to apply schema modifier `%s` for the `%s` role. %s',
-                    $modifier::class,
-                    (string)$entity->getRole(),
-                    $e->getMessage()
-                ), (int)$e->getCode(), $e);
+                throw new SchemaModifierException(
+                    sprintf(
+                        'Unable to apply schema modifier `%s` for the `%s` role. %s',
+                        $modifier::class,
+                        (string)$entity->getRole(),
+                        $e->getMessage()
+                    ),
+                    (int)$e->getCode(),
+                    $e
+                );
             }
         }
 
+        // For STI child we need only schema role as a key and entity segment
+        if ($entity->isChildOfSingleTableInheritance()) {
+            $schema = \array_intersect_key($schema, [Schema::ENTITY, Schema::ROLE]);
+        }
+
+        /** @var array<int, mixed> $schema */
         ksort($schema);
-        $this->result[(string)$entity->getRole()] = $schema;
+        $role = $entity->getRole();
+        assert(!empty($role));
+        $this->result[$role] = $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderColumns(Entity $entity): array
     {
         // Check field duplicates
@@ -151,7 +170,7 @@ final class Compiler
         foreach ($entity->getFields() as $name => $field) {
             $fieldGroups[$field->getColumn()][$name] = $field;
         }
-        foreach ($fieldGroups as $fieldName => $fields) {
+        foreach ($fieldGroups as $fields) {
             // We need duplicates only
             if (count($fields) === 1) {
                 continue;
@@ -165,7 +184,7 @@ final class Compiler
                 $comparator->compare();
             } catch (Throwable $e) {
                 throw new Exception\CompilerException(
-                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
+                    sprintf("Error compiling the `%s` role.\n\n%s", (string)$entity->getRole(), $e->getMessage()),
                     $e->getCode()
                 );
             }
@@ -179,11 +198,6 @@ final class Compiler
         return $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderTypecast(Entity $entity): array
     {
         $schema = [];
@@ -196,11 +210,6 @@ final class Compiler
         return $schema;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return array
-     */
     private function renderReferences(Entity $entity): array
     {
         $schema = $entity->getPrimaryFields()->getNames();
@@ -219,21 +228,5 @@ final class Compiler
         foreach ($registry->getRelations($entity) as $relation) {
             $relation->modifySchema($schema);
         }
-    }
-
-    /**
-     * Return the unique alias for the child entity.
-     *
-     * @param Entity $entity
-     *
-     * @throws \ReflectionException
-     *
-     * @return string
-     */
-    private function childAlias(Entity $entity): string
-    {
-        $r = new \ReflectionClass($entity->getClass());
-
-        return $this->inflector->classify($r->getShortName());
     }
 }

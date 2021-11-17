@@ -6,10 +6,13 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Inheritance\JoinedTable;
+use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\EntityException;
 use Cycle\Schema\Exception\FieldException;
 use Cycle\Schema\Exception\RelationException;
+use Cycle\Schema\SchemaModifierInterface;
 use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
@@ -79,6 +82,8 @@ class EntityTest extends TestCase
         $e->setPrimaryColumns(['id', 'slug']);
 
         $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
+
+        $this->assertTrue($e->hasPrimaryKey());
     }
 
     public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn(): void
@@ -240,5 +245,57 @@ class EntityTest extends TestCase
         $e->setSchema(['schema']);
 
         $this->assertSame(['schema'], $e->getSchema());
+    }
+
+    public function testSingleTableInheritance(): void
+    {
+        $e = new Entity();
+        $e->setInheritance($inheritance = new SingleTable());
+
+        $this->assertSame($inheritance, $e->getInheritance());
+    }
+
+    public function testJoinedTableInheritance(): void
+    {
+        $e = new Entity();
+        $parent = new Entity();
+        $e->setInheritance($inheritance = new JoinedTable($parent));
+
+        $this->assertSame($inheritance, $e->getInheritance());
+    }
+
+    public function testSchemaModifier(): void
+    {
+        $e = new Entity();
+        $e->addSchemaModifier($modifier = $this->createMock(SchemaModifierInterface::class));
+
+        $this->assertSame([$modifier], iterator_to_array($e->getSchemaModifiers()));
+    }
+
+    public function testMergeTwoEntities(): void
+    {
+        $e = new Entity();
+        $e->getRelations()->set('test', new Relation());
+        $e->getFields()->set('id', $idField = (new Field())->setType('int')->setColumn('id'));
+        $e->getFields()->set('name', $nameField = (new Field())->setType('string')->setColumn('name'));
+
+        $this->assertSame(['id', 'name'], $e->getFields()->getNames());
+
+        $e2 = new Entity();
+        $e2->getRelations()->set('test2', new Relation());
+        $e2->getFields()->set('id', $idField2 = (new Field())->setType('string')->setColumn('id'));
+        $e2->getFields()->set('type', $typeField = (new Field())->setType('string')->setColumn('type'));
+
+        $e->merge($e2);
+
+        $this->assertSame($idField, $e->getFields()->get('id'));
+        $this->assertNotSame($idField2, $e->getFields()->get('id'));
+        $this->assertSame($nameField, $e->getFields()->get('name'));
+        $this->assertSame($typeField, $e->getFields()->get('type'));
+
+        $this->assertSame($idField2, $e2->getFields()->get('id'));
+
+        $this->assertTrue($e->getRelations()->has('test'));
+        $this->assertTrue($e->getRelations()->has('test2'));
     }
 }
