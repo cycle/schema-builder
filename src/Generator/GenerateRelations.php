@@ -119,7 +119,7 @@ final class GenerateRelations implements GeneratorInterface
                 $schema->compute($registry);
             } catch (RelationException $e) {
                 throw new SchemaException(
-                    "Unable to compute relation `{$entity->getRole()}`.`{$name}` ({$e->getMessage()})",
+                    "Unable to compute relation `{$entity->getRole()}`.`{$name}`. {$e->getMessage()}",
                     $e->getCode(),
                     $e
                 );
