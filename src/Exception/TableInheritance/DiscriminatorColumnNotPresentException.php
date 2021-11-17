@@ -12,15 +12,15 @@ class DiscriminatorColumnNotPresentException extends TableInheritanceException i
 {
     public function __construct(private Entity $entity)
     {
-        parent::__construct($this->getName());
+        parent::__construct(sprintf(
+            'Discriminator column for the `%s` role should be defined.',
+            (string)($this->entity->getRole() ?? $this->entity->getClass())
+        ));
     }
 
     public function getName(): string
     {
-        return sprintf(
-            'Discriminator column for the `%s` role should be defined.',
-            $this->entity->getRole()
-        );
+        return 'Discriminator column is not present.';
     }
 
     public function getSolution(): ?string
@@ -28,8 +28,9 @@ class DiscriminatorColumnNotPresentException extends TableInheritanceException i
         $fields = implode('`, `', $this->entity->getFields()->getNames());
 
         return sprintf(
+            "Discriminator column is required for Single Table Inheritance schema.\n" .
             'You have to specify one of the defined fields of the `%s` role: `%s`',
-            $this->entity->getRole(),
+            (string)($this->entity->getRole() ?? $this->entity->getClass()),
             $fields
         );
     }

@@ -8,13 +8,13 @@
   "require": {
     "php": ">=8.0",
     "cycle/orm": "2.0.x-dev",
-    "yiisoft/friendly-exception": "^1.0"
+    "yiisoft/friendly-exception": "^1.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",
-    "spiral/tokenizer": "^2.7",
+    "spiral/tokenizer": "^2.8",
     "spiral/code-style": "^1.0",
-    "vimeo/psalm": "^4.10"
+    "vimeo/psalm": "^4.12"
   },
   "autoload": {
     "psr-4": {

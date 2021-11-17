@@ -10,18 +10,18 @@ use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
 class WrongDiscriminatorColumnException extends TableInheritanceException implements FriendlyExceptionInterface
 {
-    public function __construct(private Entity $entity, private string $discriminatorColumn)
+    public function __construct(private Entity $entity, string $discriminatorColumn)
     {
-        parent::__construct($this->getName());
+        parent::__construct(sprintf(
+            'Discriminator column `%s` is not found among fields of the `%s` role.',
+            $discriminatorColumn,
+            (string)($this->entity->getRole() ?? $this->entity->getClass())
+        ));
     }
 
     public function getName(): string
     {
-        return sprintf(
-            'Discriminator column `%s` not found among fields of the `%s` role.',
-            $this->discriminatorColumn,
-            $this->entity->getRole()
-        );
+        return 'Discriminator column is not found among the entity fields.';
     }
 
     public function getSolution(): ?string
@@ -30,7 +30,7 @@ class WrongDiscriminatorColumnException extends TableInheritanceException implem
 
         return sprintf(
             'You have to specify one of the defined fields of the `%s` role: `%s`',
-            $this->entity->getRole(),
+            (string)($this->entity->getRole() ?? $this->entity->getClass()),
             $fields
         );
     }

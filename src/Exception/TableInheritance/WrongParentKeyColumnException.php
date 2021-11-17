@@ -10,18 +10,18 @@ use Yiisoft\FriendlyException\FriendlyExceptionInterface;
 
 class WrongParentKeyColumnException extends TableInheritanceException implements FriendlyExceptionInterface
 {
-    public function __construct(private Entity $entity, private string $outerKey)
+    public function __construct(private Entity $entity, string $outerKey)
     {
-        parent::__construct($this->getName());
+        parent::__construct(sprintf(
+            'Outer key column `%s` is not found among fields of the `%s` role.',
+            $outerKey,
+            (string)($this->entity->getRole() ?? $this->entity->getClass())
+        ));
     }
 
     public function getName(): string
     {
-        return sprintf(
-            'Outer key column `%s` not found among fields of the `%s` role.',
-            $this->outerKey,
-            $this->entity->getRole()
-        );
+        return 'Outer key column is not found among parent entity fields.';
     }
 
     public function getSolution(): ?string
@@ -30,7 +30,7 @@ class WrongParentKeyColumnException extends TableInheritanceException implements
 
         return sprintf(
             'You have to specify one of the defined fields of the `%s` role: `%s`',
-            $this->entity->getRole(),
+            (string)($this->entity->getRole() ?? $this->entity->getClass()),
             $fields
         );
     }

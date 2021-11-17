@@ -12,6 +12,10 @@ final class SingleTable extends Inheritance
     private array $children = [];
     private ?string $discriminator = null;
 
+    /**
+     * @param non-empty-string $discriminatorValue
+     * @param class-string $class
+     */
     public function addChild(string $discriminatorValue, string $class): void
     {
         $this->children[$discriminatorValue] = $class;
@@ -27,6 +31,9 @@ final class SingleTable extends Inheritance
         return $this->discriminator;
     }
 
+    /**
+     * @param non-empty-string|null $discriminator
+     */
     public function setDiscriminator(?string $discriminator): void
     {
         $this->discriminator = $discriminator;

@@ -301,6 +301,9 @@ final class Entity
         return $this->stiParent !== null;
     }
 
+    /**
+     * @param class-string|null $parentClass
+     */
     public function markAsChildOfSingleTableInheritance(?string $parentClass): void
     {
         $this->stiParent = $parentClass;
