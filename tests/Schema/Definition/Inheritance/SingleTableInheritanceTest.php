@@ -27,6 +27,38 @@ class SingleTableInheritanceTest extends TestCase
 
         $author = new Entity();
         $author->setRole('author')->setClass(Author::class);
+        $author->markAsChildOfSingleTableInheritance(User::class);
+
+        $user = new Entity();
+        $user->setRole('user')->setClass(User::class);
+        $user->setInheritance($inheritance = new SingleTable());
+
+        $inheritance->setDiscriminator('type');
+        $inheritance->addChild('foo', 'bar');
+        $inheritance->addChild('author', 'author');
+
+        $user->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
+        $user->getFields()->set('type', (new Field())->setType('string')->setColumn('type'));
+
+        $r->register($user);
+        $r->register($author);
+
+        $schema = (new Compiler())->compile($r);
+
+        $this->assertSame(['foo' => 'bar', 'author' => 'author'], $schema['user'][SchemaInterface::CHILDREN]);
+        $this->assertSame('type', $schema['user'][SchemaInterface::DISCRIMINATOR]);
+
+        $this->assertSame([SchemaInterface::ENTITY => Author::class], $schema['author']);
+    }
+
+    public function testSingleTableWithExplicitPkShouldBeAddedToSchema()
+    {
+        $r = new Registry(
+            $this->createMock(DatabaseProviderInterface::class)
+        );
+
+        $author = new Entity();
+        $author->setRole('author')->setClass(Author::class);
         $author->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
         $author->markAsChildOfSingleTableInheritance(User::class);
 

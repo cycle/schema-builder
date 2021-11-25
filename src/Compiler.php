@@ -58,12 +58,9 @@ final class Compiler
         }
 
         foreach ($registry->getIterator() as $entity) {
-            if (!$entity->hasPrimaryKey()) {
-                // incomplete entity, skip
-                continue;
+            if ($entity->hasPrimaryKey() || $entity->isChildOfSingleTableInheritance()) {
+                $this->compute($registry, $entity);
             }
-
-            $this->compute($registry, $entity);
         }
 
         return $this->result;
