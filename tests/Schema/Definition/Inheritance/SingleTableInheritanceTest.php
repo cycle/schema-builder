@@ -27,7 +27,6 @@ class SingleTableInheritanceTest extends TestCase
 
         $author = new Entity();
         $author->setRole('author')->setClass(Author::class);
-        $author->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
         $author->markAsChildOfSingleTableInheritance(User::class);
 
         $user = new Entity();
