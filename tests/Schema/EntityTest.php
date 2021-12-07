@@ -239,6 +239,28 @@ class EntityTest extends TestCase
         $this->assertSame('repository', $e->getRepository());
     }
 
+    public function testDatabase(): void
+    {
+        $e = new Entity();
+
+        $this->assertNull($e->getDatabase());
+
+        $e->setDatabase('database');
+
+        $this->assertSame('database', $e->getDatabase());
+    }
+
+    public function testTableName(): void
+    {
+        $e = new Entity();
+
+        $this->assertNull($e->getTableName());
+
+        $e->setTableName('table_name');
+
+        $this->assertSame('table_name', $e->getTableName());
+    }
+
     public function testSchema(): void
     {
         $e = new Entity();

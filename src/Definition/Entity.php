@@ -21,6 +21,10 @@ final class Entity
 
     private ?string $class = null;
 
+    private ?string $database = null;
+
+    private ?string $tableName = null;
+
     private ?string $mapper = null;
 
     private ?string $source = null;
@@ -307,5 +311,25 @@ final class Entity
     public function markAsChildOfSingleTableInheritance(?string $parentClass): void
     {
         $this->stiParent = $parentClass;
+    }
+
+    public function getDatabase(): ?string
+    {
+        return $this->database;
+    }
+
+    public function setDatabase(?string $database): void
+    {
+        $this->database = $database;
+    }
+
+    public function getTableName(): ?string
+    {
+        return $this->tableName;
+    }
+
+    public function setTableName(string $tableName): void
+    {
+        $this->tableName = $tableName;
     }
 }
