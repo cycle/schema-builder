@@ -9,7 +9,7 @@ Please make sure that the following requirements are satisfied before submitting
 
 > Use our discord server to check for the advice or suggestion https://discord.gg/FZ9BCWg
 
-## Testing Cycle
+## Testing Cycle ORM Schema Builder
 To test Cycle ORM Schema Builder locally, download the `cycle/schema-builder` repository and start docker containers inside the tests folder:
 
 ```bash
