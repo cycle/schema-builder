@@ -55,8 +55,10 @@ final class RefersTo extends RelationSchema
         $this->createRelatedFields(
             $target,
             Relation::OUTER_KEY,
+            $registry->getTableSchema($target),
             $source,
-            Relation::INNER_KEY
+            Relation::INNER_KEY,
+            $registry->getTableSchema($source),
         );
     }
 

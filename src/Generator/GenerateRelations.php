@@ -57,7 +57,7 @@ final class GenerateRelations implements GeneratorInterface
     private $relations = [];
 
     /**
-     * @param array|null        $relations
+     * @param array|null $relations
      * @param OptionSchema|null $optionSchema
      */
     public function __construct(array $relations = null, OptionSchema $optionSchema = null)
@@ -67,10 +67,12 @@ final class GenerateRelations implements GeneratorInterface
 
         foreach ($relations as $id => $relation) {
             if (!$relation instanceof RelationInterface) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Invalid relation type, RelationInterface excepted, `%s` given',
-                    is_object($relation) ? get_class($relation) : gettype($relation)
-                ));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Invalid relation type, RelationInterface excepted, `%s` given',
+                        is_object($relation) ? get_class($relation) : gettype($relation)
+                    )
+                );
             }
 
             $this->relations[$id] = $relation;
@@ -97,7 +99,7 @@ final class GenerateRelations implements GeneratorInterface
 
     /**
      * @param Registry $registry
-     * @param Entity   $entity
+     * @param Entity $entity
      */
     protected function register(Registry $registry, Entity $entity): void
     {
@@ -126,7 +128,7 @@ final class GenerateRelations implements GeneratorInterface
 
     /**
      * @param Registry $registry
-     * @param Entity   $entity
+     * @param Entity $entity
      */
     protected function inverse(Registry $registry, Entity $entity): void
     {
