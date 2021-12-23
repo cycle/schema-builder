@@ -60,8 +60,7 @@ final class BelongsTo extends RelationSchema implements InversableInterface
             Relation::OUTER_KEY,
             $registry->getTableSchema($target),
             $source,
-            Relation::INNER_KEY,
-            $registry->getTableSchema($source)
+            Relation::INNER_KEY
         );
     }
 

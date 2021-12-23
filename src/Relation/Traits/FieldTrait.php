@@ -136,6 +136,10 @@ trait FieldTrait
         foreach ($fields as $targetColumn => $sourceFieldName) {
             $sourceField = $sourceFields->get($sourceFieldName);
 
+            if (!$source->getFields()->has($sourceFieldName)) {
+                $source->getFields()->set($sourceFieldName, $sourceField);
+            }
+
             $this->ensureField(
                 $target,
                 $targetColumn,

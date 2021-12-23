@@ -89,29 +89,6 @@ abstract class RelationSchema implements RelationInterface
         }
     }
 
-    private function packSchema(): array
-    {
-        $schema = [];
-
-        foreach (static::RELATION_SCHEMA as $option => $template) {
-            if (in_array($option, static::EXCLUDE, true)) {
-                continue;
-            }
-
-            $schema[$option] = $this->options->get($option);
-        }
-
-        // load option is not required in schema
-        unset($schema[Relation::LOAD]);
-
-        return [
-            Relation::TYPE => static::RELATION_TYPE,
-            Relation::TARGET => $this->target,
-            Relation::LOAD => $this->getLoadMethod(),
-            Relation::SCHEMA => $schema,
-        ];
-    }
-
     protected function getLoadMethod(): ?int
     {
         if (!$this->options->has(Relation::LOAD)) {
@@ -179,5 +156,28 @@ abstract class RelationSchema implements RelationInterface
             }
         }
         return false;
+    }
+
+    private function packSchema(): array
+    {
+        $schema = [];
+
+        foreach (static::RELATION_SCHEMA as $option => $template) {
+            if (in_array($option, static::EXCLUDE, true)) {
+                continue;
+            }
+
+            $schema[$option] = $this->options->get($option);
+        }
+
+        // load option is not required in schema
+        unset($schema[Relation::LOAD]);
+
+        return [
+            Relation::TYPE => static::RELATION_TYPE,
+            Relation::TARGET => $this->target,
+            Relation::LOAD => $this->getLoadMethod(),
+            Relation::SCHEMA => $schema,
+        ];
     }
 }

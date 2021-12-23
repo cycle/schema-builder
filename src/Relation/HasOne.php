@@ -54,7 +54,6 @@ final class HasOne extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-
         // create target outer field
         $this->createRelatedFields(
             $source,
@@ -62,7 +61,6 @@ final class HasOne extends RelationSchema implements InversableInterface
             $registry->getTableSchema($source),
             $target,
             Relation::OUTER_KEY,
-            $registry->getTableSchema($target),
         );
     }
 

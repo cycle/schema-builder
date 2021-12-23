@@ -69,8 +69,7 @@ final class HasMany extends RelationSchema implements InversableInterface
             Relation::INNER_KEY,
             $registry->getTableSchema($source),
             $target,
-            Relation::OUTER_KEY,
-            $registry->getTableSchema($target)
+            Relation::OUTER_KEY
         );
     }
 

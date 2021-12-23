@@ -11,7 +11,7 @@ use Cycle\Schema\Exception\OptionException;
  */
 final class OptionSchema
 {
-    private array $aliases = [];
+    private array $aliases;
 
     private array $options = [];
 
