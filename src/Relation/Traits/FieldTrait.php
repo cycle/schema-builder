@@ -60,19 +60,19 @@ trait FieldTrait
         return $fields;
     }
 
-    protected function ensureField(Entity $target, string $column, Field $outer, bool $nullable = false): void
+    protected function ensureField(Entity $target, string $key, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);
 
-        if ($target->getFields()->hasColumn($column)) {
+        if ($target->getFields()->has($key)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
         $field->setEntityClass($target->getClass());
-        $field->setColumn($column);
+        $field->setColumn($key);
         $field->setTypecast($outer->getTypecast());
 
         switch ($outer->getType()) {
@@ -90,9 +90,7 @@ trait FieldTrait
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        if ($target->getFields()->has($column) === false) {
-            $target->getFields()->set($column, $field);
-        }
+        $target->getFields()->set($key, $field);
     }
 
     protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
