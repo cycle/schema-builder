@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\Database\Schema\AbstractTable;
+use Cycle\Database\Schema\Reflector;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\Column;
-use Cycle\Database\Schema\AbstractTable;
-use Cycle\Database\Schema\Reflector;
+use Travel\Cms\Application\Module\Flight\Booking\Entity\Reservation;
 
 /**
  * Generate table columns based on entity definition.

@@ -108,15 +108,19 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         $this->createRelatedFields(
             $source,
             Relation::INNER_KEY,
+            $registry->getTableSchema($source),
             $through,
-            Relation::THROUGH_INNER_KEY
+            Relation::THROUGH_INNER_KEY,
+            $registry->getTableSchema($through)
         );
 
         $this->createRelatedFields(
             $target,
             Relation::OUTER_KEY,
+            $registry->getTableSchema($target),
             $through,
-            Relation::THROUGH_OUTER_KEY
+            Relation::THROUGH_OUTER_KEY,
+            $registry->getTableSchema($through),
         );
     }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Relation\Traits;
 
+use Cycle\Database\Schema\AbstractColumn;
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
@@ -34,45 +36,56 @@ trait FieldTrait
         }
     }
 
-    protected function getFields(Entity $entity, int $option): FieldMap
+    protected function getFields(Entity $entity, int $option, AbstractTable $table = null): FieldMap
     {
         $fields = new FieldMap();
         $keys = (array)$this->getOptions()->get($option);
 
         foreach ($keys as $key) {
             try {
-                $field = $entity->getFields()->get($key);
-                $fields->set($key, $field);
+                if ($entity->getFields()->has($key)) {
+                    $field = $entity->getFields()->get($key);
+                    $name = $key;
+                } else {
+                    $field = $entity->getFields()->getByColumnName($key);
+                    $name = $entity->getFields()->getKeyByColumnName($key);
+                }
+
+                $fields->set($name, $field);
             } catch (FieldException $e) {
-                throw new RelationException(
-                    sprintf(
-                        'Field `%s`.`%s` does not exists, referenced by `%s`.',
-                        $entity->getRole(),
-                        $key,
-                        $this->source
-                    ),
-                    $e->getCode(),
-                    $e
-                );
+                if ($table === null || !$table->hasColumn($key)) {
+                    throw new RelationException(
+                        sprintf(
+                            'Field `%s`.`%s` does not exists, referenced by `%s`.',
+                            $entity->getRole(),
+                            $key,
+                            $this->source
+                        ),
+                        $e->getCode(),
+                        $e
+                    );
+                }
+
+                $fields->set($key, $this->createField($key, $entity, $table->column($key)));
             }
         }
 
         return $fields;
     }
 
-    protected function ensureField(Entity $target, string $key, Field $outer, bool $nullable = false): void
+    protected function ensureField(Entity $target, string $column, Field $outer, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
         $outer->setReferenced(true);
 
-        if ($target->getFields()->has($key)) {
+        if ($target->getFields()->has($column) || $target->getFields()->hasColumn($column)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
         $field->setEntityClass($target->getClass());
-        $field->setColumn($key);
+        $field->setColumn($column);
         $field->setTypecast($outer->getTypecast());
 
         switch ($outer->getType()) {
@@ -90,14 +103,19 @@ trait FieldTrait
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($key, $field);
+        $target->getFields()->set($column, $field);
     }
 
-    protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
-    {
-        $sourceFields = $this->getFields($source, $sourceKey);
-
+    protected function createRelatedFields(
+        Entity $source,
+        int $sourceKey,
+        AbstractTable $sourceTable,
+        Entity $target,
+        int $targetKey
+    ): void {
+        $sourceFields = $this->getFields($source, $sourceKey, $sourceTable);
         $targetColumns = (array)$this->options->get($targetKey);
+
         $sourceFieldNames = $sourceFields->getNames();
 
         if (count($targetColumns) !== count($sourceFieldNames)) {
@@ -125,6 +143,20 @@ trait FieldTrait
                 $this->options->get(Relation::NULLABLE)
             );
         }
+    }
+
+    protected function createField(string $name, Entity $entity, AbstractColumn $column): Field
+    {
+        $field = new Field();
+        $field->setEntityClass($entity->getClass());
+        $field->setColumn($name);
+        $field->setType($column->getType());
+
+        if ($column->isNullable()) {
+            $field->getOptions()->set(Column::OPT_NULLABLE, true);
+        }
+
+        return $field;
     }
 
     abstract protected function getOptions(): OptionSchema;
