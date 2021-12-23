@@ -41,10 +41,8 @@ trait FieldTrait
 
         foreach ($keys as $key) {
             try {
-                $field = $entity->getFields()->getByColumnName($key);
-                $name = $entity->getFields()->getKeyByColumnName($key);
-
-                $fields->set($name, $field);
+                $field = $entity->getFields()->get($key);
+                $fields->set($key, $field);
             } catch (FieldException $e) {
                 throw new RelationException(
                     sprintf(
@@ -92,7 +90,9 @@ trait FieldTrait
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($column, $field);
+        if ($target->getFields()->has($column) === false) {
+            $target->getFields()->set($column, $field);
+        }
     }
 
     protected function createRelatedFields(Entity $source, int $sourceKey, Entity $target, int $targetKey): void
@@ -103,14 +103,16 @@ trait FieldTrait
         $sourceFieldNames = $sourceFields->getNames();
 
         if (count($targetColumns) !== count($sourceFieldNames)) {
-            throw new RegistryException(sprintf(
-                'Inconsistent amount of related fields. '
-                . 'Source entity: `%s`; keys: `%s`. Target entity: `%s`; keys: `%s`.',
-                $source->getRole(),
-                implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
-                $target->getRole(),
-                implode('`, `', $targetColumns)
-            ));
+            throw new RegistryException(
+                sprintf(
+                    'Inconsistent amount of related fields. '
+                    . 'Source entity: `%s`; keys: `%s`. Target entity: `%s`; keys: `%s`.',
+                    $source->getRole(),
+                    implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
+                    $target->getRole(),
+                    implode('`, `', $targetColumns)
+                )
+            );
         }
 
         $fields = array_combine($targetColumns, $sourceFieldNames);
