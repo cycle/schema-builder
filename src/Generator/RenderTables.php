@@ -10,7 +10,6 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\Column;
-use Travel\Cms\Application\Module\Flight\Booking\Entity\Reservation;
 
 /**
  * Generate table columns based on entity definition.
