@@ -103,9 +103,9 @@ final class BelongsTo extends RelationSchema implements InversableInterface
      * @param string $into
      * @param int|null $load
      *
-     * @return RelationInterface
      * @throws RelationException
      *
+     * @return RelationInterface
      */
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
