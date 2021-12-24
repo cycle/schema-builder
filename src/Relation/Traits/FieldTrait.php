@@ -113,6 +113,28 @@ trait FieldTrait
         Entity $target,
         int $targetKey
     ): void {
+
+        foreach (['innerKey', 'outerKey'] as $key) {
+            $options = $this->options->getOptions();
+
+            if (! isset($options[$key])) {
+                continue;
+            }
+
+            $columns = (array)$options[$key];
+
+            foreach ($columns as $i => $column) {
+                $entity = $key === 'innerKey' ? $source : $target;
+                if ($entity->getFields()->hasColumn($column)) {
+                    $columns[$i] = $entity->getFields()->getKeyByColumnName($column);
+                }
+            }
+
+            $this->options = $this->options->withOptions([
+                $key => $columns,
+            ]);
+        }
+
         $sourceFields = $this->getFields($source, $sourceKey, $sourceTable);
         $targetColumns = (array)$this->options->get($targetKey);
 

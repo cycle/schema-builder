@@ -69,7 +69,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
 
         // create target outer field
         foreach ($outerKeys as $key => $morphKey) {
-            $outerField = $outerFields->getByColumnName($key);
+            $outerField = $outerFields->get($key);
 
             $this->ensureField(
                 $source,

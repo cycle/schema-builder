@@ -114,7 +114,7 @@ abstract class RelationSchema implements RelationInterface
      */
     protected function getPrimaryColumns(Entity $entity): array
     {
-        $columns = $entity->getPrimaryFields()->getColumnNames();
+        $columns = $entity->getPrimaryFields()->getNames();
 
         if ($columns === []) {
             throw new RegistryException("Entity `{$entity->getRole()}` must have defined primary key");

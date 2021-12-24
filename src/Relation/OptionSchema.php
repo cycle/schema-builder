@@ -36,6 +36,14 @@ final class OptionSchema
     }
 
     /**
+     * Get available options
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
      * Create new option set with user provided options.
      */
     public function withOptions(iterable $options): self
