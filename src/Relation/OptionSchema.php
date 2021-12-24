@@ -11,17 +11,14 @@ use Cycle\Schema\Exception\OptionException;
  */
 final class OptionSchema
 {
-    private array $aliases;
-
     private array $options = [];
 
     private array $template = [];
 
     private array $context = [];
 
-    public function __construct(array $aliases)
+    public function __construct(private array $aliases)
     {
-        $this->aliases = $aliases;
     }
 
     public function __debugInfo(): array

@@ -60,7 +60,6 @@ final class MorphedHasOne extends RelationSchema
             $registry->getTableSchema($source),
             $target,
             Relation::OUTER_KEY,
-            $registry->getTableSchema($target),
         );
 
         // create target outer field
