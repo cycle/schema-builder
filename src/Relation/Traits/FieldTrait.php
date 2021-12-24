@@ -113,7 +113,6 @@ trait FieldTrait
         Entity $target,
         int $targetKey
     ): void {
-
         foreach (['innerKey', 'outerKey'] as $key) {
             $options = $this->options->getOptions();
 
