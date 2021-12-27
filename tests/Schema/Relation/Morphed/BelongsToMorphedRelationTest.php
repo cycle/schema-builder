@@ -85,7 +85,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
         );
 
         $this->assertArrayHasKey('morphed', $schema);
-        $this->assertArrayHasKey('parent_id', $schema['morphed'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_p_id', $schema['morphed'][Schema::COLUMNS]);
         $this->assertArrayHasKey('parent_role', $schema['morphed'][Schema::COLUMNS]);
     }
 
@@ -114,14 +114,14 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('morphed');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_id'));
+        $this->assertTrue($table->hasColumn('parent_p_id'));
         $this->assertTrue($table->hasColumn('parent_role'));
 
-        $this->assertTrue($table->hasColumn('parent_id'));
+        $this->assertTrue($table->hasColumn('parent_p_id'));
         $this->assertTrue($table->column('parent_role')->getType() == 'string');
         $this->assertTrue($table->column('parent_role')->getSize() == 32);
 
-        $this->assertTrue($table->hasIndex(['parent_id', 'parent_role']));
+        $this->assertTrue($table->hasIndex(['parent_p_id', 'parent_role']));
     }
 
     public function testInverseToInvalidType(): void
@@ -177,7 +177,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -191,7 +191,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -228,7 +228,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -242,7 +242,7 @@ abstract class BelongsToMorphedRelationTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(

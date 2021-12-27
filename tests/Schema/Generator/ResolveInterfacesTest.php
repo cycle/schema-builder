@@ -40,7 +40,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testUnableResolveInterfaceDependency(): void

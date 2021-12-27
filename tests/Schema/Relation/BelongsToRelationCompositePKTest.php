@@ -57,7 +57,7 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
@@ -123,7 +123,7 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_id', 'author_slug']));
+        $this->assertTrue($table->hasForeignKey(['author_p_id', 'author_p_slug']));
     }
 
     public function testRenderTableRedefined(): void
@@ -219,12 +219,12 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['author_id', 'author_slug'],
+            ['author_p_id', 'author_p_slug'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -256,12 +256,12 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['author_id', 'author_slug'],
+            ['author_p_id', 'author_p_slug'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }

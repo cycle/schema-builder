@@ -61,7 +61,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('user_p_id', $schema['plain'][Schema::COLUMNS]);
     }
 
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
@@ -133,7 +133,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['user_id', 'user_slug']));
+        $this->assertTrue($table->hasForeignKey(['user_p_id', 'user_p_slug']));
     }
 
     public function testRenderTableRedefined(): void
@@ -215,12 +215,12 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['user_id', 'user_slug'],
+            ['user_p_id', 'user_p_slug'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -253,12 +253,12 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['user_id', 'user_slug'],
+            ['user_p_id', 'user_p_slug'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }

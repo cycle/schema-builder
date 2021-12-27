@@ -52,7 +52,7 @@ abstract class MorphedHasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('plain_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('plain_p_id', $schema['plain'][Schema::COLUMNS]);
         $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
     }
 
@@ -76,8 +76,8 @@ abstract class MorphedHasOneRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('plain_id'));
+        $this->assertTrue($table->hasColumn('plain_p_id'));
         $this->assertTrue($table->hasColumn('plain_role'));
-        $this->assertTrue($table->hasIndex(['plain_id', 'plain_role']));
+        $this->assertTrue($table->hasIndex(['plain_p_id', 'plain_role']));
     }
 }
