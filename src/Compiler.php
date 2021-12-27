@@ -137,7 +137,7 @@ final class Compiler
                     sprintf(
                         'Unable to apply schema modifier `%s` for the `%s` role. %s',
                         $modifier::class,
-                        (string)$entity->getRole(),
+                        $entity->getRole(),
                         $e->getMessage()
                     ),
                     (int)$e->getCode(),
@@ -181,7 +181,7 @@ final class Compiler
                 $comparator->compare();
             } catch (Throwable $e) {
                 throw new Exception\CompilerException(
-                    sprintf("Error compiling the `%s` role.\n\n%s", (string)$entity->getRole(), $e->getMessage()),
+                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
                     $e->getCode()
                 );
             }

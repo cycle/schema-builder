@@ -63,10 +63,13 @@ final class HasMany extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
+        $this->fixContextFields($source, $target);
+
         // create target outer field
         $this->createRelatedFields(
             $source,
             Relation::INNER_KEY,
+            $registry->getTableSchema($source),
             $target,
             Relation::OUTER_KEY
         );
@@ -80,13 +83,13 @@ final class HasMany extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $innerFields = $this->getFields($source, Relation::INNER_KEY);
-        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
+        $targetTable = $registry->getTableSchema($target);
 
-        $table = $registry->getTableSchema($target);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY, $registry->getTableSchema($source));
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY, $targetTable);
 
         if ($this->options->get(self::INDEX_CREATE) && $outerFields->count() > 0) {
-            $table->index($outerFields->getColumnNames());
+            $targetTable->index($outerFields->getColumnNames());
         }
 
         if ($this->options->get(self::FK_CREATE)) {
@@ -108,8 +111,8 @@ final class HasMany extends RelationSchema implements InversableInterface
 
     /**
      * @param RelationInterface $relation
-     * @param string            $into
-     * @param int|null          $load
+     * @param string $into
+     * @param int|null $load
      *
      * @throws RelationException
      *

@@ -90,7 +90,7 @@ abstract class RefersToRelationTest extends BaseTest
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testCustomKey(): void
@@ -139,7 +139,7 @@ abstract class RefersToRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_id']));
+        $this->assertTrue($table->hasForeignKey(['author_p_id']));
     }
 
     public function testRenderTableRedefined(): void

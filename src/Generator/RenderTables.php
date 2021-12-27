@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\Database\Schema\AbstractTable;
+use Cycle\Database\Schema\Reflector;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Table\Column;
-use Cycle\Database\Schema\AbstractTable;
-use Cycle\Database\Schema\Reflector;
 
 /**
  * Generate table columns based on entity definition.

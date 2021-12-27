@@ -87,7 +87,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testCustomKey(): void
@@ -132,7 +132,7 @@ abstract class BelongsToRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_id']));
+        $this->assertTrue($table->hasForeignKey(['author_p_id']));
     }
 
     public function testRenderTableRedefined(): void
@@ -228,12 +228,12 @@ abstract class BelongsToRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'author_id',
+            'author_p_id',
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -265,12 +265,12 @@ abstract class BelongsToRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            'author_id',
+            'author_p_id',
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }

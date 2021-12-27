@@ -190,22 +190,22 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            'post_id',
+            'post_p_id',
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY]
         );
 
         $this->assertSame(
-            'tag_id',
+            'tag_p_id',
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY]
         );
 
@@ -245,11 +245,11 @@ abstract class ManyToManyRelationTest extends BaseTest
         $table = $this->getDriver()->getSchema('tag_context');
 
         $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('post_id'));
-        $this->assertTrue($table->hasColumn('tag_id'));
-        $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
-        $this->assertTrue($table->hasForeignKey(['post_id']));
-        $this->assertTrue($table->hasForeignKey(['tag_id']));
+        $this->assertTrue($table->hasColumn('post_p_id'));
+        $this->assertTrue($table->hasColumn('tag_p_id'));
+        $this->assertTrue($table->hasIndex(['post_p_id', 'tag_p_id']));
+        $this->assertTrue($table->hasForeignKey(['post_p_id']));
+        $this->assertTrue($table->hasForeignKey(['tag_p_id']));
     }
 
     /**
@@ -298,12 +298,12 @@ abstract class ManyToManyRelationTest extends BaseTest
         $uniques = array_filter($table->getIndexes(), static fn (AbstractIndex $index): bool => $index->isUnique());
 
         $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('post_id'));
-        $this->assertTrue($table->hasColumn('tag_id'));
-        $this->assertTrue($table->hasIndex(['post_id', 'tag_id']));
-        $this->assertTrue($table->hasIndex(['tag_id', 'post_id']));
-        $this->assertTrue($table->hasForeignKey(['post_id']));
-        $this->assertTrue($table->hasForeignKey(['tag_id']));
+        $this->assertTrue($table->hasColumn('post_p_id'));
+        $this->assertTrue($table->hasColumn('tag_p_id'));
+        $this->assertTrue($table->hasIndex(['post_p_id', 'tag_p_id']));
+        $this->assertTrue($table->hasIndex(['tag_p_id', 'post_p_id']));
+        $this->assertTrue($table->hasForeignKey(['post_p_id']));
+        $this->assertTrue($table->hasForeignKey(['tag_p_id']));
         // Unique indexes shouldn't be duplicated
         $this->assertCount(1, $uniques);
         $this->assertCount(4, $table->getIndexes());
@@ -376,22 +376,22 @@ abstract class ManyToManyRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            'tag_id',
+            'tag_p_id',
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY]
         );
 
         $this->assertSame(
-            'post_id',
+            'post_p_id',
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY]
         );
 

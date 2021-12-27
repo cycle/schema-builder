@@ -56,8 +56,8 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
         $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_id', $schema['post'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('author_slug', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('author_p_slug', $schema['post'][Schema::COLUMNS]);
     }
 
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
@@ -129,7 +129,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('post');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_id', 'author_slug']));
+        $this->assertTrue($table->hasForeignKey(['author_p_id', 'author_p_slug']));
     }
 
     public function testRenderTableRedefined(): void

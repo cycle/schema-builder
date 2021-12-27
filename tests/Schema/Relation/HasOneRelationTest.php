@@ -90,7 +90,7 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('user_p_id', $schema['plain'][Schema::COLUMNS]);
     }
 
     public function testPackSchemaEagerLoad(): void
@@ -118,7 +118,7 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('user_p_id', $schema['plain'][Schema::COLUMNS]);
     }
 
     public function testPackSchemaLazyLoad(): void
@@ -145,7 +145,7 @@ abstract class HasOneRelationTest extends BaseTest
         $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
 
         $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('user_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('user_p_id', $schema['plain'][Schema::COLUMNS]);
     }
 
     public function testCustomKey(): void
@@ -190,7 +190,7 @@ abstract class HasOneRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['user_id']));
+        $this->assertTrue($table->hasForeignKey(['user_p_id']));
     }
 
     public function testGeneratorFlow(): void
@@ -213,7 +213,7 @@ abstract class HasOneRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['user_id']));
+        $this->assertTrue($table->hasForeignKey(['user_p_id']));
     }
 
     public function testRenderTableRedefined(): void
@@ -292,12 +292,12 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            'user_id',
+            'user_p_id',
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -332,12 +332,12 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            'user_id',
+            'user_p_id',
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }
@@ -370,12 +370,12 @@ abstract class HasOneRelationTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id'],
+            ['p_id'],
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            'user_id',
+            'user_p_id',
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
     }

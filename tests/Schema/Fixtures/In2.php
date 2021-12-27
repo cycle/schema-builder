@@ -16,7 +16,7 @@ class In2 implements ParentInterface
         $entity->setClass(self::class);
 
         $entity->getFields()->set(
-            'p_id',
+            'id',
             (new Field())->setType('primary')->setColumn('uuid')->setPrimary(true)
         );
 

@@ -53,7 +53,7 @@ abstract class MorphedHasOneRelationCompositePKTest extends BaseTest
 
         $this->assertArrayHasKey('plain', $schema);
         $this->assertArrayHasKey('p_slug', $schema['plain'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('plain_id', $schema['plain'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('plain_p_id', $schema['plain'][Schema::COLUMNS]);
         $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
     }
 
@@ -78,8 +78,8 @@ abstract class MorphedHasOneRelationCompositePKTest extends BaseTest
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->exists());
         $this->assertTrue($table->hasColumn('slug'));
-        $this->assertTrue($table->hasColumn('plain_id'));
+        $this->assertTrue($table->hasColumn('plain_p_id'));
         $this->assertTrue($table->hasColumn('plain_role'));
-        $this->assertTrue($table->hasIndex(['plain_id', 'slug', 'plain_role']));
+        $this->assertTrue($table->hasIndex(['plain_p_id', 'slug', 'plain_role']));
     }
 }

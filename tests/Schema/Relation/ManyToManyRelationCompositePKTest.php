@@ -129,22 +129,22 @@ abstract class ManyToManyRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['post_id', 'post_slug'],
+            ['post_p_id', 'post_p_slug'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY]
         );
 
         $this->assertSame(
-            ['tag_id', 'tag_slug'],
+            ['tag_p_id', 'tag_p_slug'],
             $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY]
         );
 
@@ -183,11 +183,11 @@ abstract class ManyToManyRelationCompositePKTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('tag_context');
 
-        $this->assertTrue($table->hasColumn('post_id'));
-        $this->assertTrue($table->hasColumn('tag_id'));
-        $this->assertTrue($table->hasIndex(['post_id', 'post_slug', 'tag_id', 'tag_slug']));
-        $this->assertTrue($table->hasForeignKey(['post_id', 'post_slug']));
-        $this->assertTrue($table->hasForeignKey(['tag_id', 'tag_slug']));
+        $this->assertTrue($table->hasColumn('post_p_id'));
+        $this->assertTrue($table->hasColumn('tag_p_id'));
+        $this->assertTrue($table->hasIndex(['post_p_id', 'post_p_slug', 'tag_p_id', 'tag_p_slug']));
+        $this->assertTrue($table->hasForeignKey(['post_p_id', 'post_p_slug']));
+        $this->assertTrue($table->hasForeignKey(['tag_p_id', 'tag_p_slug']));
     }
 
     public function testInverseInvalidType(): void
@@ -257,22 +257,22 @@ abstract class ManyToManyRelationCompositePKTest extends BaseTest
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY]
         );
 
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
 
         $this->assertSame(
-            ['tag_id', 'tag_slug'],
+            ['tag_p_id', 'tag_p_slug'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY]
         );
 
         $this->assertSame(
-            ['post_id', 'post_slug'],
+            ['post_p_id', 'post_p_slug'],
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY]
         );
 

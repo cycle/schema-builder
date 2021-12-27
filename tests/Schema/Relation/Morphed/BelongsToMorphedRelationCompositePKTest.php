@@ -51,7 +51,6 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
 
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'morphed');
-
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'in2');
 
@@ -85,8 +84,8 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
         );
 
         $this->assertArrayHasKey('morphed', $schema);
-        $this->assertArrayHasKey('parent_slug', $schema['morphed'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_id', $schema['morphed'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_p_slug', $schema['morphed'][Schema::COLUMNS]);
+        $this->assertArrayHasKey('parent_p_id', $schema['morphed'][Schema::COLUMNS]);
         $this->assertArrayHasKey('parent_role', $schema['morphed'][Schema::COLUMNS]);
     }
 
@@ -115,15 +114,15 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('morphed');
         $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertTrue($table->hasColumn('parent_slug'));
+        $this->assertTrue($table->hasColumn('parent_p_id'));
+        $this->assertTrue($table->hasColumn('parent_p_slug'));
         $this->assertTrue($table->hasColumn('parent_role'));
 
-        $this->assertTrue($table->hasColumn('parent_id'));
+        $this->assertTrue($table->hasColumn('parent_p_id'));
         $this->assertTrue($table->column('parent_role')->getType() == 'string');
         $this->assertTrue($table->column('parent_role')->getSize() == 32);
 
-        $this->assertTrue($table->hasIndex(['parent_id', 'parent_slug', 'parent_role']));
+        $this->assertTrue($table->hasIndex(['parent_p_id', 'parent_p_slug', 'parent_role']));
     }
 
     public function testInverseToInvalidType(): void
@@ -179,7 +178,7 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -193,11 +192,11 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
-            ['parent_id', 'parent_slug'],
+            ['parent_p_id', 'parent_p_slug'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::OUTER_KEY]
         );
         $this->assertSame(
@@ -234,7 +233,7 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
@@ -248,7 +247,7 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE]
         );
         $this->assertSame(
-            ['id', 'slug'],
+            ['p_id', 'p_slug'],
             $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY]
         );
         $this->assertSame(
