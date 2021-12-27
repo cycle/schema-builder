@@ -105,6 +105,9 @@ final class ManyToMany extends RelationSchema implements InversableInterface
             ));
         }
 
+        $this->fixContextFields($source, $target);
+        $this->fixContextFields($source, $through, ['innerKey', 'outerKey', 'throughInnerKey', 'throughOuterKey']);
+
         $this->createRelatedFields(
             $source,
             Relation::INNER_KEY,

@@ -51,6 +51,8 @@ final class RefersTo extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
+        $this->fixContextFields($source, $target);
+
         // create target outer field
         $this->createRelatedFields(
             $target,
