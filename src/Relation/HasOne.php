@@ -54,13 +54,12 @@ final class HasOne extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $this->fixContextFields($source, $target);
+        $this->normalizeContextFields($source, $target);
 
         // create target outer field
         $this->createRelatedFields(
             $source,
             Relation::INNER_KEY,
-            $registry->getTableSchema($source),
             $target,
             Relation::OUTER_KEY,
         );
@@ -76,8 +75,8 @@ final class HasOne extends RelationSchema implements InversableInterface
 
         $targetTable = $registry->getTableSchema($target);
 
-        $innerFields = $this->getFields($source, Relation::INNER_KEY, $registry->getTableSchema($source));
-        $outerFields = $this->getFields($target, Relation::OUTER_KEY, $targetTable);
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         if ($this->options->get(self::INDEX_CREATE) && count($outerFields) > 0) {
             $targetTable->index($outerFields->getColumnNames());

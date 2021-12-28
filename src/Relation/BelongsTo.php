@@ -54,13 +54,12 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
-        $this->fixContextFields($source, $target);
+        $this->normalizeContextFields($source, $target);
 
         // create target outer field
         $this->createRelatedFields(
             $target,
             Relation::OUTER_KEY,
-            $registry->getTableSchema($target),
             $source,
             Relation::INNER_KEY
         );
@@ -76,8 +75,8 @@ final class BelongsTo extends RelationSchema implements InversableInterface
 
         $sourceTable = $registry->getTableSchema($source);
 
-        $innerFields = $this->getFields($source, Relation::INNER_KEY, $sourceTable);
-        $outerFields = $this->getFields($target, Relation::OUTER_KEY, $registry->getTableSchema($target));
+        $innerFields = $this->getFields($source, Relation::INNER_KEY);
+        $outerFields = $this->getFields($target, Relation::OUTER_KEY);
 
         if ($this->options->get(self::INDEX_CREATE) && $innerFields->count() > 0) {
             $sourceTable->index($innerFields->getColumnNames());
@@ -105,9 +104,9 @@ final class BelongsTo extends RelationSchema implements InversableInterface
      * @param string $into
      * @param int|null $load
      *
+     * @return RelationInterface
      * @throws RelationException
      *
-     * @return RelationInterface
      */
     public function inverseRelation(RelationInterface $relation, string $into, ?int $load = null): RelationInterface
     {
