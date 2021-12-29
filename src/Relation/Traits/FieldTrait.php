@@ -127,22 +127,22 @@ trait FieldTrait
         }
     }
 
-    protected function ensureField(Entity $target, string $column, Field $outer, bool $nullable = false): void
+    protected function ensureField(Entity $target, string $fieldName, Field $outerField, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references
-        $outer->setReferenced(true);
+        $outerField->setReferenced(true);
 
-        if ($target->getFields()->has($column)) {
+        if ($target->getFields()->has($fieldName)) {
             // field already exists and defined by the user
             return;
         }
 
         $field = new Field();
         $field->setEntityClass($target->getClass());
-        $field->setColumn($column);
-        $field->setTypecast($outer->getTypecast());
+        $field->setColumn($fieldName);
+        $field->setTypecast($outerField->getTypecast());
 
-        switch ($outer->getType()) {
+        switch ($outerField->getType()) {
             case 'primary':
                 $field->setType('int');
                 break;
@@ -150,14 +150,14 @@ trait FieldTrait
                 $field->setType('bigint');
                 break;
             default:
-                $field->setType($outer->getType());
+                $field->setType($outerField->getType());
         }
 
         if ($nullable) {
             $field->getOptions()->set(Column::OPT_NULLABLE, true);
         }
 
-        $target->getFields()->set($column, $field);
+        $target->getFields()->set($fieldName, $field);
     }
 
     abstract protected function getOptions(): OptionSchema;
