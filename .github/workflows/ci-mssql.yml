@@ -23,6 +23,9 @@ jobs:
           - php: '8.0'
             extensions: pdo, pdo_sqlsrv
             mssql: 'server:2019-latest'
+          - php: '8.1'
+            extensions: pdo, pdo_sqlsrv
+            mssql: 'server:2019-latest'
 
     services:
       mssql:
