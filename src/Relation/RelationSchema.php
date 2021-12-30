@@ -24,9 +24,16 @@ abstract class RelationSchema implements RelationInterface
     public const FK_ON_DELETE = 1004;
     public const INVERSE = 1005;
     public const MORPH_KEY_LENGTH = 1009;
+    public const EMBEDDED_PREFIX = 1010;
 
     // options to be excluded from generated schema (helpers)
-    protected const EXCLUDE = [self::FK_CREATE, self::FK_ACTION, self::FK_ON_DELETE, self::INDEX_CREATE];
+    protected const EXCLUDE = [
+        self::FK_CREATE,
+        self::FK_ACTION,
+        self::FK_ON_DELETE,
+        self::INDEX_CREATE,
+        self::EMBEDDED_PREFIX
+    ];
 
     // exported relation type
     protected const RELATION_TYPE = null;
