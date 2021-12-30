@@ -32,7 +32,7 @@ abstract class RelationSchema implements RelationInterface
         self::FK_ACTION,
         self::FK_ON_DELETE,
         self::INDEX_CREATE,
-        self::EMBEDDED_PREFIX
+        self::EMBEDDED_PREFIX,
     ];
 
     // exported relation type
