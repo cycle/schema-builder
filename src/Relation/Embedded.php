@@ -19,7 +19,7 @@ final class Embedded extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         Relation::LOAD => Relation::LOAD_EAGER,
-        self::EMBEDDED_PREFIX => ''
+        self::EMBEDDED_PREFIX => '',
     ];
 
     /**
