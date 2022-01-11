@@ -41,8 +41,10 @@ final class Embedded extends RelationSchema
         // isolated
         $this->target = $target->getRole();
 
+        $prefix = $this->getOptions()->get(self::EMBEDDED_PREFIX);
+        assert(\is_string($prefix));
         foreach ($target->getFields() as $field) {
-            $field->setColumn($this->getOptions()->get(self::EMBEDDED_PREFIX) . $field->getColumn());
+            $field->setColumn($prefix . $field->getColumn());
         }
 
         foreach ($source->getFields() as $name => $field) {
