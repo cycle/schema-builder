@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
@@ -98,15 +91,15 @@ abstract class EmbeddedTest extends BaseTest
             $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD]
         );
 
-        $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
+        $this->assertArrayHasKey('composite:embedded:embedded', $schema);
+        $this->assertSame(['p_id'], $schema['composite:embedded:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame('default', $schema['composite:embedded:embedded'][Schema::DATABASE]);
+        $this->assertSame('composite', $schema['composite:embedded:embedded'][Schema::TABLE]);
 
         $this->assertSame([
             'p_embedded' => 'embedded_column',
             'p_id' => 'id',
-        ], $schema['composite:embedded'][Schema::COLUMNS]);
+        ], $schema['composite:embedded:embedded'][Schema::COLUMNS]);
     }
 
     public function testPackSchemaLazyLoad(): void
@@ -142,15 +135,15 @@ abstract class EmbeddedTest extends BaseTest
             $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD]
         );
 
-        $this->assertArrayHasKey('composite:embedded', $schema);
-        $this->assertSame(['p_id'], $schema['composite:embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite:embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite:embedded'][Schema::TABLE]);
+        $this->assertArrayHasKey('composite:embedded:embedded', $schema);
+        $this->assertSame(['p_id'], $schema['composite:embedded:embedded'][Schema::PRIMARY_KEY]);
+        $this->assertSame('default', $schema['composite:embedded:embedded'][Schema::DATABASE]);
+        $this->assertSame('composite', $schema['composite:embedded:embedded'][Schema::TABLE]);
 
         $this->assertSame([
             'p_embedded' => 'embedded_column',
             'p_id' => 'id',
-        ], $schema['composite:embedded'][Schema::COLUMNS]);
+        ], $schema['composite:embedded:embedded'][Schema::COLUMNS]);
     }
 
     public function testRenderTable(): void
@@ -201,7 +194,7 @@ abstract class EmbeddedTest extends BaseTest
         $r->register($e);
 
         $this->expectException(EmbeddedPrimaryKeyException::class);
-        $this->expectExceptionMessage('Entity `composite:embedded` has conflicted field `p_id`.');
+        $this->expectExceptionMessage('Entity `composite:embedded:embedded` has conflicted field `p_id`.');
 
         (new Compiler())->compile(
             $r,
@@ -211,5 +204,35 @@ abstract class EmbeddedTest extends BaseTest
                 new RenderRelations(),
             ]
         );
+    }
+
+    public function testEmbeddedPrefix(): void
+    {
+        $c = Composite::define();
+        $e = EmbeddedEntity::define();
+
+        $c->getRelations()->set(
+            'embedded',
+            (new Relation())->setTarget('embedded')->setType('embedded')
+        );
+
+        $c->getRelations()->get('embedded')->getOptions()->set('embeddedPrefix', 'prefix_');
+
+        $r = new Registry($this->dbal);
+        $r->register($c)->linkTable($c, 'default', 'composite');
+        $r->register($e);
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['embedded' => new Embedded()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('composite');
+
+        $this->assertTrue($table->hasColumn('id'));
+        $this->assertTrue($table->hasColumn('prefix_embedded_column'));
     }
 }

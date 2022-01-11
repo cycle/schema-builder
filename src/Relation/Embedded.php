@@ -19,6 +19,7 @@ final class Embedded extends RelationSchema
     // relation schema options
     protected const RELATION_SCHEMA = [
         Relation::LOAD => Relation::LOAD_EAGER,
+        self::EMBEDDED_PREFIX => '',
     ];
 
     /**
@@ -31,7 +32,7 @@ final class Embedded extends RelationSchema
 
         // each embedded entity must isolated
         $target = clone $target;
-        $target->setRole($source->getRole() . ':' . $target->getRole());
+        $target->setRole($source->getRole() . ':' . $target->getRole() . ':' . $this->name);
 
         // embedded entity must point to the same table as parent entity
         $registry->register($target);
@@ -39,6 +40,12 @@ final class Embedded extends RelationSchema
 
         // isolated
         $this->target = $target->getRole();
+
+        $prefix = $this->getOptions()->get(self::EMBEDDED_PREFIX);
+        assert(\is_string($prefix));
+        foreach ($target->getFields() as $field) {
+            $field->setColumn($prefix . $field->getColumn());
+        }
 
         foreach ($source->getFields() as $name => $field) {
             if ($field->isPrimary()) {

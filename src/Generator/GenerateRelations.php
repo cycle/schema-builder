@@ -42,6 +42,7 @@ final class GenerateRelations implements GeneratorInterface
         'fkOnDelete' => RelationSchema::FK_ON_DELETE,
         'indexCreate' => RelationSchema::INDEX_CREATE,
         'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH,
+        'embeddedPrefix' => RelationSchema::EMBEDDED_PREFIX,
 
         // deprecated
         'though' => Relation::THROUGH_ENTITY,
