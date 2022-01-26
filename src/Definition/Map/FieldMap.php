@@ -95,7 +95,7 @@ final class FieldMap implements \IteratorAggregate, \Countable
     /**
      * @return Field[]|\Traversable
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->fields);
     }

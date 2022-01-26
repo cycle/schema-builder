@@ -84,7 +84,7 @@ final class RelationMap implements \IteratorAggregate
     /**
      * @return Relation[]|\Traversable
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->relations);
     }

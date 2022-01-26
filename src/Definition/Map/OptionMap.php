@@ -70,7 +70,7 @@ final class OptionMap implements \IteratorAggregate
     /**
      * @return \Traversable
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->options);
     }
