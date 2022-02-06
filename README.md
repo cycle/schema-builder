@@ -5,7 +5,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cycle/schema-builder/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/cycle/schema-builder/?branch=2.x)
 [![Codecov](https://codecov.io/gh/cycle/schema-builder/graph/badge.svg)](https://codecov.io/gh/cycle/schema-builder)
 
-Schema Builder package provides a convenient way y to configure your ORM and Database schema via 
+Schema Builder package provides a convenient way to configure your ORM and Database schema via 
 [annotations (attributes)](https://github.com/cycle/annotated) or custom generators.
 
 ## Installation
