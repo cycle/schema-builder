@@ -34,48 +34,96 @@ abstract class TypecastGeneratorTest extends BaseTest
     }
 
     /**
-     * @dataProvider dataBoolTypecast
+     * @dataProvider dataTypecast
      */
-    public function testBoolTypecast(Field $field, ?string $expectedTypecast): void
+    public function testTypecast(Field $field, ?string $expectedTypecast): void
     {
         $entity = new Entity();
-        $entity->setRole('user');
-        $entity->setClass(User::class);
-        $entity->getFields()->set('field', $field->setColumn('field'));
+        $entity->setRole('entityForTypecast');
+        $entity->setClass(\Cycle\Schema\Tests\Fixtures\EntityForTypecast::class);
+        $entity->getFields()->set($field->getColumn(), $field);
 
         $r = new Registry($this->dbal);
-        $r->register($entity)->linkTable($entity, 'default', 'user');
+        $r->register($entity)->linkTable($entity, 'default', 'entityForTypecast');
 
         $c = new Compiler();
         $c->compile($r, [new RenderTables(), new GenerateTypecast()]);
         self::assertSame($expectedTypecast, $field->getTypecast());
     }
 
-    public function dataBoolTypecast(): iterable
+    public function dataTypecast(): iterable
     {
-        yield [
-            (new Field())->setType('boolean'),
-            'bool',
-        ];
-
-        yield [
-            (new Field())->setType('bool'),
-            'bool',
-        ];
-
-        yield [
-            (new Field())->setType('int'),
+        // based on property type
+        yield 'int_integer' => [
+            (new Field())->setType('integer')->setColumn('int_integer'),
             'int',
         ];
 
-        yield [
-            (new Field())->setType('integer'),
+        yield 'int_tinyInteger' => [
+            (new Field())->setType('tinyInteger')->setColumn('int_tinyInteger'),
             'int',
         ];
 
-        yield [
-            (new Field())->setType('boolean')->setTypecast('foo'),
-            'foo',
+        yield 'int_bigInteger' => [
+            (new Field())->setType('bigInteger')->setColumn('int_bigInteger'),
+            'int',
+        ];
+
+        yield 'bool_boolean' => [
+            (new Field())->setType('boolean')->setColumn('bool_boolean'),
+            'bool',
+        ];
+
+        yield 'string_string' => [
+            (new Field())->setType('string')->setColumn('string_string'),
+            'string',
+        ];
+
+        // based on orm type
+        yield '_integer' => [
+            (new Field())->setType('integer')->setColumn('_integer'),
+            'int',
+        ];
+
+        yield '_boolean' => [
+            (new Field())->setType('boolean')->setColumn('_boolean'),
+            'bool',
+        ];
+
+        yield '_string' => [
+            (new Field())->setType('string')->setColumn('_string'),
+            'string',
+        ];
+
+        // based on property type
+        yield 'int_boolean' => [
+            (new Field())->setType('boolean')->setColumn('int_boolean'),
+            'int',
+        ];
+
+        yield 'int_string' => [
+            (new Field())->setType('string')->setColumn('int_string'),
+            'int',
+        ];
+
+        yield 'bool_integer' => [
+            (new Field())->setType('integer')->setColumn('bool_integer'),
+            'bool',
+        ];
+
+        yield 'bool_string' => [
+            (new Field())->setType('string')->setColumn('bool_string'),
+            'bool',
+        ];
+
+        yield 'string_boolean' => [
+            (new Field())->setType('boolean')->setColumn('string_boolean'),
+            'string',
+        ];
+
+        yield 'string_integer' => [
+            (new Field())->setType('integer')->setColumn('string_integer'),
+            'string',
         ];
     }
 }

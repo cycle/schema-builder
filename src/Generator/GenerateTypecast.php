@@ -22,11 +22,39 @@ final class GenerateTypecast implements GeneratorInterface
     public function run(Registry $registry): Registry
     {
         foreach ($registry as $entity) {
+            $this->computeByClassPropertyType($entity);
             $this->computeByFieldType($entity);
             $this->computeByColumn($registry, $entity);
         }
 
         return $registry;
+    }
+
+    private function computeByClassPropertyType(Entity $entity): void
+    {
+        $refClass = new \ReflectionClass($entity->getClass());
+        foreach ($entity->getFields() as $field) {
+            if ($field->hasTypecast()) {
+                continue;
+            }
+            if (!$refClass->hasProperty($field->getColumn())) {
+                continue;
+            }
+
+            $refProp = $refClass->getProperty($field->getColumn());
+            if (!$refProp->hasType() || !$refProp->getType()->isBuiltin()) {
+                continue;
+            }
+
+            $field->setTypecast(
+                match ($refProp->getType()->getName()) {
+                    'bool' => 'bool',
+                    'int' => 'int',
+                    'string' => 'string',
+                    default => null
+                }
+            );
+        }
     }
 
     private function computeByFieldType(Entity $entity): void
@@ -40,6 +68,7 @@ final class GenerateTypecast implements GeneratorInterface
                 match ($field->getType()) {
                     'bool', 'boolean' => 'bool',
                     'int', 'integer' => 'int',
+                    'string' => 'string',
                     default => null
                 }
             );
