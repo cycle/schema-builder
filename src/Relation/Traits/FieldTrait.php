@@ -141,6 +141,10 @@ trait FieldTrait
         $field->setEntityClass($target->getClass());
         $field->setColumn($fieldName);
         $field->setTypecast($outerField->getTypecast());
+        // copy attributes from outer to target
+        foreach ($outerField->getAttributes() as $k => $v) {
+            $field->getAttributes()->set($k, $v);
+        }
 
         switch ($outerField->getType()) {
             case 'primary':

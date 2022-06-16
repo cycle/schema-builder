@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Table;
 
+use Cycle\Database\Schema\AbstractColumn;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\ColumnException;
-use Cycle\Database\Schema\AbstractColumn;
 
 /**
  * Carries information about column definition.
@@ -134,6 +134,10 @@ final class Column
         if ($this->hasOption(self::OPT_CAST_DEFAULT)) {
             // cast default value
             $column->defaultValue($this->castDefault($column));
+        }
+
+        if (method_exists($column, 'setAttributes')) {
+            $column->setAttributes(iterator_to_array($this->field->getAttributes()));
         }
     }
 
