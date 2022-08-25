@@ -83,7 +83,7 @@ final class HasOne extends RelationSchema implements InversableInterface
         $table = $registry->getTableSchema($target);
 
         if ($this->options->get(self::INDEX_CREATE)) {
-            $table->index([$outerField->getColumn()]);
+            $table->index([$outerField->getColumn()])->unique();
         }
 
         if ($this->options->get(self::FK_CREATE)) {
