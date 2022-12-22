@@ -136,9 +136,7 @@ final class Column
             $column->defaultValue($this->castDefault($column));
         }
 
-        if (method_exists($column, 'setAttributes')) {
-            $column->setAttributes(iterator_to_array($this->field->getAttributes()));
-        }
+        $column->setAttributes(\iterator_to_array($this->field->getAttributes()));
     }
 
     /**
