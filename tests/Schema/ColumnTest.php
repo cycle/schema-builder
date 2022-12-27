@@ -186,6 +186,29 @@ abstract class ColumnTest extends BaseTest
         $this->assertSame(5, $table->column('name')->getScale());
     }
 
+    public function testAttributes(): void
+    {
+        $field = new Field();
+        $field->setType('integer');
+        $field->setColumn('name');
+        $field->getAttributes()->set('nullable', true);
+        $field->getAttributes()->set('defaultValue', 5);
+
+        $table = $this->getStub();
+        $column = Column::parse($field);
+
+        $column->render($table->column('name'));
+
+        $table->save();
+
+        $table = $this->getStub();
+        $this->assertTrue($table->hasColumn('name'));
+        $this->assertSame('integer', $table->column('name')->getAbstractType());
+        $this->assertTrue($table->column('name')->isNullable());
+        $this->assertTrue($table->column('name')->getAttributes()['nullable']);
+        $this->assertSame(5, $table->column('name')->getDefaultValue());
+    }
+
     public function testCastDefaultString(): void
     {
         $field = new Field();

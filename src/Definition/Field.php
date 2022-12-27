@@ -13,6 +13,7 @@ use Cycle\Schema\Exception\FieldException;
 final class Field
 {
     private OptionMap $options;
+    private OptionMap $attributes;
     private ?string $column = null;
     private ?string $type = null;
     private bool $primary = false;
@@ -23,16 +24,23 @@ final class Field
     public function __construct()
     {
         $this->options = new OptionMap();
+        $this->attributes = new OptionMap();
     }
 
     public function __clone()
     {
         $this->options = clone $this->options;
+        $this->attributes = clone $this->attributes;
     }
 
     public function getOptions(): OptionMap
     {
         return $this->options;
+    }
+
+    public function getAttributes(): OptionMap
+    {
+        return $this->attributes;
     }
 
     public function getType(): string
