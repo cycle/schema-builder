@@ -95,6 +95,14 @@ final class Registry implements \IteratorAggregate
      */
     public function registerChild(Entity $parent, Entity $child): void
     {
+        $this->registerChildWithoutMerge($parent, $child);
+
+        // merge parent and child schema
+        $parent->merge($child);
+    }
+
+    public function registerChildWithoutMerge(Entity $parent, Entity $child): void
+    {
         if (!$this->hasInstance($parent)) {
             throw new RegistryException("Undefined entity `{$parent->getRole()}`");
         }
@@ -102,9 +110,6 @@ final class Registry implements \IteratorAggregate
         $children = $this->children[$parent];
         $children[] = $child;
         $this->children[$parent] = $children;
-
-        // merge parent and child schema
-        $parent->merge($child);
     }
 
     /**
