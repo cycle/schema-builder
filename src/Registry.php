@@ -90,6 +90,8 @@ final class Registry implements \IteratorAggregate
 
     /**
      * Assign child entity to parent entity.
+     * Be careful! This method merges the parent and child entity schemas.
+     * If you don't need to merge schemas {@see Registry::registerChildWithoutMerge()}.
      *
      * @throws RegistryException
      */

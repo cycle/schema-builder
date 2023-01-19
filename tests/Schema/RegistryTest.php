@@ -178,4 +178,22 @@ abstract class RegistryTest extends BaseTest
 
         $schema = (new Compiler())->compile($r, []);
     }
+
+    public function testRegisterChildWithoutMerge(): void
+    {
+        $parent = new Entity();
+        $parent->setRole('parent');
+        $parent->setClass(Author::class);
+
+        $registry = new Registry($this->dbal);
+        $registry->register($parent)->linkTable($parent, 'default', 'table');
+
+        $child = new Entity();
+        $child->setRole('parent');
+        $child->setClass(User::class);
+
+        $registry->registerChildWithoutMerge($parent, $child);
+
+        $this->assertSame([$child], $registry->getChildren($parent));
+    }
 }
