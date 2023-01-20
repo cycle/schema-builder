@@ -160,7 +160,7 @@ abstract class RegistryTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'table');
 
         $c = new Entity();
-        $c->setRole('parent');
+        $c->setRole('child');
         $c->setClass(User::class);
 
         $c->getFields()->set(
@@ -189,7 +189,7 @@ abstract class RegistryTest extends BaseTest
         $registry->register($parent)->linkTable($parent, 'default', 'table');
 
         $child = new Entity();
-        $child->setRole('parent');
+        $child->setRole('child');
         $child->setClass(User::class);
 
         $registry->registerChildWithoutMerge($parent, $child);
