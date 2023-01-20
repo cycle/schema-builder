@@ -90,10 +90,20 @@ final class Registry implements \IteratorAggregate
 
     /**
      * Assign child entity to parent entity.
+     * Be careful! This method merges the parent and child entity schemas.
+     * If you don't need to merge schemas {@see Registry::registerChildWithoutMerge()}.
      *
      * @throws RegistryException
      */
     public function registerChild(Entity $parent, Entity $child): void
+    {
+        $this->registerChildWithoutMerge($parent, $child);
+
+        // merge parent and child schema
+        $parent->merge($child);
+    }
+
+    public function registerChildWithoutMerge(Entity $parent, Entity $child): void
     {
         if (!$this->hasInstance($parent)) {
             throw new RegistryException("Undefined entity `{$parent->getRole()}`");
@@ -102,9 +112,6 @@ final class Registry implements \IteratorAggregate
         $children = $this->children[$parent];
         $children[] = $child;
         $this->children[$parent] = $children;
-
-        // merge parent and child schema
-        $parent->merge($child);
     }
 
     /**

@@ -1,6 +1,12 @@
-name: build
+on:
+  push:
+    branches:
+      - master
+      - '*.*'
+      - '*.*.*'
+  pull_request: null
 
-on: [push, pull_request]
+name: build
 
 jobs:
   test:
