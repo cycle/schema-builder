@@ -338,6 +338,21 @@ abstract class ColumnTest extends BaseTest
         $this->assertInstanceOf(\DateTimeInterface::class, $table->column('name')->getDefaultValue());
     }
 
+    public function testRenderWithCustomType(): void
+    {
+        $field = new Field();
+        $field->setType('ltree');
+        $field->setColumn('name');
+
+        $table = $this->getStub();
+        $column = Column::parse($field);
+
+        $column->render($table->column('name'));
+
+        $this->assertTrue($table->hasColumn('name'));
+        $this->assertSame('ltree', $table->column('name')->getDeclaredType());
+    }
+
     /**
      * @return AbstractTable
      */

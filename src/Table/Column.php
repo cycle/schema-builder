@@ -112,8 +112,12 @@ final class Column
         $column->nullable($this->isNullable());
 
         try {
-            // bypassing call to AbstractColumn->__call method (or specialized column method)
-            call_user_func_array([$column, $this->type], $this->typeOptions);
+            // bypassing call to AbstractColumn->type method (or specialized column method)
+            if (\method_exists($column, $this->type)) {
+                \call_user_func_array([$column, $this->type], $this->typeOptions);
+            } else {
+                \call_user_func_array([$column, 'type'], \array_merge([$this->type], $this->typeOptions));
+            }
         } catch (\Throwable $e) {
             throw new ColumnException(
                 "Invalid column type definition in '{$column->getTable()}'.'{$column->getName()}'",
