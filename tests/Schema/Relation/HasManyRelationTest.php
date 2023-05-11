@@ -43,7 +43,7 @@ abstract class HasManyRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `plain` must have defined primary key');
+        $this->expectExceptionMessage('Entity `plain` must have defined primary key');
 
         $e = Plain::defineWithoutPK();
         $u = User::define();
@@ -60,7 +60,7 @@ abstract class HasManyRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `user` must have defined primary key');
+        $this->expectExceptionMessage('Entity `user` must have defined primary key');
 
         $e = Plain::define();
         $u = User::defineWithoutPK();
@@ -280,5 +280,28 @@ abstract class HasManyRelationTest extends BaseTest
             'user_p_id',
             $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY]
         );
+    }
+
+    public function testRenderWithIndex(): void
+    {
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setType('hasMany');
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'plain');
+        $r->register($u)->linkTable($u, 'default', 'user');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['hasMany' => new HasMany()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('plain');
+        $this->assertTrue($table->hasIndex(['user_p_id']));
     }
 }

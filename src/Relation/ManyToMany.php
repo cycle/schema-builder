@@ -149,8 +149,22 @@ final class ManyToMany extends RelationSchema implements InversableInterface
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignCompositeKey($registry, $source, $through, $sourceFields, $throughSourceFields);
-            $this->createForeignCompositeKey($registry, $target, $through, $targetFields, $throughTargetFields);
+            $this->createForeignCompositeKey(
+                $registry,
+                $source,
+                $through,
+                $sourceFields,
+                $throughSourceFields,
+                $this->options->get(self::INDEX_CREATE)
+            );
+            $this->createForeignCompositeKey(
+                $registry,
+                $target,
+                $through,
+                $targetFields,
+                $throughTargetFields,
+                $this->options->get(self::INDEX_CREATE)
+            );
         }
     }
 

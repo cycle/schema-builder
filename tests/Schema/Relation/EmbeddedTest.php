@@ -43,7 +43,7 @@ abstract class EmbeddedTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `composite` must have defined primary key');
+        $this->expectExceptionMessage('Entity `composite` must have defined primary key');
 
         $c = Composite::defineWithoutPk();
         $e = EmbeddedEntity::define();

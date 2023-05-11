@@ -63,7 +63,7 @@ abstract class BelongsToRelationCompositePKTest extends BaseTest
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Inconsistent amount of related fields. '
+        $this->expectExceptionMessage('Inconsistent amount of related fields. '
             . 'Source entity: `author`; keys: `id`, `slug`. Target entity: `post`; keys: `parent_id`.');
 
         $e = Post::defineCompositePK();

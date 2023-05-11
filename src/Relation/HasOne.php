@@ -83,7 +83,14 @@ final class HasOne extends RelationSchema implements InversableInterface
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignCompositeKey($registry, $source, $target, $innerFields, $outerFields);
+            $this->createForeignCompositeKey(
+                $registry,
+                $source,
+                $target,
+                $innerFields,
+                $outerFields,
+                $this->options->get(self::INDEX_CREATE)
+            );
         }
     }
 

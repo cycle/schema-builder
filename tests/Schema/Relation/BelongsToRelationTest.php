@@ -40,7 +40,7 @@ abstract class BelongsToRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `post` must have defined primary key');
+        $this->expectExceptionMessage('Entity `post` must have defined primary key');
 
         $e = Post::defineWithoutPK();
         $u = Author::define();
@@ -55,7 +55,7 @@ abstract class BelongsToRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `author` must have defined primary key');
+        $this->expectExceptionMessage('Entity `author` must have defined primary key');
 
         $e = Post::define();
         $u = Author::defineWithoutPK();
@@ -273,5 +273,26 @@ abstract class BelongsToRelationTest extends BaseTest
             ['p_id'],
             $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY]
         );
+    }
+
+    public function testRenderWithIndex(): void
+    {
+        $e = Post::define();
+        $u = Author::define();
+
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'post');
+        $r->register($u)->linkTable($u, 'default', 'author');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['belongsTo' => new BelongsTo()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('post');
+        $this->assertTrue($table->hasIndex(['author_p_id']));
     }
 }

@@ -83,7 +83,14 @@ final class BelongsTo extends RelationSchema implements InversableInterface
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignCompositeKey($registry, $target, $source, $outerFields, $innerFields);
+            $this->createForeignCompositeKey(
+                $registry,
+                $target,
+                $source,
+                $outerFields,
+                $innerFields,
+                $this->options->get(self::INDEX_CREATE)
+            );
         }
     }
 
