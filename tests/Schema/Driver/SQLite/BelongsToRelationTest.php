@@ -35,7 +35,6 @@ class BelongsToRelationTest extends BaseTest
             new RenderRelations(),
         ]);
 
-        // RENDER!
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
