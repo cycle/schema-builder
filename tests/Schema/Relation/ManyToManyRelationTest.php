@@ -235,7 +235,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
         (new Compiler())->compile($r, [
-            (new GenerateRelations(['manyToMany' => new ManyToMany()])),
+            new GenerateRelations(['manyToMany' => new ManyToMany()]),
             $t = new RenderTables(),
             new RenderRelations(),
         ]);
@@ -285,7 +285,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
         (new Compiler())->compile($r, [
-            (new GenerateRelations(['manyToMany' => new ManyToMany()])),
+            new GenerateRelations(['manyToMany' => new ManyToMany()]),
             $t = new RenderTables(),
             new RenderRelations(),
         ]);
