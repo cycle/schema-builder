@@ -33,7 +33,7 @@ abstract class RegistryTest extends BaseTest
     public function testDuplicateRoleShouldThrowAnException(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Duplicate entity `user`');
+        $this->expectExceptionMessage('Duplicate entity `user`');
 
         $r = new Registry($this->dbal);
 

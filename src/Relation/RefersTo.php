@@ -77,7 +77,14 @@ final class RefersTo extends RelationSchema
         }
 
         if ($this->options->get(self::FK_CREATE)) {
-            $this->createForeignCompositeKey($registry, $target, $source, $outerFields, $innerFields);
+            $this->createForeignCompositeKey(
+                $registry,
+                $target,
+                $source,
+                $outerFields,
+                $innerFields,
+                $this->options->get(self::INDEX_CREATE)
+            );
         }
     }
 }

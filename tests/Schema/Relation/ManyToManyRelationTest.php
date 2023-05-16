@@ -53,7 +53,7 @@ abstract class ManyToManyRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `post` must have defined primary key');
+        $this->expectExceptionMessage('Entity `post` must have defined primary key');
 
         $post = Post::defineWithoutPK();
         $tag = Tag::define();
@@ -78,7 +78,7 @@ abstract class ManyToManyRelationTest extends BaseTest
     public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
     {
         $this->expectException(RegistryException::class);
-        $this->expectErrorMessage('Entity `tag` must have defined primary key');
+        $this->expectExceptionMessage('Entity `tag` must have defined primary key');
 
         $post = Post::define();
         $tag = Tag::defineWithoutPK();
@@ -235,7 +235,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
         (new Compiler())->compile($r, [
-            (new GenerateRelations(['manyToMany' => new ManyToMany()])),
+            new GenerateRelations(['manyToMany' => new ManyToMany()]),
             $t = new RenderTables(),
             new RenderRelations(),
         ]);
@@ -285,7 +285,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
         (new Compiler())->compile($r, [
-            (new GenerateRelations(['manyToMany' => new ManyToMany()])),
+            new GenerateRelations(['manyToMany' => new ManyToMany()]),
             $t = new RenderTables(),
             new RenderRelations(),
         ]);
@@ -399,5 +399,37 @@ abstract class ManyToManyRelationTest extends BaseTest
             'tagContext',
             $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_ENTITY]
         );
+    }
+
+    public function testRenderWithIndex(): void
+    {
+        $post = Post::define();
+        $tag = Tag::define();
+        $tagContext = TagContext::define();
+
+        $post->getRelations()->remove('author');
+
+        $post->getRelations()->set('tags', new RelationDefinition());
+        $post->getRelations()->get('tags')
+            ->setType('manyToMany')
+            ->setTarget('tag')
+            ->getOptions()->set('through', 'tagContext');
+
+        $r = new Registry($this->dbal);
+        $r->register($post)->linkTable($post, 'default', 'post');
+        $r->register($tag)->linkTable($tag, 'default', 'tag');
+        $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['manyToMany' => new ManyToMany()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        $table = $this->getDriver()->getSchema('tag_context');
+        $this->assertTrue($table->hasIndex(['tag_p_id']));
+        $this->assertTrue($table->hasIndex(['post_p_id']));
     }
 }
