@@ -101,6 +101,6 @@ class TestLogger implements LoggerInterface
 
 
 
-         ;
+        ;
     }
 }

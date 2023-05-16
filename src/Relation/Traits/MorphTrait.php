@@ -18,6 +18,7 @@ trait MorphTrait
      * @psalm-param class-string $interface
      *
      * @return Entity[]|Generator
+     *
      * @psalm-return Generator<int, Entity, mixed, null>
      */
     protected function findTargets(Registry $registry, string $interface): Generator
