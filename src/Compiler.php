@@ -237,8 +237,8 @@ final class Compiler
         }
 
         // entity with default typecast
-        if ($entity->getTypecast() === Typecast::class && !\in_array(Typecast::class, $defaults, true)) {
-            $defaults[] = Typecast::class;
+        if ($entity->getTypecast() === Typecast::class || $entity->getTypecast() === [Typecast::class]) {
+            return \array_values(\array_unique(\array_merge($defaults, [Typecast::class])));
         }
 
         $typecast = $entity->getTypecast() ?? [];
