@@ -94,12 +94,12 @@ class CompilerTest extends TestCase
         yield [
             [Typecaster::class, Typecast::class],
             [SchemaInterface::TYPECAST_HANDLER => Typecast::class],
-            Typecaster::class
+            Typecaster::class,
         ];
         yield [
             [Typecaster::class, Typecast::class],
             [SchemaInterface::TYPECAST_HANDLER => [Typecaster::class, Typecast::class]],
-            Typecaster::class
+            Typecaster::class,
         ];
     }
 }
