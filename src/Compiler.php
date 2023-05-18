@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cycle\Schema;
 
 use Cycle\ORM\Mapper\Mapper;
+use Cycle\ORM\Parser\Typecast;
 use Cycle\ORM\SchemaInterface as Schema;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
@@ -86,7 +87,7 @@ final class Compiler
             Schema::REPOSITORY => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
             Schema::SCOPE => $entity->getScope() ?? $this->defaults[Schema::SCOPE],
             Schema::SCHEMA => $entity->getSchema(),
-            Schema::TYPECAST_HANDLER => $entity->getTypecast() ?? $this->defaults[Schema::TYPECAST_HANDLER],
+            Schema::TYPECAST_HANDLER => $this->renderTypecastHandler($entity),
             Schema::PRIMARY_KEY => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
@@ -225,5 +226,23 @@ final class Compiler
         foreach ($registry->getRelations($entity) as $relation) {
             $relation->modifySchema($schema);
         }
+    }
+
+    private function renderTypecastHandler(Entity $entity): array|null|string
+    {
+        $defaults = (array) $this->defaults[Schema::TYPECAST_HANDLER] ?? [];
+
+        if ($defaults === []) {
+            return $entity->getTypecast();
+        }
+
+        // entity with default typecast
+        if ($entity->getTypecast() === Typecast::class && !\in_array(Typecast::class, $defaults, true)) {
+            $defaults[] = Typecast::class;
+        }
+
+        $typecast = $entity->getTypecast() ?? [];
+
+        return \array_values(\array_unique(\array_merge(\is_array($typecast) ? $typecast : [$typecast], $defaults)));
     }
 }

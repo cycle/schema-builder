@@ -66,7 +66,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::SCOPE => null,
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
-                Schema::TYPECAST_HANDLER => Typecaster::class,
+                Schema::TYPECAST_HANDLER => [Typecaster::class, 'default_typecaster'],
             ],
         ], $schema);
     }
@@ -102,7 +102,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::SCOPE => null,
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
-                Schema::TYPECAST_HANDLER => Typecaster::class,
+                Schema::TYPECAST_HANDLER => [Typecaster::class],
             ],
         ], $schema);
     }
