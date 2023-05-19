@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema;
 
-use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Parser\Typecast;
 use Cycle\ORM\SchemaInterface as Schema;
-use Cycle\ORM\Select\Repository;
-use Cycle\ORM\Select\Source;
 use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
@@ -26,15 +22,6 @@ final class Compiler
     /** @var array<non-empty-string, array<int, mixed>> */
     private array $result = [];
 
-    /** @var array<int, mixed> */
-    private array $defaults = [
-        Schema::MAPPER => Mapper::class,
-        Schema::REPOSITORY => Repository::class,
-        Schema::SOURCE => Source::class,
-        Schema::SCOPE => null,
-        Schema::TYPECAST_HANDLER => null,
-    ];
-
     /**
      * Compile the registry schema.
      *
@@ -42,7 +29,7 @@ final class Compiler
      */
     public function compile(Registry $registry, array $generators = [], array $defaults = []): array
     {
-        $this->defaults = $defaults + $this->defaults;
+        $registry->getDefaults()->merge($defaults);
 
         foreach ($generators as $generator) {
             if (!$generator instanceof GeneratorInterface) {
@@ -80,14 +67,16 @@ final class Compiler
      */
     private function compute(Registry $registry, Entity $entity): void
     {
+        $defaults = $registry->getDefaults();
+
         $schema = [
             Schema::ENTITY => $entity->getClass(),
-            Schema::SOURCE => $entity->getSource() ?? $this->defaults[Schema::SOURCE],
-            Schema::MAPPER => $entity->getMapper() ?? $this->defaults[Schema::MAPPER],
-            Schema::REPOSITORY => $entity->getRepository() ?? $this->defaults[Schema::REPOSITORY],
-            Schema::SCOPE => $entity->getScope() ?? $this->defaults[Schema::SCOPE],
+            Schema::SOURCE => $entity->getSource() ?? $defaults[Schema::SOURCE],
+            Schema::MAPPER => $entity->getMapper() ?? $defaults[Schema::MAPPER],
+            Schema::REPOSITORY => $entity->getRepository() ?? $defaults[Schema::REPOSITORY],
+            Schema::SCOPE => $entity->getScope() ?? $defaults[Schema::SCOPE],
             Schema::SCHEMA => $entity->getSchema(),
-            Schema::TYPECAST_HANDLER => $this->renderTypecastHandler($entity),
+            Schema::TYPECAST_HANDLER => $this->renderTypecastHandler($registry->getDefaults(), $entity),
             Schema::PRIMARY_KEY => $entity->getPrimaryFields()->getNames(),
             Schema::COLUMNS => $this->renderColumns($entity),
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
@@ -228,17 +217,15 @@ final class Compiler
         }
     }
 
-    private function renderTypecastHandler(Entity $entity): array|null|string
+    private function renderTypecastHandler(Defaults $defaults, Entity $entity): array|null|string
     {
-        $defaults = (array) $this->defaults[Schema::TYPECAST_HANDLER] ?? [];
+        $defaults = $defaults[Schema::TYPECAST_HANDLER] ?? [];
+        if (!\is_array($defaults)) {
+            $defaults = [$defaults];
+        }
 
         if ($defaults === []) {
             return $entity->getTypecast();
-        }
-
-        // entity with default typecast
-        if ($entity->getTypecast() === Typecast::class || $entity->getTypecast() === [Typecast::class]) {
-            return \array_values(\array_unique(\array_merge($defaults, [Typecast::class])));
         }
 
         $typecast = $entity->getTypecast() ?? [];
