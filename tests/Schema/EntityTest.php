@@ -89,7 +89,7 @@ class EntityTest extends TestCase
     public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn(): void
     {
         $this->expectException(FieldException::class);
-        $this->expectErrorMessage('Undefined field with column name `test`.');
+        $this->expectExceptionMessage('Undefined field with column name `test`.');
 
         $e = new Entity();
         $e->setRole('role');
@@ -114,7 +114,7 @@ class EntityTest extends TestCase
     public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches(): void
     {
         $this->expectException(EntityException::class);
-        $this->expectErrorMessage('Ambiguous primary key definition for `role`.');
+        $this->expectExceptionMessage('Ambiguous primary key definition for `role`.');
 
         $e = new Entity();
         $e->setRole('role');

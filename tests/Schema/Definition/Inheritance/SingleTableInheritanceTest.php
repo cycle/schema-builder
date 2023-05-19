@@ -87,7 +87,7 @@ class SingleTableInheritanceTest extends TestCase
     public function testSingleTableWithoutDiscriminatorColumnShouldThrowAnException()
     {
         $this->expectException(DiscriminatorColumnNotPresentException::class);
-        $this->expectErrorMessage('Discriminator column for the `user` role should be defined.');
+        $this->expectExceptionMessage('Discriminator column for the `user` role should be defined.');
 
         $r = new Registry(
             $this->createMock(DatabaseProviderInterface::class)
@@ -107,7 +107,7 @@ class SingleTableInheritanceTest extends TestCase
     public function testSingleTableWithNonExistsDiscriminatorColumnShouldThrowAnException()
     {
         $this->expectException(WrongDiscriminatorColumnException::class);
-        $this->expectErrorMessage('Discriminator column `type` is not found among fields of the `user` role.');
+        $this->expectExceptionMessage('Discriminator column `type` is not found among fields of the `user` role.');
 
         $r = new Registry(
             $this->createMock(DatabaseProviderInterface::class)

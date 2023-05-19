@@ -20,16 +20,18 @@ final class Registry implements \IteratorAggregate
     private \SplObjectStorage $tables;
     private \SplObjectStorage $children;
     private \SplObjectStorage $relations;
+    private Defaults $defaults;
 
     /**
      * @param DatabaseProviderInterface $dbal
      */
-    public function __construct(DatabaseProviderInterface $dbal)
+    public function __construct(DatabaseProviderInterface $dbal, ?Defaults $defaults = null)
     {
         $this->dbal = $dbal;
         $this->tables = new \SplObjectStorage();
         $this->children = new \SplObjectStorage();
         $this->relations = new \SplObjectStorage();
+        $this->defaults = $defaults ?? new Defaults();
     }
 
     public function register(Entity $entity): self
@@ -268,6 +270,11 @@ final class Registry implements \IteratorAggregate
         }
 
         return $this->relations[$entity];
+    }
+
+    public function getDefaults(): Defaults
+    {
+        return $this->defaults;
     }
 
     protected function hasInstance(Entity $entity): bool

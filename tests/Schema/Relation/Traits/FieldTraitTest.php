@@ -47,7 +47,7 @@ class FieldTraitTest extends TestCase
         $entity->setRole('post');
 
         $this->expectException(RelationException::class);
-        $this->expectErrorMessage('Field `post`.`id` does not exists, referenced by `test`');
+        $this->expectExceptionMessage('Field `post`.`id` does not exists, referenced by `test`');
 
         $this->getField($entity, 123);
     }
@@ -85,7 +85,7 @@ class FieldTraitTest extends TestCase
             ->set('id', $fieldId = (new Field())->setColumn('id'));
 
         $this->expectException(RelationException::class);
-        $this->expectErrorMessage('Field `post`.`slug` does not exists, referenced by `test`');
+        $this->expectExceptionMessage('Field `post`.`slug` does not exists, referenced by `test`');
 
         $this->getFields($entity, 234);
     }
