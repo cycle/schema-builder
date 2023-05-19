@@ -79,7 +79,7 @@ final class DefaultsTest extends TestCase
                 SchemaInterface::SCOPE => null,
                 SchemaInterface::TYPECAST_HANDLER => null,
             ],
-            []
+            [],
         ];
         yield [
             [
@@ -88,11 +88,11 @@ final class DefaultsTest extends TestCase
                 SchemaInterface::SOURCE => Source::class,
                 SchemaInterface::SCOPE => null,
                 SchemaInterface::TYPECAST_HANDLER => null,
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             [
-                'foo' => 'bar'
-            ]
+                'foo' => 'bar',
+            ],
         ];
         yield [
             [
@@ -103,8 +103,8 @@ final class DefaultsTest extends TestCase
                 SchemaInterface::TYPECAST_HANDLER => 'foo',
             ],
             [
-                SchemaInterface::TYPECAST_HANDLER => 'foo'
-            ]
+                SchemaInterface::TYPECAST_HANDLER => 'foo',
+            ],
         ];
         yield [
             [
@@ -115,8 +115,8 @@ final class DefaultsTest extends TestCase
                 SchemaInterface::TYPECAST_HANDLER => null,
             ],
             [
-                SchemaInterface::MAPPER => null
-            ]
+                SchemaInterface::MAPPER => null,
+            ],
         ];
     }
 }
