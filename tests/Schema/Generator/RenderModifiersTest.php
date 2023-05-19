@@ -52,7 +52,7 @@ class RenderModifiersTest extends TestCase
     public function testErrorInsideModifierShouldThrowAnException(string $method)
     {
         $this->expectException(SchemaException::class);
-        $this->expectErrorMessage(
+        $this->expectExceptionMessage(
             'Unable to render modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` for the `user` role.'
         );
 

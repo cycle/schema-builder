@@ -33,6 +33,7 @@ final class DefaultsTest extends TestCase
         $defaults->merge($values);
 
         $ref = new \ReflectionProperty($defaults, 'defaults');
+        $ref->setAccessible(true);
 
         $this->assertEquals($expected, $ref->getValue($defaults));
     }

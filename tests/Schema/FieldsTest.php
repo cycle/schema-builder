@@ -119,7 +119,7 @@ class FieldsTest extends TestCase
     public function testGetKeyByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
         $this->expectException(FieldException::class);
-        $this->expectErrorMessage('Undefined field with column name `slug`.');
+        $this->expectExceptionMessage('Undefined field with column name `slug`.');
 
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -140,7 +140,7 @@ class FieldsTest extends TestCase
     public function testGetByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
         $this->expectException(FieldException::class);
-        $this->expectErrorMessage('Undefined field with column name `slug`.');
+        $this->expectExceptionMessage('Undefined field with column name `slug`.');
 
         $m = new FieldMap();
         $m->set('p_id', $id = (new Field())->setColumn('id'));
