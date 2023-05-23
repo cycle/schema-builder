@@ -89,6 +89,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function getClass(): ?string
     {
         return $this->class;
@@ -101,6 +104,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function getMapper(): ?string
     {
         return $this->normalizeClass($this->mapper);
@@ -113,6 +119,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function getSource(): ?string
     {
         return $this->normalizeClass($this->source);
@@ -125,6 +134,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function getScope(): ?string
     {
         return $this->normalizeClass($this->scope);
@@ -137,6 +149,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string|null
+     */
     public function getRepository(): ?string
     {
         return $this->normalizeClass($this->repository);
