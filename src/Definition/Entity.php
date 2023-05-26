@@ -156,7 +156,7 @@ final class Entity
     }
 
     /**
-     * @return class-string<RepositoryInterface>|null
+     * @return class-string<RepositoryInterface<TEntity>>|null
      */
     public function getRepository(): ?string
     {
