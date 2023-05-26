@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
+use Cycle\ORM\MapperInterface;
+use Cycle\ORM\RepositoryInterface;
+use Cycle\ORM\Select\ScopeInterface;
+use Cycle\ORM\Select\SourceInterface;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
@@ -12,6 +16,8 @@ use Cycle\Schema\SchemaModifierInterface;
 
 /**
  * Contains information about specific entity definition.
+ *
+ * @template TEntity of object
  */
 final class Entity
 {
@@ -90,7 +96,7 @@ final class Entity
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<TEntity>|null
      */
     public function getClass(): ?string
     {
@@ -105,7 +111,7 @@ final class Entity
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<MapperInterface>|null
      */
     public function getMapper(): ?string
     {
@@ -120,7 +126,7 @@ final class Entity
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<SourceInterface>|null
      */
     public function getSource(): ?string
     {
@@ -135,7 +141,7 @@ final class Entity
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<ScopeInterface>|null
      */
     public function getScope(): ?string
     {
@@ -150,7 +156,7 @@ final class Entity
     }
 
     /**
-     * @return class-string|null
+     * @return class-string<RepositoryInterface>|null
      */
     public function getRepository(): ?string
     {
