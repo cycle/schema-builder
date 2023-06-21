@@ -129,7 +129,7 @@ final class Compiler
                     sprintf(
                         'Unable to apply schema modifier `%s` for the `%s` role. %s',
                         $modifier::class,
-                        $entity->getRole(),
+                        $role,
                         $e->getMessage()
                     ),
                     (int)$e->getCode(),
