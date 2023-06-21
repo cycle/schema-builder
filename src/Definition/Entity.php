@@ -348,10 +348,11 @@ final class Entity
     }
 
     /**
-     * @template T
+     * @template T of object
+     *
      * @param class-string<T>|null $class
      *
-     * @return ($class is null ? null : class-string<T>)
+     * @return ($class is class-string<T> ? class-string<T> : null)
      */
     private function normalizeClass(string $class = null): ?string
     {

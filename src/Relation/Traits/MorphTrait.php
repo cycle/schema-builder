@@ -16,6 +16,7 @@ trait MorphTrait
 {
     /**
      * @psalm-param non-empty-string $interface
+     *
      * @psalm-assert class-string $interface
      *
      * @return Entity[]|Generator

@@ -203,9 +203,9 @@ final class Registry implements \IteratorAggregate
     }
 
     /**
-     * @return non-empty-string
-     *
      * @throws RegistryException
+     *
+     * @return non-empty-string
      */
     public function getTable(Entity $entity): string
     {

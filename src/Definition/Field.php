@@ -102,9 +102,9 @@ final class Field
     }
 
     /**
-     * @return non-empty-string
-     *
      * @throws FieldException
+     *
+     * @return non-empty-string
      */
     public function getColumn(): string
     {
