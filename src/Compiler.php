@@ -68,6 +68,8 @@ final class Compiler
     private function compute(Registry $registry, Entity $entity): void
     {
         $defaults = $registry->getDefaults();
+        $role = $entity->getRole();
+        \assert($role !== null);
 
         $schema = [
             Schema::ENTITY => $entity->getClass(),
@@ -127,7 +129,7 @@ final class Compiler
                     sprintf(
                         'Unable to apply schema modifier `%s` for the `%s` role. %s',
                         $modifier::class,
-                        $entity->getRole(),
+                        $role,
                         $e->getMessage()
                     ),
                     (int)$e->getCode(),
@@ -143,8 +145,7 @@ final class Compiler
 
         /** @var array<int, mixed> $schema */
         ksort($schema);
-        $role = $entity->getRole();
-        assert(!empty($role));
+
         $this->result[$role] = $schema;
     }
 
@@ -170,10 +171,11 @@ final class Compiler
             try {
                 $comparator->compare();
             } catch (Throwable $e) {
-                throw new Exception\CompilerException(
-                    sprintf("Error compiling the `%s` role.\n\n%s", $entity->getRole(), $e->getMessage()),
-                    $e->getCode()
-                );
+                throw new Exception\CompilerException(sprintf(
+                    "Error compiling the `%s` role.\n\n%s",
+                        $entity->getRole() ?? 'unknown',
+                    $e->getMessage()
+                ), (int) $e->getCode());
             }
         }
 

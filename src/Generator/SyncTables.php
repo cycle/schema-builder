@@ -44,7 +44,7 @@ final class SyncTables implements GeneratorInterface
             try {
                 $reflector->run();
             } catch (\Throwable $e) {
-                throw new SyncException($e->getMessage(), $e->getCode(), $e);
+                throw new SyncException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }
 

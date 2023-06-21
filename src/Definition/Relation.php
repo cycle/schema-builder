@@ -15,7 +15,7 @@ final class Relation
     /** @var string */
     private $type;
 
-    /** @var string */
+    /** @var non-empty-string */
     private $target;
 
     /** @var string|null */
@@ -76,7 +76,7 @@ final class Relation
     }
 
     /**
-     * @param string $target
+     * @param non-empty-string $target
      *
      * @return Relation
      */
@@ -88,7 +88,7 @@ final class Relation
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getTarget(): string
     {

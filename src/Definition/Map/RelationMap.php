@@ -8,6 +8,9 @@ use Cycle\Schema\Definition\Relation;
 use Cycle\Schema\Exception\RelationException;
 use Traversable;
 
+/**
+ * @implements \IteratorAggregate<string, Relation>
+ */
 final class RelationMap implements \IteratorAggregate
 {
     /** @var array<string, Relation> */

@@ -46,12 +46,21 @@ abstract class RelationSchema implements RelationInterface
      */
     protected string $name;
 
+    /**
+     * @var non-empty-string
+     */
     protected string $source;
 
+    /**
+     * @var non-empty-string
+     */
     protected string $target;
 
     protected OptionSchema $options;
 
+    /**
+     * @param non-empty-string $role
+     */
     public function withRole(string $role): static
     {
         $relation = clone $this;
@@ -65,7 +74,8 @@ abstract class RelationSchema implements RelationInterface
     }
 
     /**
-     * @inheritDoc
+     * @param non-empty-string $source
+     * @param non-empty-string $target
      */
     public function withContext(string $name, string $source, string $target, OptionSchema $options): RelationInterface
     {

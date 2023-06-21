@@ -36,7 +36,7 @@ final class GenerateModifiers implements GeneratorInterface
             } catch (SchemaModifierException $e) {
                 throw new SchemaException(
                     sprintf('Unable to compute modifier `%s` for the `%s` role.', $modifier::class, $role),
-                    (int)$e->getCode(),
+                    $e->getCode(),
                     $e
                 );
             }

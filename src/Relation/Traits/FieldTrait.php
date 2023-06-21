@@ -24,7 +24,7 @@ trait FieldTrait
             throw new RelationException(
                 sprintf(
                     'Field `%s`.`%s` does not exists, referenced by `%s`',
-                    $entity->getRole(),
+                    $entity->getRole() ?? 'unknown',
                     $this->getOptions()->get($field),
                     $this->source
                 ),
@@ -46,7 +46,7 @@ trait FieldTrait
                 throw new RelationException(
                     sprintf(
                         'Field `%s`.`%s` does not exists, referenced by `%s`.',
-                        $entity->getRole(),
+                        $entity->getRole() ?? 'unknown',
                         $key,
                         $this->source
                     ),
@@ -75,9 +75,9 @@ trait FieldTrait
                 sprintf(
                     'Inconsistent amount of related fields. '
                     . 'Source entity: `%s`; keys: `%s`. Target entity: `%s`; keys: `%s`.',
-                    $source->getRole(),
+                    $source->getRole() ?? 'unknown',
                     implode('`, `', $this->getFields($source, $sourceKey)->getColumnNames()),
-                    $target->getRole(),
+                    $target->getRole() ?? 'unknown',
                     implode('`, `', $targetColumns)
                 )
             );
@@ -127,6 +127,9 @@ trait FieldTrait
         }
     }
 
+    /**
+     * @param non-empty-string $fieldName
+     */
     protected function ensureField(Entity $target, string $fieldName, Field $outerField, bool $nullable = false): void
     {
         // ensure that field will be indexed in memory for fast references

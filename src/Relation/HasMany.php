@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -106,7 +107,7 @@ final class HasMany extends RelationSchema implements InversableInterface
     /**
      * @param Registry $registry
      *
-     * @return array
+     * @return Entity[]
      */
     public function inverseTargets(Registry $registry): array
     {

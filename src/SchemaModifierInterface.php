@@ -12,6 +12,9 @@ use Cycle\Schema\Exception\SchemaModifierException;
  */
 interface SchemaModifierInterface
 {
+    /**
+     * @param non-empty-string $role
+     */
     public function withRole(string $role): static;
 
     /**

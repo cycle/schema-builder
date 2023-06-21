@@ -56,7 +56,7 @@ final class GenerateTypecast implements GeneratorInterface
     /**
      * @param AbstractColumn $column
      *
-     * @return callable|string
+     * @return callable-array|string|null
      */
     private function typecast(AbstractColumn $column)
     {

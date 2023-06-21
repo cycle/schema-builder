@@ -16,6 +16,9 @@ interface RelationInterface extends SchemaModifierInterface
     /**
      * Create relation version linked to specific entity context.
      *
+     * @param non-empty-string $source
+     * @param non-empty-string $target
+     *
      * @throws RelationException
      */
     public function withContext(
