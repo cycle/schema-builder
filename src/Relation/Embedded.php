@@ -37,6 +37,8 @@ final class Embedded extends RelationSchema
         // each embedded entity must isolated
         $target = clone $target;
         $target->setRole($sourceRole . ':' . $targetRole . ':' . $this->name);
+        $targetRole = $target->getRole();
+        \assert($targetRole !== null);
 
         // embedded entity must point to the same table as parent entity
         $registry->register($target);

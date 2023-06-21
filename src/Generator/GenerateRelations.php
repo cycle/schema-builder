@@ -104,10 +104,10 @@ final class GenerateRelations implements GeneratorInterface
      */
     protected function register(Registry $registry, Entity $entity): void
     {
-        foreach ($entity->getRelations() as $name => $r) {
-            $role = $entity->getRole();
-            \assert($role !== null);
+        $role = $entity->getRole();
+        \assert($role !== null);
 
+        foreach ($entity->getRelations() as $name => $r) {
             $schema = $this->initRelation($r->getType())->withContext(
                 $name,
                 $role,
@@ -120,7 +120,7 @@ final class GenerateRelations implements GeneratorInterface
                 $schema->compute($registry);
             } catch (RelationException $e) {
                 throw new SchemaException(
-                    "Unable to compute relation `{$entity->getRole()}`.`{$name}`",
+                    "Unable to compute relation `{$role}`.`{$name}`",
                     $e->getCode(),
                     $e
                 );
