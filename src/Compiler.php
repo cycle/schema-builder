@@ -173,7 +173,7 @@ final class Compiler
             } catch (Throwable $e) {
                 throw new Exception\CompilerException(sprintf(
                     "Error compiling the `%s` role.\n\n%s",
-                        $entity->getRole() ?? 'unknown',
+                    $entity->getRole() ?? 'unknown',
                     $e->getMessage()
                 ), (int) $e->getCode());
             }
