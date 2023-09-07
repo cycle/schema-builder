@@ -9,6 +9,9 @@ use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select\Repository;
 use Cycle\ORM\Select\Source;
 
+/**
+ * @implements \ArrayAccess<int, mixed>
+ */
 final class Defaults implements \ArrayAccess
 {
     /**
@@ -45,6 +48,9 @@ final class Defaults implements \ArrayAccess
         return $this->defaults[$offset];
     }
 
+    /**
+     * @param int $offset
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->defaults[$offset] = $value;

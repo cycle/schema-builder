@@ -30,21 +30,29 @@ final class Embedded extends RelationSchema
         $source = $registry->getEntity($this->source);
         $target = $registry->getEntity($this->target);
 
+        $targetRole = $target->getRole();
+        $sourceRole = $source->getRole();
+        \assert($targetRole !== null && $sourceRole !== null);
+
         // each embedded entity must isolated
         $target = clone $target;
-        $target->setRole($source->getRole() . ':' . $target->getRole() . ':' . $this->name);
+        $target->setRole($sourceRole . ':' . $targetRole . ':' . $this->name);
+        $targetRole = $target->getRole();
+        \assert($targetRole !== null);
 
         // embedded entity must point to the same table as parent entity
         $registry->register($target);
         $registry->linkTable($target, $registry->getDatabase($source), $registry->getTable($source));
 
         // isolated
-        $this->target = $target->getRole();
+        $this->target = $targetRole;
 
         $prefix = $this->getOptions()->get(self::EMBEDDED_PREFIX);
         assert(\is_string($prefix));
         foreach ($target->getFields() as $field) {
-            $field->setColumn($prefix . $field->getColumn());
+            /** @var non-empty-string $columnName */
+            $columnName = $prefix . $field->getColumn();
+            $field->setColumn($columnName);
         }
 
         foreach ($source->getFields() as $name => $field) {

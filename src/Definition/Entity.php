@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
+use Cycle\ORM\MapperInterface;
+use Cycle\ORM\RepositoryInterface;
+use Cycle\ORM\Select\ScopeInterface;
+use Cycle\ORM\Select\SourceInterface;
 use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
@@ -12,27 +16,56 @@ use Cycle\Schema\SchemaModifierInterface;
 
 /**
  * Contains information about specific entity definition.
+ *
+ * @template TEntity of object
  */
 final class Entity
 {
     private OptionMap $options;
 
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $role = null;
 
+    /**
+     * @var class-string<TEntity>|null
+     */
     private ?string $class = null;
 
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $database = null;
 
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $tableName = null;
 
+    /**
+     * @var class-string<MapperInterface>|null
+     */
     private ?string $mapper = null;
 
+    /**
+     * @var class-string<SourceInterface>|null
+     */
     private ?string $source = null;
 
+    /**
+     * @var class-string<ScopeInterface>|null
+     */
     private ?string $scope = null;
 
+    /**
+     * @var class-string<RepositoryInterface<TEntity>>|null
+     */
     private ?string $repository = null;
 
+    /**
+     * @var class-string|class-string[]|non-empty-string|non-empty-string[]|null
+     */
     private array|string|null $typecast = null;
 
     private array $schema = [];
@@ -70,6 +103,9 @@ final class Entity
         return $this->options;
     }
 
+    /**
+     * @param non-empty-string $role
+     */
     public function setRole(string $role): self
     {
         $this->role = $role;
@@ -77,11 +113,17 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return non-empty-string|null
+     */
     public function getRole(): ?string
     {
         return $this->role;
     }
 
+    /**
+     * @param class-string<TEntity> $class
+     */
     public function setClass(string $class): self
     {
         $this->class = $class;
@@ -89,11 +131,17 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string<TEntity>|null
+     */
     public function getClass(): ?string
     {
         return $this->class;
     }
 
+    /**
+     * @param class-string<MapperInterface>|null $mapper
+     */
     public function setMapper(?string $mapper): self
     {
         $this->mapper = $mapper;
@@ -101,11 +149,17 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string<MapperInterface>|null
+     */
     public function getMapper(): ?string
     {
         return $this->normalizeClass($this->mapper);
     }
 
+    /**
+     * @param class-string<SourceInterface>|null $source
+     */
     public function setSource(?string $source): self
     {
         $this->source = $source;
@@ -113,11 +167,17 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string<SourceInterface>|null
+     */
     public function getSource(): ?string
     {
         return $this->normalizeClass($this->source);
     }
 
+    /**
+     * @param class-string<ScopeInterface>|null $scope
+     */
     public function setScope(?string $scope): self
     {
         $this->scope = $scope;
@@ -125,11 +185,17 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string<ScopeInterface>|null
+     */
     public function getScope(): ?string
     {
         return $this->normalizeClass($this->scope);
     }
 
+    /**
+     * @param class-string<RepositoryInterface<TEntity>>|null $repository
+     */
     public function setRepository(?string $repository): self
     {
         $this->repository = $repository;
@@ -137,6 +203,9 @@ final class Entity
         return $this;
     }
 
+    /**
+     * @return class-string<RepositoryInterface<TEntity>>|null
+     */
     public function getRepository(): ?string
     {
         return $this->normalizeClass($this->repository);
@@ -278,13 +347,23 @@ final class Entity
         return $this->primaryFields;
     }
 
+    /**
+     * @template T of object
+     *
+     * @param class-string<T>|null $class
+     *
+     * @return ($class is class-string<T> ? class-string<T> : null)
+     */
     private function normalizeClass(string $class = null): ?string
     {
         if ($class === null) {
             return null;
         }
 
-        return ltrim($class, '\\');
+        /** @var class-string<T> $class */
+        $class = \ltrim($class, '\\');
+
+        return $class;
     }
 
     public function setInheritance(Inheritance $inheritance): void
@@ -318,6 +397,9 @@ final class Entity
         return $this->database;
     }
 
+    /**
+     * @param non-empty-string|null $database
+     */
     public function setDatabase(?string $database): void
     {
         $this->database = $database;
@@ -328,6 +410,9 @@ final class Entity
         return $this->tableName;
     }
 
+    /**
+     * @param non-empty-string $tableName
+     */
     public function setTableName(string $tableName): void
     {
         $this->tableName = $tableName;

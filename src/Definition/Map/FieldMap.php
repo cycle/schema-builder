@@ -10,6 +10,8 @@ use Traversable;
 
 /**
  * Manage the set of fields associated with the entity.
+ *
+ * @implements \IteratorAggregate<string, Field>
  */
 final class FieldMap implements \IteratorAggregate, \Countable
 {
@@ -144,9 +146,6 @@ final class FieldMap implements \IteratorAggregate, \Countable
         return $this;
     }
 
-    /**
-     * @return Field[]|Traversable
-     */
     public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->fields);

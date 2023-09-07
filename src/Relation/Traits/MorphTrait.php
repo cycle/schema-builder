@@ -15,11 +15,13 @@ use Generator;
 trait MorphTrait
 {
     /**
-     * @psalm-param class-string $interface
+     * @psalm-param non-empty-string $interface
+     *
+     * @psalm-assert class-string $interface
      *
      * @return Entity[]|Generator
      *
-     * @psalm-return Generator<int, Entity, mixed, null>
+     * @psalm-return Generator<int, Entity>
      */
     protected function findTargets(Registry $registry, string $interface): Generator
     {
@@ -34,6 +36,8 @@ trait MorphTrait
     }
 
     /**
+     * @param non-empty-string $interface
+     *
      * @throws RelationException
      *
      * @return array Tuple [name, Field]
@@ -52,12 +56,12 @@ trait MorphTrait
                 $keys = $primaryKeys;
                 $fields = $primaryFields;
                 $prevEntity = $entity;
-            } elseif ($keys !== $primaryKeys) {
+            } elseif ($keys !== $primaryKeys && $prevEntity !== null) {
                 throw new RelationException(sprintf(
                     'Inconsistent primary key reference (%s). PKs: (%s). Required PKs [%s]: (%s).',
-                    $entity->getRole(),
+                    $entity->getRole() ?? 'unknown',
                     implode(',', $primaryKeys),
-                    $prevEntity->getRole(),
+                    $prevEntity->getRole() ?? 'unknown',
                     implode(',', $keys)
                 ));
             }
@@ -70,6 +74,9 @@ trait MorphTrait
         return [$keys, $fields];
     }
 
+    /**
+     * @param non-empty-string $column
+     */
     protected function ensureMorphField(Entity $target, string $column, int $length, bool $nullable = false): void
     {
         if ($target->getFields()->has($column)) {
@@ -94,6 +101,7 @@ trait MorphTrait
         $table = $registry->getTableSchema($source);
 
         if ($this->options->get(self::INDEX_CREATE)) {
+            /** @psalm-suppress NamedArgumentNotAllowed */
             $index = array_merge(...array_map(
                 static function (FieldMap $map): array {
                     return $map->getColumnNames();

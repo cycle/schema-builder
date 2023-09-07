@@ -14,10 +14,24 @@ final class Field
 {
     private OptionMap $options;
     private OptionMap $attributes;
+
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $column = null;
+
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $type = null;
+
     private bool $primary = false;
+
+    /**
+     * @var callable-array|string|null
+     */
     private array|string|null $typecast = null;
+
     private bool $referenced = false;
     private ?string $entityClass = null;
 
@@ -43,15 +57,21 @@ final class Field
         return $this->attributes;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getType(): string
     {
-        if (empty($this->column)) {
+        if (empty($this->type)) {
             throw new FieldException('Field type must be set');
         }
 
         return $this->type;
     }
 
+    /**
+     * @param non-empty-string $type
+     */
     public function setType(string $type): self
     {
         $this->type = $type;
@@ -71,6 +91,9 @@ final class Field
         return $this->primary || in_array($this->type, ['primary', 'bigPrimary']);
     }
 
+    /**
+     * @param non-empty-string $column
+     */
     public function setColumn(string $column): self
     {
         $this->column = $column;
@@ -80,6 +103,8 @@ final class Field
 
     /**
      * @throws FieldException
+     *
+     * @return non-empty-string
      */
     public function getColumn(): string
     {
@@ -90,6 +115,9 @@ final class Field
         return $this->column;
     }
 
+    /**
+     * @param callable-array|string|null $typecast
+     */
     public function setTypecast(array|string|null $typecast): self
     {
         $this->typecast = $typecast;
@@ -102,6 +130,9 @@ final class Field
         return $this->typecast !== null;
     }
 
+    /**
+     * @return callable-array|string|null
+     */
     public function getTypecast(): array|string|null
     {
         return $this->typecast;

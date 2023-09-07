@@ -104,10 +104,13 @@ final class GenerateRelations implements GeneratorInterface
      */
     protected function register(Registry $registry, Entity $entity): void
     {
+        $role = $entity->getRole();
+        \assert($role !== null);
+
         foreach ($entity->getRelations() as $name => $r) {
             $schema = $this->initRelation($r->getType())->withContext(
                 $name,
-                $entity->getRole(),
+                $role,
                 $r->getTarget(),
                 $this->options->withOptions($r->getOptions())
             );
@@ -117,7 +120,7 @@ final class GenerateRelations implements GeneratorInterface
                 $schema->compute($registry);
             } catch (RelationException $e) {
                 throw new SchemaException(
-                    "Unable to compute relation `{$entity->getRole()}`.`{$name}`",
+                    "Unable to compute relation `{$role}`.`{$name}`",
                     $e->getCode(),
                     $e
                 );
@@ -138,6 +141,10 @@ final class GenerateRelations implements GeneratorInterface
                 continue;
             }
 
+            $inverseName = $r->getInverseName();
+            $inverseType = $r->getInverseType();
+            \assert(!empty($inverseName) && !empty($inverseType));
+
             $schema = $registry->getRelation($entity, $name);
             if (!$schema instanceof InversableInterface) {
                 throw new SchemaException('Unable to inverse relation of type ' . get_class($schema));
@@ -146,12 +153,12 @@ final class GenerateRelations implements GeneratorInterface
             foreach ($schema->inverseTargets($registry) as $target) {
                 try {
                     $inversed = $schema->inverseRelation(
-                        $this->initRelation($r->getInverseType()),
-                        $r->getInverseName(),
+                        $this->initRelation($inverseType),
+                        $inverseName,
                         $r->getInverseLoad()
                     );
 
-                    $registry->registerRelation($target, $r->getInverseName(), $inversed);
+                    $registry->registerRelation($target, $inverseName, $inversed);
                 } catch (RelationException $e) {
                     throw new SchemaException(
                         "Unable to inverse relation `{$entity->getRole()}`.`{$name}`",

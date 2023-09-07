@@ -57,7 +57,7 @@ final class ResolveInterfaces implements GeneratorInterface
      * @param Registry $registry
      * @param string   $target
      *
-     * @return string
+     * @return non-empty-string
      */
     protected function resolve(Registry $registry, string $target): string
     {

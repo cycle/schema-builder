@@ -12,6 +12,9 @@ use Cycle\Database\Exception\DBALException;
 use Cycle\Database\Schema\AbstractTable;
 use Traversable;
 
+/**
+ * @implements \IteratorAggregate<Entity>
+ */
 final class Registry implements \IteratorAggregate
 {
     /** @var Entity[] */
@@ -82,9 +85,6 @@ final class Registry implements \IteratorAggregate
         throw new RegistryException("Undefined entity `{$role}`");
     }
 
-    /**
-     * @return Entity[]|Traversable
-     */
     public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->entities);
@@ -133,6 +133,8 @@ final class Registry implements \IteratorAggregate
     /**
      * Associate entity with table.
      *
+     * @param non-empty-string $table
+     *
      * @throws RegistryException
      * @throws DBALException
      */
@@ -160,7 +162,11 @@ final class Registry implements \IteratorAggregate
         }
 
         if (null === $schema) {
-            $schema = $this->dbal->database($database)->table($table)->getSchema();
+            $dbTable = $this->dbal->database($database)->table($table);
+            if (!\method_exists($dbTable, 'getSchema')) {
+                throw new RegistryException('Unable to retrieve table schema.');
+            }
+            $schema = $dbTable->getSchema();
         }
 
         $this->tables[$entity] = [
@@ -198,6 +204,8 @@ final class Registry implements \IteratorAggregate
 
     /**
      * @throws RegistryException
+     *
+     * @return non-empty-string
      */
     public function getTable(Entity $entity): string
     {

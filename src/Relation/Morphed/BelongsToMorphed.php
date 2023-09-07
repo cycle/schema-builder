@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cycle\Schema\Relation\Morphed;
 
 use Cycle\ORM\Relation;
+use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\InversableInterface;
 use Cycle\Schema\Registry;
@@ -101,7 +102,7 @@ final class BelongsToMorphed extends RelationSchema implements InversableInterfa
     /**
      * @param Registry $registry
      *
-     * @return array
+     * @return Entity[]
      */
     public function inverseTargets(Registry $registry): array
     {

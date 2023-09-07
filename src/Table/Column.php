@@ -121,7 +121,7 @@ final class Column
         } catch (\Throwable $e) {
             throw new ColumnException(
                 "Invalid column type definition in '{$column->getTable()}'.'{$column->getName()}'",
-                $e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
