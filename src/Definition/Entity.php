@@ -9,6 +9,7 @@ use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\Select\ScopeInterface;
 use Cycle\ORM\Select\SourceInterface;
 use Cycle\Schema\Definition\Map\FieldMap;
+use Cycle\Schema\Definition\Map\ForeignKeyMap;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Definition\Map\RelationMap;
 use Cycle\Schema\Exception\EntityException;
@@ -78,6 +79,7 @@ final class Entity
     private ?Inheritance $inheritance = null;
     /** @var class-string|null */
     private ?string $stiParent = null;
+    private ForeignKeyMap $foreignKeys;
 
     public function __construct()
     {
@@ -85,6 +87,7 @@ final class Entity
         $this->fields = new FieldMap();
         $this->primaryFields = new FieldMap();
         $this->relations = new RelationMap();
+        $this->foreignKeys = new ForeignKeyMap();
     }
 
     /**
@@ -96,6 +99,7 @@ final class Entity
         $this->fields = clone $this->fields;
         $this->primaryFields = clone $this->primaryFields;
         $this->relations = clone $this->relations;
+        $this->foreignKeys = clone $this->foreignKeys;
     }
 
     public function getOptions(): OptionMap
@@ -241,6 +245,11 @@ final class Entity
         return $this->relations;
     }
 
+    public function getForeignKeys(): ForeignKeyMap
+    {
+        return $this->foreignKeys;
+    }
+
     public function addSchemaModifier(SchemaModifierInterface $modifier): self
     {
         $this->schemaModifiers[] = $modifier;
@@ -282,6 +291,12 @@ final class Entity
         foreach ($entity->getFields() as $name => $field) {
             if (!$this->fields->has($name)) {
                 $this->fields->set($name, $field);
+            }
+        }
+
+        foreach ($entity->getForeignKeys() as $foreignKey) {
+            if (!$this->foreignKeys->has($foreignKey)) {
+                $this->foreignKeys->set($foreignKey);
             }
         }
     }
