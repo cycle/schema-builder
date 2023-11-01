@@ -7,7 +7,7 @@ namespace Cycle\Schema\Tests\Definition;
 use Cycle\Schema\Definition\ForeignKey;
 use PHPUnit\Framework\TestCase;
 
-final class ForeignKeyMapTest extends TestCase
+final class ForeignKeyTest extends TestCase
 {
     public function testTable(): void
     {

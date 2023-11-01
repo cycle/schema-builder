@@ -44,8 +44,8 @@ abstract class ForeignKeysTest extends BaseTest
         $foreignKeys = $registry->getTableSchema($author)->getForeignKeys();
         $expectedFk = array_shift($foreignKeys);
 
-        $this->assertTrue(\str_contains($expectedFk->getTable(), 'authors'));
-        $this->assertTrue(\str_contains($expectedFk->getForeignTable(), 'users'));
+        $this->assertStringContainsString('authors', $expectedFk->getTable());
+        $this->assertStringContainsString('users', $expectedFk->getForeignTable());
         $this->assertSame(['id'], $expectedFk->getColumns());
         $this->assertSame(['id'], $expectedFk->getForeignKeys());
         $this->assertSame('CASCADE', $expectedFk->getDeleteRule());
