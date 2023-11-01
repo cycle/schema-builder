@@ -57,6 +57,9 @@ final class ForeignKeyMap implements \IteratorAggregate, \Countable
         return new \ArrayIterator($this->foreignKeys);
     }
 
+    /**
+     * @return non-empty-string
+     */
     private function generateIdentifier(ForeignKey $foreignKey): string
     {
         return \sprintf(
