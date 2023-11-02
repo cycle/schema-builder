@@ -12,11 +12,6 @@ final class ForeignKey
     private string $target;
 
     /**
-     * @var non-empty-string
-     */
-    private string $table;
-
-    /**
      * @var array<non-empty-string>
      */
     private array $innerColumns;
