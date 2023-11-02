@@ -9,6 +9,11 @@ final class ForeignKey
     /**
      * @var non-empty-string
      */
+    private string $target;
+
+    /**
+     * @var non-empty-string
+     */
     private string $table;
 
     /**
@@ -29,11 +34,11 @@ final class ForeignKey
     private string $action;
 
     /**
-     * @param non-empty-string $table
+     * @param non-empty-string $target
      */
-    public function setTable(string $table): self
+    public function setTarget(string $target): self
     {
-        $this->table = $table;
+        $this->target = $target;
 
         return $this;
     }
@@ -41,9 +46,9 @@ final class ForeignKey
     /**
      * @return non-empty-string
      */
-    public function getTable(): string
+    public function getTarget(): string
     {
-        return $this->table;
+        return $this->target;
     }
 
     /**
@@ -82,6 +87,9 @@ final class ForeignKey
         return $this->outerColumns;
     }
 
+    /**
+     * Create an index on innerKey.
+     */
     public function createIndex(bool $createIndex = true): self
     {
         $this->createIndex = $createIndex;

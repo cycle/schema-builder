@@ -63,7 +63,7 @@ class EntityTest extends TestCase
         $entity = new Entity();
 
         $key = new ForeignKey();
-        $key->setTable('table');
+        $key->setTarget('foo');
         $key->setInnerColumns(['field']);
         $key->setOuterColumns(['field']);
 

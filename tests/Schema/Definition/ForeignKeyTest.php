@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 final class ForeignKeyTest extends TestCase
 {
-    public function testTable(): void
+    public function testTarget(): void
     {
         $key = new ForeignKey();
 
-        $key->setTable('table');
-        $this->assertSame('table', $key->getTable());
+        $key->setTarget('foo');
+        $this->assertSame('foo', $key->getTarget());
     }
 
     public function testInnerColumns(): void

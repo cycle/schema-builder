@@ -64,7 +64,7 @@ final class ForeignKeyMap implements \IteratorAggregate, \Countable
     {
         return \sprintf(
             '%s:%s:%s',
-            $foreignKey->getTable(),
+            $foreignKey->getTarget(),
             \implode(',', $foreignKey->getInnerColumns()),
             \implode(',', $foreignKey->getOuterColumns())
         );

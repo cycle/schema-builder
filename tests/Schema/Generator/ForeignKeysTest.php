@@ -30,7 +30,7 @@ abstract class ForeignKeysTest extends BaseTest
         $this->assertSame([], $registry->getTableSchema($author)->getForeignKeys());
 
         $fk = new ForeignKey();
-        $fk->setTable('users');
+        $fk->setTarget('user');
         $fk->setInnerColumns(['id']);
         $fk->setOuterColumns(['id']);
         $fk->setAction('CASCADE');

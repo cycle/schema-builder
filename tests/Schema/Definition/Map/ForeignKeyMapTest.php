@@ -20,7 +20,7 @@ final class ForeignKeyMapTest extends TestCase
     public function testHas(): void
     {
         $key = new ForeignKey();
-        $key->setTable('table');
+        $key->setTarget('foo');
         $key->setInnerColumns(['field']);
         $key->setOuterColumns(['field']);
 
@@ -35,7 +35,7 @@ final class ForeignKeyMapTest extends TestCase
     public function testSet(): void
     {
         $key = new ForeignKey();
-        $key->setTable('table');
+        $key->setTarget('foo');
         $key->setInnerColumns(['field']);
         $key->setOuterColumns(['field']);
 
@@ -44,13 +44,13 @@ final class ForeignKeyMapTest extends TestCase
         $this->assertFalse($map->has($key));
 
         $map->set($key);
-        $this->assertSame(['table:field:field' => $key], \iterator_to_array($map->getIterator()));
+        $this->assertSame(['foo:field:field' => $key], \iterator_to_array($map->getIterator()));
     }
 
     public function testRemove(): void
     {
         $key = new ForeignKey();
-        $key->setTable('table');
+        $key->setTarget('foo');
         $key->setInnerColumns(['field']);
         $key->setOuterColumns(['field']);
 
@@ -68,7 +68,7 @@ final class ForeignKeyMapTest extends TestCase
     public function testCount(): void
     {
         $key = new ForeignKey();
-        $key->setTable('table');
+        $key->setTarget('foo');
         $key->setInnerColumns(['field']);
         $key->setOuterColumns(['field']);
 
