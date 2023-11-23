@@ -6,6 +6,7 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\ForeignKey;
 use Cycle\Schema\Definition\Inheritance\JoinedTable;
 use Cycle\Schema\Definition\Inheritance\SingleTable;
 use Cycle\Schema\Definition\Relation;
@@ -55,6 +56,22 @@ class EntityTest extends TestCase
         $this->assertTrue($e->getFields()->has('id'));
         $e->getFields()->remove('id');
         $this->assertFalse($e->getFields()->has('id'));
+    }
+
+    public function testForeignKeys(): void
+    {
+        $entity = new Entity();
+
+        $key = new ForeignKey();
+        $key->setTarget('foo');
+        $key->setInnerColumns(['field']);
+        $key->setOuterColumns(['field']);
+
+        $entity->getForeignKeys()->set($key);
+
+        $this->assertTrue($entity->getForeignKeys()->has($key));
+        $entity->getForeignKeys()->remove($key);
+        $this->assertFalse($entity->getForeignKeys()->has($key));
     }
 
     public function testPrimaryFields(): void
