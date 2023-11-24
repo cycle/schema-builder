@@ -37,6 +37,18 @@ class Author implements AuthorInterface, ParentInterface
         return $entity;
     }
 
+    public static function defineWithUser(): Entity
+    {
+        $entity = self::define();
+
+        $entity->getFields()->set(
+            'p_user_id',
+            (new Field())->setType('int(11)')->setColumn('user_id')
+        );
+
+        return $entity;
+    }
+
     public static function defineCompositePK(): Entity
     {
         $entity = self::define();
