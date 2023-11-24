@@ -14,9 +14,11 @@ final class ForeignKeys implements GeneratorInterface
         foreach ($registry as $entity) {
             foreach ($entity->getForeignKeys() as $fk) {
                 $target = $registry->getEntity($fk->getTarget());
+                $targetSchema = $registry->getTableSchema($target);
 
-                if (!$registry->getTableSchema($target)->hasIndex($fk->getOuterColumns())) {
-                    $registry->getTableSchema($target)->index($fk->getOuterColumns())->unique();
+                $pkExists = \array_diff($fk->getOuterColumns(), $targetSchema->getPrimaryKeys()) === [];
+                if (!$pkExists && !$targetSchema->hasIndex($fk->getOuterColumns())) {
+                    $targetSchema->index($fk->getOuterColumns())->unique();
                 }
 
                 $registry->getTableSchema($entity)
