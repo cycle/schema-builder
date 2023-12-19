@@ -113,7 +113,7 @@ final class Column
 
         try {
             // bypassing call to AbstractColumn->type method (or specialized column method)
-            if (\method_exists($column, $this->type)) {
+            if (\method_exists($column, $this->type) && $this->typeOptions !== []) {
                 call_user_func_array([$column, $this->type], $this->typeOptions);
             } else {
                 call_user_func_array([$column, 'type'], \array_merge([$this->type], $this->typeOptions));
