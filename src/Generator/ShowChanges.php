@@ -26,7 +26,7 @@ final class ShowChanges implements GeneratorInterface
             if ($registry->hasTable($e)) {
                 $table = $registry->getTableSchema($e);
 
-                if ($this->tableHasChanges($table)) {
+                if ($this->hasTableChanges($table)) {
                     $key = $registry->getDatabase($e) . ':' . $registry->getTable($e);
                     $this->changes[$key] = [
                         'database' => $registry->getDatabase($e),
@@ -58,14 +58,7 @@ final class ShowChanges implements GeneratorInterface
         return $this->changes !== [];
     }
 
-    public function tableHasChanges(AbstractTable $table): bool
-    {
-        return $table->getComparator()->hasChanges()
-            || !$table->exists()
-            || $table->getStatus() === AbstractTable::STATUS_DECLARED_DROPPED;
-    }
-
-    protected function describeChanges(AbstractTable $table): void
+    private function describeChanges(AbstractTable $table): void
     {
         if (!$table->exists()) {
             $this->output->writeln('    - create table');
@@ -97,7 +90,7 @@ final class ShowChanges implements GeneratorInterface
         $this->describeFKs($cmp);
     }
 
-    protected function describeColumns(ComparatorInterface $cmp): void
+    private function describeColumns(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedColumns() as $column) {
             $this->output->writeln("    - add column <fg=yellow>[{$column->getName()}]</fg=yellow>");
@@ -113,7 +106,7 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    protected function describeIndexes(ComparatorInterface $cmp): void
+    private function describeIndexes(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedIndexes() as $index) {
             $index = \implode(', ', $index->getColumns());
@@ -132,7 +125,7 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    protected function describeFKs(ComparatorInterface $cmp): void
+    private function describeFKs(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedForeignKeys() as $fk) {
             $fkColumns = \implode(', ', $fk->getColumns());
@@ -151,7 +144,7 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    protected function numChanges(AbstractTable $table): int
+    private function numChanges(AbstractTable $table): int
     {
         $cmp = $table->getComparator();
 
@@ -164,5 +157,12 @@ final class ShowChanges implements GeneratorInterface
             + \count($cmp->addedForeignKeys())
             + \count($cmp->droppedForeignKeys())
             + \count($cmp->alteredForeignKeys());
+    }
+
+    private function hasTableChanges(AbstractTable $table): bool
+    {
+        return $table->getComparator()->hasChanges()
+            || !$table->exists()
+            || $table->getStatus() === AbstractTable::STATUS_DECLARED_DROPPED;
     }
 }
