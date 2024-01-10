@@ -10,7 +10,7 @@ use Cycle\Schema\Registry;
 use Cycle\Database\Schema\AbstractTable;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ShowChanges implements GeneratorInterface
+final class PrintChanges implements GeneratorInterface
 {
     private array $changes = [];
 

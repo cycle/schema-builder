@@ -9,17 +9,17 @@ use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Tests\BaseTest;
-use Cycle\Schema\Generator\ShowChanges;
+use Cycle\Schema\Generator\PrintChanges;
 use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\Fixtures\User;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-abstract class ShowChangesTest extends BaseTest
+abstract class PrintChangesTest extends BaseTest
 {
     private BufferedOutput $output;
     private Entity $user;
     private Registry $registry;
-    private ShowChanges $generator;
+    private PrintChanges $generator;
     private Compiler $compiler;
 
     public function setUp(): void
@@ -33,7 +33,7 @@ abstract class ShowChangesTest extends BaseTest
         $this->registry->register($this->user);
         $this->registry->linkTable($this->user, 'default', 'users');
 
-        $this->generator = new ShowChanges($this->output);
+        $this->generator = new PrintChanges($this->output);
 
         $this->compiler = new Compiler();
     }

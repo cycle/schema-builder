@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Driver\SQLServer;
 
-use Cycle\Schema\Tests\Generator\ShowChangesTest as BaseTest;
+use Cycle\Schema\Tests\Generator\PrintChangesTest as BaseTest;
 
-final class ShowChangesTest extends BaseTest
+final class PrintChangesTest extends BaseTest
 {
     public const DRIVER = 'sqlserver';
 }
