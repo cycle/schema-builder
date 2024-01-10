@@ -50,11 +50,32 @@ abstract class PrintChangesTest extends BaseTest
 
     public function testRunCreateTable(): void
     {
+        $this->compiler->compile($this->registry, [new RenderTables()]);
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
         $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users    - create table', $content);
+        $this->assertStringContainsString('default.users: 5 change(s) detected', $content);
+    }
+
+    public function testRunCreateTableVerbose(): void
+    {
+        $this->compiler->compile($this->registry, [new RenderTables()]);
+
+        $this->output->setVerbosity(BufferedOutput::VERBOSITY_VERBOSE);
+        $this->generator->run($this->registry);
+
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users', $content);
+        $this->assertStringContainsString('- create table', $content);
+        $this->assertStringContainsString('- add column [id]', $content);
+        $this->assertStringContainsString('- add column [user_name]', $content);
+        $this->assertStringContainsString('- add column [active]', $content);
+        $this->assertStringContainsString('- add column [balance]', $content);
+        $this->assertStringContainsString('- add column [created_at]', $content);
+
+        $this->assertStringNotContainsString('default.users: 5 change(s) detected', $content);
     }
 
     public function testRunDropTable(): void

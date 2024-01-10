@@ -60,11 +60,6 @@ final class PrintChanges implements GeneratorInterface
 
     private function describeChanges(AbstractTable $table): void
     {
-        if (!$table->exists()) {
-            $this->output->writeln('    - create table');
-            return;
-        }
-
         if ($table->getStatus() === AbstractTable::STATUS_DECLARED_DROPPED) {
             $this->output->writeln('    - drop table');
             return;
@@ -82,6 +77,10 @@ final class PrintChanges implements GeneratorInterface
         }
 
         $this->output->write("\n");
+
+        if (!$table->exists()) {
+            $this->output->writeln('    - create table');
+        }
 
         $cmp = $table->getComparator();
 
