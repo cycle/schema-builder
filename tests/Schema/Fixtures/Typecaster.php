@@ -10,6 +10,9 @@ class Typecaster implements TypecastInterface
 {
     public function cast(array $values): array
     {
-        // TODO: Implement cast() method.
+    }
+
+    public function setRules(array $rules): array
+    {
     }
 }

@@ -14,7 +14,8 @@
   "require-dev": {
     "phpunit/phpunit": "^9.5",
     "spiral/tokenizer": "^2.8",
-    "vimeo/psalm": "^5.12"
+    "vimeo/psalm": "^5.12",
+    "symfony/console": "^6.0 || ^7.0"
   },
   "autoload": {
     "psr-4": {
