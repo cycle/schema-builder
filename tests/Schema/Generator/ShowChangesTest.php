@@ -11,12 +11,12 @@ use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Generator\ShowChanges;
 use Cycle\Schema\Registry;
-use Cycle\Schema\Tests\Fixtures\FakeOutput;
 use Cycle\Schema\Tests\Fixtures\User;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 abstract class ShowChangesTest extends BaseTest
 {
-    private FakeOutput $output;
+    private BufferedOutput $output;
     private Entity $user;
     private Registry $registry;
     private ShowChanges $generator;
@@ -26,7 +26,7 @@ abstract class ShowChangesTest extends BaseTest
     {
         parent::setUp();
 
-        $this->output = new FakeOutput();
+        $this->output = new BufferedOutput();
         $this->user = User::define();
 
         $this->registry = new Registry($this->dbal);
@@ -45,15 +45,16 @@ abstract class ShowChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('No database changes has been detected', $this->output->getBuffer());
+        $this->assertStringContainsString('No database changes has been detected', $this->output->fetch());
     }
 
     public function testRunCreateTable(): void
     {
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users    - create table', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users    - create table', $content);
     }
 
     public function testRunDropTable(): void
@@ -65,8 +66,9 @@ abstract class ShowChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users    - drop table', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users    - drop table', $content);
     }
 
     public function testRunChangedColumns(): void
@@ -80,12 +82,13 @@ abstract class ShowChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
 
-        $this->assertStringNotContainsString('- add column [new_column]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- drop column [created_at]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- alter column [user_name]', $this->output->getBuffer());
+        $this->assertStringNotContainsString('- add column [new_column]', $content);
+        $this->assertStringNotContainsString('- drop column [created_at]', $content);
+        $this->assertStringNotContainsString('- alter column [user_name]', $content);
     }
 
     public function testRunChangedColumnsVerbose(): void
@@ -97,16 +100,17 @@ abstract class ShowChangesTest extends BaseTest
         $this->registry->getTableSchema($this->user)->column('user_name')->integer();
         $this->registry->getTableSchema($this->user)->dropColumn('created_at');
 
-        $this->output->setVerbosity(FakeOutput::VERBOSITY_VERBOSE);
+        $this->output->setVerbosity(BufferedOutput::VERBOSITY_VERBOSE);
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users', $this->output->getBuffer());
-        $this->assertStringContainsString('- add column [new_column]', $this->output->getBuffer());
-        $this->assertStringContainsString('- drop column [created_at]', $this->output->getBuffer());
-        $this->assertStringContainsString('- alter column [user_name]', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users', $content);
+        $this->assertStringContainsString('- add column [new_column]', $content);
+        $this->assertStringContainsString('- drop column [created_at]', $content);
+        $this->assertStringContainsString('- alter column [user_name]', $content);
 
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
     }
 
     public function testRunChangedIndexes(): void
@@ -123,12 +127,13 @@ abstract class ShowChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
 
-        $this->assertStringNotContainsString('- add index on [created_at]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- drop index on [balance]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- alter index on [user_name]', $this->output->getBuffer());
+        $this->assertStringNotContainsString('- add index on [created_at]', $content);
+        $this->assertStringNotContainsString('- drop index on [balance]', $content);
+        $this->assertStringNotContainsString('- alter index on [user_name]', $content);
     }
 
     public function testRunChangedIndexesVerbose(): void
@@ -143,16 +148,17 @@ abstract class ShowChangesTest extends BaseTest
         $this->registry->getTableSchema($this->user)->dropIndex(['balance']);
         $this->registry->getTableSchema($this->user)->index(['created_at']);
 
-        $this->output->setVerbosity(FakeOutput::VERBOSITY_VERBOSE);
+        $this->output->setVerbosity(BufferedOutput::VERBOSITY_VERBOSE);
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users', $this->output->getBuffer());
-        $this->assertStringContainsString('- add index on [created_at]', $this->output->getBuffer());
-        $this->assertStringContainsString('- drop index on [balance]', $this->output->getBuffer());
-        $this->assertStringContainsString('- alter index on [user_name]', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users', $content);
+        $this->assertStringContainsString('- add index on [created_at]', $content);
+        $this->assertStringContainsString('- drop index on [balance]', $content);
+        $this->assertStringContainsString('- alter index on [user_name]', $content);
 
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
     }
 
     public function testRunChangedFk(): void
@@ -178,12 +184,13 @@ abstract class ShowChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
 
-        $this->assertStringNotContainsString('- add foreign key on [some_id]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- drop foreign key on [partner_id]', $this->output->getBuffer());
-        $this->assertStringNotContainsString('- alter foreign key on [friend_id]', $this->output->getBuffer());
+        $this->assertStringNotContainsString('- add foreign key on [some_id]', $content);
+        $this->assertStringNotContainsString('- drop foreign key on [partner_id]', $content);
+        $this->assertStringNotContainsString('- alter foreign key on [friend_id]', $content);
     }
 
     public function testRunChangedFkVerbose(): void
@@ -207,15 +214,16 @@ abstract class ShowChangesTest extends BaseTest
         $this->registry->getTableSchema($this->user)->dropForeignKey(['partner_id']);
         $this->registry->getTableSchema($this->user)->foreignKey(['some_id'], false)->references('users', ['id']);
 
-        $this->output->setVerbosity(FakeOutput::VERBOSITY_VERBOSE);
+        $this->output->setVerbosity(BufferedOutput::VERBOSITY_VERBOSE);
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('Schema changes:', $this->output->getBuffer());
-        $this->assertStringContainsString('default.users', $this->output->getBuffer());
-        $this->assertStringContainsString('- add foreign key on [some_id]', $this->output->getBuffer());
-        $this->assertStringContainsString('- drop foreign key on [partner_id]', $this->output->getBuffer());
-        $this->assertStringContainsString('- alter foreign key on [friend_id]', $this->output->getBuffer());
+        $content = $this->output->fetch();
+        $this->assertStringContainsString('Schema changes:', $content);
+        $this->assertStringContainsString('default.users', $content);
+        $this->assertStringContainsString('- add foreign key on [some_id]', $content);
+        $this->assertStringContainsString('- drop foreign key on [partner_id]', $content);
+        $this->assertStringContainsString('- alter foreign key on [friend_id]', $content);
 
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $this->output->getBuffer());
+        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
     }
 }
