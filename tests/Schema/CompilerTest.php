@@ -92,17 +92,23 @@ class CompilerTest extends TestCase
         $entity->setRole('author')->setClass(Author::class);
         $entity->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
         $entity->getFields()->set('name', (new Field())->setType('string')->setColumn('name'));
-        $entity->getFields()->set('createdAt', (new Field())
+        $entity->getFields()->set(
+            'createdAt',
+            (new Field())
             ->setType('datetime')
             ->setColumn('created_at')
             ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT)
         );
-        $entity->getFields()->set('updatedAt', (new Field())
+        $entity->getFields()->set(
+            'updatedAt',
+            (new Field())
             ->setType('datetime')
             ->setColumn('created_at')
             ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT | SchemaInterface::GENERATED_PHP_UPDATE)
         );
-        $entity->getFields()->set('sequence', (new Field())
+        $entity->getFields()->set(
+            'sequence',
+            (new Field())
             ->setType('serial')
             ->setColumn('some_sequence')
             ->setGenerated(SchemaInterface::GENERATED_DB)
