@@ -33,9 +33,6 @@ final class Field
      */
     private array|string|null $typecast = null;
 
-    /**
-     * @var positive-int|null
-     */
     private ?int $generated = null;
 
     private bool $referenced = false;
@@ -145,7 +142,7 @@ final class Field
     }
 
     /**
-     * @param positive-int|null $type. Generating type {@see SchemaInterface::GENERATED_*} constants.
+     * @param int|null $type Generating type {@see SchemaInterface::GENERATED_*} constants.
      */
     public function setGenerated(int|null $type): self
     {
@@ -154,9 +151,6 @@ final class Field
         return $this;
     }
 
-    /**
-     * @return positive-int|null
-     */
     public function getGenerated(): ?int
     {
         return $this->generated;
