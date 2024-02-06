@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
+use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Exception\FieldException;
 
@@ -31,6 +32,11 @@ final class Field
      * @var callable-array|string|null
      */
     private array|string|null $typecast = null;
+
+    /**
+     * @var positive-int|null
+     */
+    private ?int $generated = null;
 
     private bool $referenced = false;
     private ?string $entityClass = null;
@@ -136,6 +142,24 @@ final class Field
     public function getTypecast(): array|string|null
     {
         return $this->typecast;
+    }
+
+    /**
+     * @param positive-int|null $type. Generating type {@see SchemaInterface::GENERATED_*} constants.
+     */
+    public function setGenerated(int|null $type): self
+    {
+        $this->generated = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return positive-int|null
+     */
+    public function getGenerated(): ?int
+    {
+        return $this->generated;
     }
 
     public function setReferenced(bool $indexed): self

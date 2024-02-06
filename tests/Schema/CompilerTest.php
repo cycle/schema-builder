@@ -86,6 +86,40 @@ class CompilerTest extends TestCase
         $this->assertSame($expected, $schema['author'][SchemaInterface::TYPECAST_HANDLER]);
     }
 
+    public function testRenderGeneratedFields(): void
+    {
+        $entity = new Entity();
+        $entity->setRole('author')->setClass(Author::class);
+        $entity->getFields()->set('id', (new Field())->setType('primary')->setColumn('id'));
+        $entity->getFields()->set('name', (new Field())->setType('string')->setColumn('name'));
+        $entity->getFields()->set('createdAt', (new Field())
+            ->setType('datetime')
+            ->setColumn('created_at')
+            ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT)
+        );
+        $entity->getFields()->set('updatedAt', (new Field())
+            ->setType('datetime')
+            ->setColumn('created_at')
+            ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT | SchemaInterface::GENERATED_PHP_UPDATE)
+        );
+        $entity->getFields()->set('sequence', (new Field())
+            ->setType('serial')
+            ->setColumn('some_sequence')
+            ->setGenerated(SchemaInterface::GENERATED_DB)
+        );
+
+        $r = new Registry($this->createMock(DatabaseProviderInterface::class));
+        $r->register($entity);
+
+        $schema = (new Compiler())->compile($r);
+
+        $this->assertSame([
+            'createdAt' => SchemaInterface::GENERATED_PHP_INSERT,
+            'updatedAt' => SchemaInterface::GENERATED_PHP_INSERT | SchemaInterface::GENERATED_PHP_UPDATE,
+            'sequence' => SchemaInterface::GENERATED_DB,
+        ], $schema['author'][SchemaInterface::GENERATED_FIELDS]);
+    }
+
     public static function renderTypecastDataProvider(): \Traversable
     {
         yield [null, []];

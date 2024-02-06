@@ -7,7 +7,7 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.0",
-    "cycle/orm": "^2.0",
+    "cycle/orm": "^2.7",
     "cycle/database": "^2.7.1",
     "yiisoft/friendly-exception": "^1.1"
   },

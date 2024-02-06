@@ -67,6 +67,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
                 Schema::TYPECAST_HANDLER => [Typecaster::class, 'default_typecaster'],
+                Schema::GENERATED_FIELDS => [],
             ],
         ], $schema);
     }
@@ -103,6 +104,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
                 Schema::TYPECAST_HANDLER => [Typecaster::class],
+                Schema::GENERATED_FIELDS => [],
             ],
         ], $schema);
     }
@@ -171,6 +173,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST_HANDLER => [
                     Typecaster::class,
                 ],
+                Schema::GENERATED_FIELDS => [],
             ],
         ], $c->getSchema());
     }
@@ -203,6 +206,7 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST => [],
                 Schema::SCHEMA => [],
                 Schema::TYPECAST_HANDLER => null,
+                Schema::GENERATED_FIELDS => [],
             ],
         ], $c->getSchema());
     }
