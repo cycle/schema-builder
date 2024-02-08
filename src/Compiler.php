@@ -84,6 +84,7 @@ final class Compiler
             Schema::FIND_BY_KEYS => $this->renderReferences($entity),
             Schema::TYPECAST => $this->renderTypecast($entity),
             Schema::RELATIONS => [],
+            Schema::GENERATED_FIELDS => $this->renderGeneratedFields($entity),
         ];
 
         // For table inheritance we need to fill specific schema segments
@@ -182,6 +183,18 @@ final class Compiler
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
             $schema[$name] = $field->getColumn();
+        }
+
+        return $schema;
+    }
+
+    private function renderGeneratedFields(Entity $entity): array
+    {
+        $schema = [];
+        foreach ($entity->getFields() as $name => $field) {
+            if ($field->getGenerated() !== null) {
+                $schema[$name] = $field->getGenerated();
+            }
         }
 
         return $schema;
