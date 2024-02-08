@@ -6,6 +6,7 @@ namespace Cycle\Schema\Tests;
 
 use Cycle\Database\DatabaseProviderInterface;
 use Cycle\ORM\Parser\Typecast;
+use Cycle\ORM\Schema\GeneratedField;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Entity;
@@ -18,7 +19,7 @@ use Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier;
 use Cycle\Schema\Tests\Fixtures\Typecaster;
 use PHPUnit\Framework\TestCase;
 
-class CompilerTest extends TestCase
+final class CompilerTest extends TestCase
 {
     public function testWrongGeneratorShouldThrowAnException(): void
     {
@@ -97,21 +98,21 @@ class CompilerTest extends TestCase
             (new Field())
             ->setType('datetime')
             ->setColumn('created_at')
-            ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT)
+            ->setGenerated(GeneratedField::BEFORE_INSERT)
         );
         $entity->getFields()->set(
             'updatedAt',
             (new Field())
             ->setType('datetime')
             ->setColumn('created_at')
-            ->setGenerated(SchemaInterface::GENERATED_PHP_INSERT | SchemaInterface::GENERATED_PHP_UPDATE)
+            ->setGenerated(GeneratedField::BEFORE_INSERT | GeneratedField::BEFORE_UPDATE)
         );
         $entity->getFields()->set(
             'sequence',
             (new Field())
             ->setType('serial')
             ->setColumn('some_sequence')
-            ->setGenerated(SchemaInterface::GENERATED_DB)
+            ->setGenerated(GeneratedField::ON_INSERT)
         );
 
         $r = new Registry($this->createMock(DatabaseProviderInterface::class));
@@ -120,9 +121,9 @@ class CompilerTest extends TestCase
         $schema = (new Compiler())->compile($r);
 
         $this->assertSame([
-            'createdAt' => SchemaInterface::GENERATED_PHP_INSERT,
-            'updatedAt' => SchemaInterface::GENERATED_PHP_INSERT | SchemaInterface::GENERATED_PHP_UPDATE,
-            'sequence' => SchemaInterface::GENERATED_DB,
+            'createdAt' => GeneratedField::BEFORE_INSERT,
+            'updatedAt' => GeneratedField::BEFORE_INSERT | GeneratedField::BEFORE_UPDATE,
+            'sequence' => GeneratedField::ON_INSERT,
         ], $schema['author'][SchemaInterface::GENERATED_FIELDS]);
     }
 

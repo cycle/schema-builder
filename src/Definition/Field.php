@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Definition;
 
-use Cycle\ORM\SchemaInterface;
+use Cycle\ORM\Schema\GeneratedField;
 use Cycle\Schema\Definition\Map\OptionMap;
 use Cycle\Schema\Exception\FieldException;
 
@@ -142,7 +142,7 @@ final class Field
     }
 
     /**
-     * @param int|null $type Generating type {@see SchemaInterface::GENERATED_*} constants.
+     * @param int|null $type Generating type {@see GeneratedField*} constants.
      */
     public function setGenerated(int|null $type): self
     {
