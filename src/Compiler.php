@@ -123,6 +123,7 @@ final class Compiler
 
         // Apply modifiers
         foreach ($entity->getSchemaModifiers() as $modifier) {
+            \assert($modifier instanceof SchemaModifierInterface);
             try {
                 $modifier->modifySchema($schema);
             } catch (Throwable $e) {

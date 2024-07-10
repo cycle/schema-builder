@@ -252,7 +252,7 @@ final class Entity
 
     public function addSchemaModifier(SchemaModifierInterface $modifier): self
     {
-        $this->schemaModifiers[] = $modifier;
+        $this->schemaModifiers[] = $modifier->withRole($this->role);
         return $this;
     }
 
@@ -261,7 +261,6 @@ final class Entity
      */
     public function getSchemaModifiers(): \Traversable
     {
-        // yield from $this->getRelations();
         yield from $this->schemaModifiers;
     }
 

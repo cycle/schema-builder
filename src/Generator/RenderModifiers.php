@@ -28,11 +28,11 @@ final class RenderModifiers implements GeneratorInterface
     protected function register(Registry $registry, Entity $entity): void
     {
         $role = $entity->getRole();
-        assert($role !== null);
+
         foreach ($entity->getSchemaModifiers() as $modifier) {
             \assert($modifier instanceof SchemaModifierInterface);
             try {
-                $modifier->withRole($role)->render($registry);
+                $modifier->render($registry);
             } catch (SchemaModifierException $e) {
                 throw new SchemaException(
                     sprintf('Unable to render modifier `%s` for the `%s` role.', $modifier::class, $role),
