@@ -321,7 +321,7 @@ class EntityTest extends TestCase
         $e = new Entity();
 
         $this->expectException(EntityException::class);
-        $this->expectExceptionMessage("Entity must have a `role` to be able to add a modifier.");
+        $this->expectExceptionMessage('Entity must have a `role` to be able to add a modifier.');
 
         $e->addSchemaModifier($modifier);
     }
