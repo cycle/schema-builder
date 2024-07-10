@@ -28,7 +28,7 @@ final class RenderModifiers implements GeneratorInterface
     protected function register(Registry $registry, Entity $entity): void
     {
         $role = $entity->getRole();
-
+        assert($role !== null);
         foreach ($entity->getSchemaModifiers() as $modifier) {
             \assert($modifier instanceof SchemaModifierInterface);
             try {
