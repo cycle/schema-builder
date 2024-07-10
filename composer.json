@@ -22,6 +22,11 @@
       "Cycle\\Schema\\": "src/"
     }
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.9.x-dev"
+    }
+  },
   "autoload-dev": {
     "psr-4": {
       "Cycle\\Schema\\Tests\\": "tests/Schema/"
