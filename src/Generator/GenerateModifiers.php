@@ -32,7 +32,7 @@ final class GenerateModifiers implements GeneratorInterface
         foreach ($entity->getSchemaModifiers() as $modifier) {
             \assert($modifier instanceof SchemaModifierInterface);
             try {
-                $modifier->withRole($role)->compute($registry);
+                $modifier->compute($registry);
             } catch (SchemaModifierException $e) {
                 throw new SchemaException(
                     sprintf('Unable to compute modifier `%s` for the `%s` role.', $modifier::class, $role),

@@ -32,7 +32,7 @@ final class RenderModifiers implements GeneratorInterface
         foreach ($entity->getSchemaModifiers() as $modifier) {
             \assert($modifier instanceof SchemaModifierInterface);
             try {
-                $modifier->withRole($role)->render($registry);
+                $modifier->render($registry);
             } catch (SchemaModifierException $e) {
                 throw new SchemaException(
                     sprintf('Unable to render modifier `%s` for the `%s` role.', $modifier::class, $role),

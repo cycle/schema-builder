@@ -98,7 +98,6 @@ class GenerateModifiersTest extends TestCase
     public function brokenMethodsDataProvider()
     {
         return [
-            'withRole' => ['withRole'],
             'compute' => ['compute'],
         ];
     }
