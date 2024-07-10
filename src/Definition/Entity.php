@@ -252,7 +252,10 @@ final class Entity
 
     public function addSchemaModifier(SchemaModifierInterface $modifier): self
     {
-        $this->schemaModifiers[] = $modifier->withRole($this->role);
+        $this->schemaModifiers[] = $this->role === null
+            ? $modifier
+            : $modifier->withRole($this->role);
+
         return $this;
     }
 
