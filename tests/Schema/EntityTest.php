@@ -305,24 +305,25 @@ class EntityTest extends TestCase
 
     public function testSchemaModifierWithRole(): void
     {
-        $mock = $this->createMock(SchemaModifierInterface::class);
-        $mock->expects($this->once())->method('withRole')->with('my-entity')->willReturnSelf();
+        $modifier = $this->createMock(SchemaModifierInterface::class);
+        $modifier->expects($this->once())->method('withRole')->with('my-entity')->willReturnSelf();
 
         $e = new Entity();
         $e->setRole('my-entity');
-        $e->addSchemaModifier($modifier = $mock);
+        $e->addSchemaModifier($modifier);
 
         $this->assertSame([$modifier], iterator_to_array($e->getSchemaModifiers()));
     }
 
     public function testSchemaModifier(): void
     {
-        $mock = $this->createMock(SchemaModifierInterface::class);
-
+        $modifier = $this->createMock(SchemaModifierInterface::class);
         $e = new Entity();
-        $e->addSchemaModifier($modifier = $mock);
 
-        $this->assertSame([$modifier], iterator_to_array($e->getSchemaModifiers()));
+        $this->expectException(EntityException::class);
+        $this->expectExceptionMessage("Entity must have a `role` to be able to add a modifier.");
+
+        $e->addSchemaModifier($modifier);
     }
 
     public function testMergeTwoEntities(): void

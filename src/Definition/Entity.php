@@ -252,9 +252,9 @@ final class Entity
 
     public function addSchemaModifier(SchemaModifierInterface $modifier): self
     {
-        $this->schemaModifiers[] = $this->role === null
-            ? $modifier
-            : $modifier->withRole($this->role);
+        $this->role ?? throw new EntityException("Entity must have a `role` to be able to add a modifier.");
+
+        $this->schemaModifiers[] = $modifier->withRole($this->role);
 
         return $this;
     }
