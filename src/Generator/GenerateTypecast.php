@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\Database\Schema\AbstractColumn;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Database\Schema\AbstractColumn;
 
 /**
  * Must be run after RenderTable.
@@ -22,10 +22,57 @@ final class GenerateTypecast implements GeneratorInterface
     public function run(Registry $registry): Registry
     {
         foreach ($registry as $entity) {
-            $this->compute($registry, $entity);
+            $this->computeByClassPropertyType($entity);
+            $this->computeByFieldType($entity);
+            $this->computeByColumn($registry, $entity);
         }
 
         return $registry;
+    }
+
+    private function computeByClassPropertyType(Entity $entity): void
+    {
+        $refClass = new \ReflectionClass($entity->getClass());
+        foreach ($entity->getFields() as $field) {
+            if ($field->hasTypecast()) {
+                continue;
+            }
+            if (!$refClass->hasProperty($field->getColumn())) {
+                continue;
+            }
+
+            $refProp = $refClass->getProperty($field->getColumn());
+            if (!$refProp->hasType() || !$refProp->getType()->isBuiltin()) {
+                continue;
+            }
+
+            $field->setTypecast(
+                match ($refProp->getType()->getName()) {
+                    'bool' => 'bool',
+                    'int' => 'int',
+                    'string' => 'string',
+                    default => null
+                }
+            );
+        }
+    }
+
+    private function computeByFieldType(Entity $entity): void
+    {
+        foreach ($entity->getFields() as $field) {
+            if ($field->hasTypecast()) {
+                continue;
+            }
+
+            $field->setTypecast(
+                match ($field->getType()) {
+                    'bool', 'boolean' => 'bool',
+                    'int', 'integer' => 'int',
+                    'string' => 'string',
+                    default => null
+                }
+            );
+        }
     }
 
     /**
@@ -34,7 +81,7 @@ final class GenerateTypecast implements GeneratorInterface
      * @param Registry $registry
      * @param Entity   $entity
      */
-    protected function compute(Registry $registry, Entity $entity): void
+    protected function computeByColumn(Registry $registry, Entity $entity): void
     {
         if (!$registry->hasTable($entity)) {
             return;
