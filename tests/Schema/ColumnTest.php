@@ -354,6 +354,39 @@ abstract class ColumnTest extends BaseTest
     }
 
     /**
+     * @dataProvider dataIsPrimary
+     */
+    public function testIsPrimary(string $type, bool $expected = true): void
+    {
+        $field = new Field();
+        $field->setType($type);
+        $field->setColumn('id');
+
+        $column = Column::parse($field);
+        $this->assertSame($expected, $column->isPrimary());
+    }
+
+    public function dataIsPrimary(): iterable
+    {
+        yield 'primary' => [
+            'primary',
+            true,
+        ];
+        yield 'smallPrimary' => [
+            'smallPrimary',
+            true,
+        ];
+        yield 'bigPrimary' => [
+            'bigPrimary',
+            true,
+        ];
+        yield 'foo' => [
+            'foo',
+            false,
+        ];
+    }
+
+    /**
      * @return AbstractTable
      */
     protected function getStub(): AbstractTable

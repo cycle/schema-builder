@@ -142,12 +142,27 @@ class FieldTraitTest extends TestCase
         }
     }
 
-    public function outerFieldTypes(): array
+    public function outerFieldTypes(): iterable
     {
-        return [
-            ['primary', 'int', false],
-            ['bigPrimary', 'bigint', true],
-            ['test', 'test', true],
+        yield 'primary' => [
+            'primary',
+            'int',
+            false,
+        ];
+        yield 'bigPrimary' => [
+            'bigPrimary',
+            'bigint',
+            true,
+        ];
+        yield 'smallPrimary' => [
+            'smallPrimary',
+            'smallint',
+            true,
+        ];
+        yield 'test' => [
+            'test',
+            'test',
+            true,
         ];
     }
 

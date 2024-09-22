@@ -91,7 +91,7 @@ final class Field
 
     public function isPrimary(): bool
     {
-        return $this->primary || in_array($this->type, ['primary', 'bigPrimary']);
+        return $this->primary || in_array($this->type, ['primary', 'bigPrimary', 'smallPrimary']);
     }
 
     /**
