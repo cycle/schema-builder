@@ -147,4 +147,34 @@ class FieldsTest extends TestCase
 
         $m->getByColumnName('slug');
     }
+
+    /**
+     * @dataProvider dataIsPrimary
+     */
+    public function testIsPrimary(string $type, bool $expected = true): void
+    {
+        $field = new Field();
+        $field->setType($type);
+        $this->assertSame($expected, $field->isPrimary());
+    }
+
+    public function dataIsPrimary(): iterable
+    {
+        yield 'primary' => [
+            'primary',
+            true,
+        ];
+        yield 'smallPrimary' => [
+            'smallPrimary',
+            true,
+        ];
+        yield 'bigPrimary' => [
+            'bigPrimary',
+            true,
+        ];
+        yield 'foo' => [
+            'foo',
+            false,
+        ];
+    }
 }

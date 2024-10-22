@@ -156,6 +156,9 @@ trait FieldTrait
             case 'bigPrimary':
                 $field->setType('bigint');
                 break;
+            case 'smallPrimary':
+                $field->setType('smallint');
+                break;
             default:
                 $field->setType($outerField->getType());
         }
