@@ -157,6 +157,9 @@ final class Compiler
         $fieldGroups = [];
         // Collect and group fields by column name
         foreach ($entity->getFields() as $name => $field) {
+            if ($field->isObsolete()) {
+                continue;
+            }
             $fieldGroups[$field->getColumn()][$name] = $field;
         }
         foreach ($fieldGroups as $fields) {
@@ -182,6 +185,9 @@ final class Compiler
 
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
+            if ($field->isObsolete()) {
+                continue;
+            }
             $schema[$name] = $field->getColumn();
         }
 
@@ -204,7 +210,7 @@ final class Compiler
     {
         $schema = [];
         foreach ($entity->getFields() as $name => $field) {
-            if ($field->hasTypecast()) {
+            if ($field->hasTypecast() && !$field->isObsolete()) {
                 $schema[$name] = $field->getTypecast();
             }
         }
