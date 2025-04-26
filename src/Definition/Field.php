@@ -37,6 +37,11 @@ final class Field
     private bool $referenced = false;
     private ?string $entityClass = null;
 
+    /**
+     * Must be removed from schema render.
+     */
+    private bool $obsolete = false;
+
     public function __construct()
     {
         $this->options = new OptionMap();
@@ -171,6 +176,16 @@ final class Field
         $this->entityClass = $entityClass;
 
         return $this;
+    }
+
+    public function isObsolete(): bool
+    {
+        return $this->obsolete;
+    }
+
+    public function setObsolete(bool $obsolete): void
+    {
+        $this->obsolete = $obsolete;
     }
 
     public function __clone()
