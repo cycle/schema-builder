@@ -110,6 +110,10 @@ final class GenerateRelations implements GeneratorInterface
         \assert($role !== null);
 
         foreach ($entity->getRelations() as $name => $r) {
+            if ($r->isObsolete()) {
+                continue;
+            }
+
             $schema = $this->initRelation($r->getType())->withContext(
                 $name,
                 $role,
