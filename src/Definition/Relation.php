@@ -27,9 +27,6 @@ final class Relation
     /** @var int|null */
     private $inverseLoad = null;
 
-    /** @var bool */
-    private $obsolete = false;
-
     /**
      * Relation constructor.
      */
@@ -109,16 +106,6 @@ final class Relation
     public function getInverseLoad(): ?int
     {
         return $this->inverseLoad;
-    }
-
-    public function isObsolete(): bool
-    {
-        return $this->obsolete;
-    }
-
-    public function setObsolete(bool $obsolete): void
-    {
-        $this->obsolete = $obsolete;
     }
 
     /**

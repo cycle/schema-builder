@@ -37,11 +37,6 @@ final class Field
     private bool $referenced = false;
     private ?string $entityClass = null;
 
-    /**
-     * Must be removed from schema render.
-     */
-    private bool $obsolete = false;
-
     public function __construct()
     {
         $this->options = new OptionMap();
