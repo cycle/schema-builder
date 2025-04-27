@@ -43,6 +43,7 @@ final class GenerateRelations implements GeneratorInterface
         'indexCreate' => RelationSchema::INDEX_CREATE,
         'morphKeyLength' => RelationSchema::MORPH_KEY_LENGTH,
         'embeddedPrefix' => RelationSchema::EMBEDDED_PREFIX,
+        'obsolete' => RelationSchema::OBSOLETE,
 
         // deprecated
         'though' => Relation::THROUGH_ENTITY,
