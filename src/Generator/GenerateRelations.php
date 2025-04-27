@@ -110,7 +110,7 @@ final class GenerateRelations implements GeneratorInterface
         \assert($role !== null);
 
         foreach ($entity->getRelations() as $name => $r) {
-            if (true === $r->getOptions()->get('obsolete')) {
+            if ($r->getOptions()->get('obsolete') === true) {
                 continue;
             }
 
