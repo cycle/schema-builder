@@ -70,7 +70,7 @@ $schema = (new Compiler())->compile($r);
 $orm = $orm->with(schema: new \Cycle\ORM\Schema($schema));
 ```
 
-You can find more information about Schema builder package [here]([https://cycle-orm.dev/docs/advanced-schema-builder](https://cycle-orm.dev/docs/schema-dynamic-schema/current/en#using-schema-builder)).
+You can find more information about Schema builder package [here](https://cycle-orm.dev/docs/schema-dynamic-schema#using-schema-builder).
 
 License:
 --------
