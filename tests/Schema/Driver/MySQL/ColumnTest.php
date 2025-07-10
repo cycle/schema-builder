@@ -36,4 +36,60 @@ class ColumnTest extends BaseTest
         $this->assertTrue($table->column('name')->getAttributes()['unsigned']);
         $this->assertTrue($table->column('name')->isUnsigned());
     }
+
+    public function testUnsignedColumnWithAdditionalAttributes(): void
+    {
+        $comment = 'Foo Bar Baz';
+
+        $field = new Field();
+        $field->setType('boolean');
+        $field->setColumn('foo');
+        $field->getAttributes()->set('comment', $comment);
+        $field->getAttributes()->set('unsigned', true);
+
+        $table = $this->getStub();
+        $column = Column::parse($field);
+
+        $column->render($table->column('foo'));
+
+        $table->save();
+
+        $table = $this->getStub();
+        $this->assertTrue($table->hasColumn('foo'));
+        $this->assertArrayHasKey('comment', $table->column('foo')->getAttributes());
+        $this->assertArrayHasKey('unsigned', $table->column('foo')->getAttributes());
+        $this->assertSame($comment, $table->column('foo')->getAttributes()['comment']);
+        $this->assertSame($comment, $table->column('foo')->getComment());
+        $this->assertTrue($table->column('foo')->getAttributes()['unsigned']);
+        $this->assertTrue($table->column('foo')->isUnsigned());
+    }
+
+    public function testUnsignedColumnWithAdditionalAttributesAndDefault(): void
+    {
+        $comment = 'Foo Bar Baz';
+
+        $field = new Field();
+        $field->setType('boolean');
+        $field->setColumn('foo');
+        $field->getAttributes()->set('comment', $comment);
+        $field->getAttributes()->set('unsigned', true);
+        $field->getOptions()->set('default', false);
+
+        $table = $this->getStub();
+        $column = Column::parse($field);
+
+        $column->render($table->column('foo'));
+
+        $table->save();
+
+        $table = $this->getStub();
+        $this->assertTrue($table->hasColumn('foo'));
+        $this->assertArrayHasKey('comment', $table->column('foo')->getAttributes());
+        $this->assertArrayHasKey('unsigned', $table->column('foo')->getAttributes());
+        $this->assertFalse($table->column('foo')->getDefaultValue());
+        $this->assertSame($comment, $table->column('foo')->getAttributes()['comment']);
+        $this->assertSame($comment, $table->column('foo')->getComment());
+        $this->assertTrue($table->column('foo')->getAttributes()['unsigned']);
+        $this->assertTrue($table->column('foo')->isUnsigned());
+    }
 }
