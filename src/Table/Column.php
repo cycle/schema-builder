@@ -140,11 +140,7 @@ final class Column
 
         if ($this->hasDefault() && $this->getDefault() !== null) {
             $column->defaultValue($this->getDefault());
-            return;
-        }
-
-        if ($this->hasOption(self::OPT_CAST_DEFAULT)) {
-            // cast default value
+        } elseif ($this->hasOption(self::OPT_CAST_DEFAULT)) {
             $column->defaultValue($this->castDefault($column));
         }
 

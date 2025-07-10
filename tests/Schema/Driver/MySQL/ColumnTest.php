@@ -86,7 +86,7 @@ class ColumnTest extends BaseTest
         $this->assertTrue($table->hasColumn('foo'));
         $this->assertArrayHasKey('comment', $table->column('foo')->getAttributes());
         $this->assertArrayHasKey('unsigned', $table->column('foo')->getAttributes());
-        $this->assertFalse($table->column('foo')->getDefaultValue());
+        $this->assertSame(0, $table->column('foo')->getDefaultValue());
         $this->assertSame($comment, $table->column('foo')->getAttributes()['comment']);
         $this->assertSame($comment, $table->column('foo')->getComment());
         $this->assertTrue($table->column('foo')->getAttributes()['unsigned']);
