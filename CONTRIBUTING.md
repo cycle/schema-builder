@@ -14,7 +14,7 @@ To test Cycle ORM Schema Builder locally, download the `cycle/schema-builder` re
 
 ```bash
 $ cd tests/
-$ docker-composer up
+$ docker compose up
 ```
 
 To run full test suite:

@@ -59,6 +59,11 @@ final class Column
         return $column;
     }
 
+    /**
+     * Get column name.
+     *
+     * @psalm-suppress UnusedMethod
+     */
     public function getName(): string
     {
         return $this->field->getColumn();
@@ -67,6 +72,7 @@ final class Column
     /**
      * Get column type.
      *
+     * @psalm-suppress UnusedMethod
      */
     public function getType(): string
     {
@@ -140,11 +146,7 @@ final class Column
 
         if ($this->hasDefault() && $this->getDefault() !== null) {
             $column->defaultValue($this->getDefault());
-            return;
-        }
-
-        if ($this->hasOption(self::OPT_CAST_DEFAULT)) {
-            // cast default value
+        } elseif ($this->hasOption(self::OPT_CAST_DEFAULT)) {
             $column->defaultValue($this->castDefault($column));
         }
 
