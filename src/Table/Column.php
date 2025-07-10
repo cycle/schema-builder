@@ -59,6 +59,11 @@ final class Column
         return $column;
     }
 
+    /**
+     * Get column name.
+     *
+     * @psalm-suppress UnusedMethod
+     */
     public function getName(): string
     {
         return $this->field->getColumn();
@@ -67,6 +72,7 @@ final class Column
     /**
      * Get column type.
      *
+     * @psalm-suppress UnusedMethod
      */
     public function getType(): string
     {
