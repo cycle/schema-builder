@@ -99,6 +99,7 @@ final class GenerateRelations implements GeneratorInterface
             'refersTo' => new Definition\RefersTo(),
             'manyToMany' => new Definition\ManyToMany(),
             'belongsToMorphed' => new Definition\Morphed\BelongsToMorphed(),
+            'refersToMorphed' => new Definition\Morphed\RefersToMorphed(),
             'morphedHasOne' => new Definition\Morphed\MorphedHasOne(),
             'morphedHasMany' => new Definition\Morphed\MorphedHasMany(),
         ];
