@@ -370,32 +370,20 @@
       <code><![CDATA[public function getIterator(): \Traversable]]></code>
     </MissingOverrideAttribute>
     <MixedArrayAccess>
-      <code><![CDATA[$association['database']]]></code>
-      <code><![CDATA[$association['schema']]]></code>
-      <code><![CDATA[$association['table']]]></code>
       <code><![CDATA[$this->relations[$entity][$name]]]></code>
-      <code><![CDATA[$this->tables[$entity]['database']]]></code>
-      <code><![CDATA[$this->tables[$entity]['schema']]]></code>
-      <code><![CDATA[$this->tables[$entity]['table']]]></code>
     </MixedArrayAccess>
     <MixedArrayAssignment>
       <code><![CDATA[$children[]]]></code>
       <code><![CDATA[$relations[$name]]]></code>
     </MixedArrayAssignment>
     <MixedAssignment>
-      <code><![CDATA[$association]]></code>
       <code><![CDATA[$children]]></code>
       <code><![CDATA[$relations]]></code>
-      <code><![CDATA[$schema]]></code>
-      <code><![CDATA[$schema]]></code>
     </MixedAssignment>
     <MixedReturnStatement>
       <code><![CDATA[$this->children[$entity]]]></code>
       <code><![CDATA[$this->relations[$entity]]]></code>
       <code><![CDATA[$this->relations[$entity][$name]]]></code>
-      <code><![CDATA[$this->tables[$entity]['database']]]></code>
-      <code><![CDATA[$this->tables[$entity]['schema']]]></code>
-      <code><![CDATA[$this->tables[$entity]['table']]]></code>
     </MixedReturnStatement>
     <PossiblyUnusedMethod>
       <code><![CDATA[__construct]]></code>
