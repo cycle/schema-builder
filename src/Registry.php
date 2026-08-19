@@ -20,7 +20,15 @@ final class Registry implements \IteratorAggregate
     private array $entities = [];
 
     private DatabaseProviderInterface $dbal;
+
+    /**
+     * @var \SplObjectStorage<
+     *     Entity,
+     *     array{database: string, table: non-empty-string, schema: AbstractTable|null}|null
+     * >
+     */
     private \SplObjectStorage $tables;
+
     private \SplObjectStorage $children;
     private \SplObjectStorage $relations;
     private Defaults $defaults;
@@ -143,33 +151,12 @@ final class Registry implements \IteratorAggregate
 
         $database = $this->dbal->database($database)->getName();
 
-        $schema = null;
-        foreach ($this->tables as $other) {
-            $association = $this->tables[$other];
-
-            if ($association === null) {
-                continue;
-            }
-
-            // avoid schema duplication
-            if ($association['database'] === $database && $association['table'] === $table) {
-                $schema = $association['schema'];
-                break;
-            }
-        }
-
-        if ($schema === null) {
-            $dbTable = $this->dbal->database($database)->table($table);
-            if (!\method_exists($dbTable, 'getSchema')) {
-                throw new RegistryException('Unable to retrieve table schema.');
-            }
-            $schema = $dbTable->getSchema();
-        }
-
+        // Table schemas are loaded lazily and in bulk: by the time the first schema is requested
+        // all the linked tables are known, so the whole set costs a constant number of queries.
         $this->tables[$entity] = [
             'database' => $database,
             'table' => $table,
-            'schema' => $schema,
+            'schema' => null,
         ];
 
         return $this;
@@ -192,11 +179,7 @@ final class Registry implements \IteratorAggregate
      */
     public function getDatabase(Entity $entity): string
     {
-        if (!$this->hasTable($entity)) {
-            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
-        }
-
-        return $this->tables[$entity]['database'];
+        return $this->getTableAssociation($entity)['database'];
     }
 
     /**
@@ -206,11 +189,7 @@ final class Registry implements \IteratorAggregate
      */
     public function getTable(Entity $entity): string
     {
-        if (!$this->hasTable($entity)) {
-            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
-        }
-
-        return $this->tables[$entity]['table'];
+        return $this->getTableAssociation($entity)['table'];
     }
 
     /**
@@ -218,11 +197,15 @@ final class Registry implements \IteratorAggregate
      */
     public function getTableSchema(Entity $entity): AbstractTable
     {
-        if (!$this->hasTable($entity)) {
-            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
+        $schema = $this->getTableAssociation($entity)['schema'];
+
+        if ($schema === null) {
+            $this->loadTableSchemas();
+            $schema = $this->getTableAssociation($entity)['schema'];
+            \assert($schema !== null);
         }
 
-        return $this->tables[$entity]['schema'];
+        return $schema;
     }
 
     /**
@@ -285,5 +268,88 @@ final class Registry implements \IteratorAggregate
     protected function hasInstance(Entity $entity): bool
     {
         return array_search($entity, $this->entities, true) !== false;
+    }
+
+    /**
+     * @return array{database: string, table: non-empty-string, schema: AbstractTable|null}
+     *
+     * @throws RegistryException
+     */
+    private function getTableAssociation(Entity $entity): array
+    {
+        if (!$this->hasInstance($entity)) {
+            throw new RegistryException("Undefined entity `{$entity->getRole()}`");
+        }
+
+        $association = $this->tables[$entity];
+
+        if ($association === null) {
+            throw new RegistryException("Entity `{$entity->getRole()}` has no assigned table");
+        }
+
+        return $association;
+    }
+
+    /**
+     * Load schemas for all the linked tables that don't have one yet. Entities sharing the same
+     * database and table receive the same {@see AbstractTable} instance.
+     *
+     * @throws RegistryException
+     * @throws DBALException
+     */
+    private function loadTableSchemas(): void
+    {
+        /** @var array<string, array<non-empty-string, AbstractTable>> $loaded */
+        $loaded = [];
+        /** @var array<string, array<non-empty-string, true>> $pending */
+        $pending = [];
+        foreach ($this->tables as $entity) {
+            $association = $this->tables[$entity];
+            if ($association === null) {
+                continue;
+            }
+
+            if ($association['schema'] !== null) {
+                $loaded[$association['database']][$association['table']] = $association['schema'];
+            } else {
+                $pending[$association['database']][$association['table']] = true;
+            }
+        }
+
+        foreach ($pending as $database => $tables) {
+            // avoid schema duplication
+            $names = \array_keys(\array_diff_key($tables, $loaded[$database] ?? []));
+            if ($names === []) {
+                continue;
+            }
+
+            $db = $this->dbal->database($database);
+            if (\method_exists($db, 'getSchemas')) {
+                /** @var array<non-empty-string, AbstractTable> $schemas */
+                $schemas = $db->getSchemas($names);
+                $loaded[$database] = ($loaded[$database] ?? []) + $schemas;
+                continue;
+            }
+
+            foreach ($names as $name) {
+                $dbTable = $db->table($name);
+                if (!\method_exists($dbTable, 'getSchema')) {
+                    throw new RegistryException('Unable to retrieve table schema.');
+                }
+                /** @var AbstractTable $schema */
+                $schema = $dbTable->getSchema();
+                $loaded[$database][$name] = $schema;
+            }
+        }
+
+        foreach ($this->tables as $entity) {
+            $association = $this->tables[$entity];
+            if ($association === null || $association['schema'] !== null) {
+                continue;
+            }
+
+            $association['schema'] = $loaded[$association['database']][$association['table']];
+            $this->tables[$entity] = $association;
+        }
     }
 }
