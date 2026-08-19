@@ -11,6 +11,26 @@ on:  # yamllint disable-line rule:truthy
   pull_request: null
 
 jobs:
+  commit-linting:
+    name: Lint commits
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 4
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: 📦 Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: 🧐 Lint commits using "commitlint"
+        uses: wagoid/commitlint-github-action@v6.0.1
+        with:
+          configFile: ${{ github.workspace }}/.github/.commitlint.config.mjs
+          failOnWarnings: false
+          failOnErrors: false
+          helpURL: 'https://github.com/conventional-changelog/commitlint/#what-is-commitlint'
+
   test:
     name: Test PHP ${{ matrix.php-versions }} with Code Coverage
     runs-on: ubuntu-latest
