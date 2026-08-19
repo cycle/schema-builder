@@ -13,6 +13,7 @@ use Cycle\Schema\Registry;
 use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\LegacyDatabase;
 use Cycle\Schema\Tests\Fixtures\Post;
+use Cycle\Schema\Tests\Fixtures\SpyDatabase;
 use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class RegistryTest extends BaseTest
@@ -177,6 +178,119 @@ abstract class RegistryTest extends BaseTest
         $this->assertSame($schema, $r->getTableSchema($e2));
     }
 
+    public function testLinkTableDefersIntrospectionUntilFirstSchemaRequest(): void
+    {
+        $spy = new SpyDatabase($this->dbal->database('default'));
+        $r = new Registry($spy);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('post')->setClass(Post::class);
+
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $r->register($e2)->linkTable($e2, 'default', 'post');
+
+        // linking alone must not introspect anything
+        $this->assertSame([], $spy->getSchemasCalls);
+
+        // the first schema request loads every pending table in a single batched call
+        $r->getTableSchema($e);
+        $this->assertCount(1, $spy->getSchemasCalls);
+        $this->assertEqualsCanonicalizing(['user', 'post'], $spy->getSchemasCalls[0]);
+
+        // schemas for the other tables are already resolved, no further introspection
+        $r->getTableSchema($e2);
+        $this->assertCount(1, $spy->getSchemasCalls);
+    }
+
+    public function testLateLinkedTableTriggersOnlyOneAdditionalBatch(): void
+    {
+        $spy = new SpyDatabase($this->dbal->database('default'));
+        $r = new Registry($spy);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $r->getTableSchema($e);
+
+        $this->assertSame([['user']], $spy->getSchemasCalls);
+
+        // a table linked after the first load must be introspected on its own, and only it
+        $e2 = new Entity();
+        $e2->setRole('post')->setClass(Post::class);
+        $r->register($e2)->linkTable($e2, 'default', 'post');
+        $r->getTableSchema($e2);
+
+        $this->assertSame([['user'], ['post']], $spy->getSchemasCalls);
+    }
+
+    public function testBulkLoadResolvesDistinctTablesIndependently(): void
+    {
+        $r = new Registry($this->dbal);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('author')->setClass(Author::class);
+
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $r->register($e2)->linkTable($e2, 'default', 'post');
+
+        $userSchema = $r->getTableSchema($e);
+        $postSchema = $r->getTableSchema($e2);
+
+        $this->assertNotSame($userSchema, $postSchema);
+        $this->assertSame('user', $userSchema->getName());
+        $this->assertSame('post', $postSchema->getName());
+    }
+
+    public function testBulkLoadAcrossMultipleDatabases(): void
+    {
+        $r = new Registry($this->dbal);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('author')->setClass(Author::class);
+
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $r->register($e2)->linkTable($e2, 'secondary', 'user');
+
+        $defaultSchema = $r->getTableSchema($e);
+        $secondarySchema = $r->getTableSchema($e2);
+
+        $this->assertNotSame($defaultSchema, $secondarySchema);
+        $this->assertSame('default', $r->getDatabase($e));
+        $this->assertSame('secondary', $r->getDatabase($e2));
+    }
+
+    public function testBulkLoadDoesNotReloadAlreadyLoadedTable(): void
+    {
+        $r = new Registry($this->dbal);
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+        $r->register($e)->linkTable($e, 'default', 'user');
+
+        // triggers the first bulk load for 'user'
+        $userSchema = $r->getTableSchema($e);
+
+        $e2 = new Entity();
+        $e2->setRole('author')->setClass(Author::class);
+        $r->register($e2)->linkTable($e2, 'default', 'post');
+
+        // triggers a second bulk load, only 'post' is pending this time
+        $postSchema = $r->getTableSchema($e2);
+
+        $this->assertNotSame($userSchema, $postSchema);
+        // the already loaded 'user' schema must not have been replaced/reloaded
+        $this->assertSame($userSchema, $r->getTableSchema($e));
+    }
+
     public function testLinkTableWithoutGetSchemasSupport(): void
     {
         $r = new Registry(new LegacyDatabase($this->dbal->database('default')));
@@ -192,6 +306,27 @@ abstract class RegistryTest extends BaseTest
 
         $this->assertInstanceOf(AbstractTable::class, $r->getTableSchema($e));
         $this->assertSame($r->getTableSchema($e), $r->getTableSchema($e2));
+    }
+
+    public function testLinkTableWithoutGetSchemasSupportResolvesDistinctTables(): void
+    {
+        $r = new Registry(new LegacyDatabase($this->dbal->database('default')));
+
+        $e = new Entity();
+        $e->setRole('user')->setClass(User::class);
+
+        $e2 = new Entity();
+        $e2->setRole('author')->setClass(Author::class);
+
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $r->register($e2)->linkTable($e2, 'default', 'post');
+
+        $userSchema = $r->getTableSchema($e);
+        $postSchema = $r->getTableSchema($e2);
+
+        $this->assertNotSame($userSchema, $postSchema);
+        $this->assertSame('user', $userSchema->getName());
+        $this->assertSame('post', $postSchema->getName());
     }
 
     public function testLinkTableWithoutSchemaSupportThrowsAnException(): void
