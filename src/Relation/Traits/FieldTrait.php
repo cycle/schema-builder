@@ -136,11 +136,19 @@ trait FieldTrait
         $outerField->setReferenced(true);
 
         if ($target->getFields()->has($fieldName)) {
-            // field already exists and defined by the user
+            $field = $target->getFields()->get($fieldName);
+
+            // A column shared by several relations (HasMany and its BelongsTo) must not depend
+            // on which relation is generated first; user-declared fields are kept as they are.
+            if ($nullable && $field->isRelationGenerated()) {
+                $field->getOptions()->set(Column::OPT_NULLABLE, true);
+            }
+
             return;
         }
 
         $field = new Field();
+        $field->setRelationGenerated(true);
         $field->setEntityClass($target->getClass());
         $field->setColumn($fieldName);
         $field->setTypecast($outerField->getTypecast());

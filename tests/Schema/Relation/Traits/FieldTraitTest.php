@@ -95,6 +95,40 @@ class FieldTraitTest extends TestCase
     }
 
     /**
+     * @dataProvider nullableOrders
+     */
+    public function testEnsureFieldMergesNullableOfRelationGeneratedField(bool $first, bool $second): void
+    {
+        $target = new Entity();
+        $outer = (new Field())->setColumn('id')->setType('primary');
+
+        $this->ensureField($target, 'user_id', $outer, $first);
+        $this->ensureField($target, 'user_id', $outer, $second);
+
+        $field = $target->getFields()->get('user_id');
+        $this->assertTrue($field->isRelationGenerated());
+        $this->assertTrue($field->getOptions()->get(Column::OPT_NULLABLE));
+    }
+
+    public function nullableOrders(): iterable
+    {
+        yield 'not nullable first' => [false, true];
+        yield 'nullable first' => [true, false];
+    }
+
+    public function testEnsureFieldDoesNotChangeUserDefinedField(): void
+    {
+        $target = new Entity();
+        $outer = (new Field())->setColumn('id')->setType('primary');
+        $target->getFields()->set('user_id', $userField = (new Field())->setColumn('user_id')->setType('int'));
+
+        $this->ensureField($target, 'user_id', $outer, true);
+
+        $this->assertFalse($userField->isRelationGenerated());
+        $this->assertFalse($userField->getOptions()->has(Column::OPT_NULLABLE));
+    }
+
+    /**
      * @dataProvider outerFieldTypes
      */
     public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(

@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Relation;
 
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Definition\Field;
+use Cycle\Schema\Definition\Relation as RelationDefinition;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\SchemaException;
 use Cycle\Schema\Generator\GenerateRelations;
@@ -303,5 +307,71 @@ abstract class HasManyRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('plain');
         $this->assertTrue($table->hasIndex(['user_p_id']));
+    }
+
+    public function belongsToNullableOrders(): iterable
+    {
+        yield 'hasMany source first' => [true];
+        yield 'belongsTo source first' => [false];
+    }
+
+    /**
+     * @dataProvider belongsToNullableOrders
+     */
+    public function testNullableBelongsToMakesSharedColumnNullable(bool $userFirst): void
+    {
+        $e = Plain::define();
+        $u = User::define();
+
+        $u->getRelations()->get('plain')->setType('hasMany');
+        $e->getRelations()->set(
+            'user',
+            (new RelationDefinition())->setTarget('user')->setType('belongsTo'),
+        );
+        $e->getRelations()->get('user')->getOptions()->set('nullable', true);
+
+        $table = $this->renderPlainWithUser($e, $u, $userFirst);
+
+        $this->assertTrue($table->column('user_p_id')->isNullable());
+    }
+
+    /**
+     * @dataProvider belongsToNullableOrders
+     */
+    public function testNullableBelongsToKeepsUserDefinedColumn(bool $userFirst): void
+    {
+        $e = Plain::define();
+        $u = User::define();
+
+        $e->getFields()->set('user_p_id', (new Field())->setType('int')->setColumn('user_p_id'));
+        $u->getRelations()->get('plain')->setType('hasMany');
+        $e->getRelations()->set(
+            'user',
+            (new RelationDefinition())->setTarget('user')->setType('belongsTo'),
+        );
+        $e->getRelations()->get('user')->getOptions()->set('nullable', true);
+
+        $table = $this->renderPlainWithUser($e, $u, $userFirst);
+
+        $this->assertFalse($table->column('user_p_id')->isNullable());
+    }
+
+    private function renderPlainWithUser(Entity $plain, Entity $user, bool $userFirst): AbstractTable
+    {
+        $r = new Registry($this->dbal);
+        $entities = $userFirst ? [[$user, 'user'], [$plain, 'plain']] : [[$plain, 'plain'], [$user, 'user']];
+        foreach ($entities as [$entity, $table]) {
+            $r->register($entity)->linkTable($entity, 'default', $table);
+        }
+
+        (new Compiler())->compile($r, [
+            new GenerateRelations(['hasMany' => new HasMany(), 'belongsTo' => new BelongsTo()]),
+            $t = new RenderTables(),
+            new RenderRelations(),
+        ]);
+
+        $t->getReflector()->run();
+
+        return $this->getDriver()->getSchema('plain');
     }
 }
