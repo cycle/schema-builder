@@ -35,6 +35,7 @@ final class Field
 
     private ?int $generated = null;
     private bool $referenced = false;
+    private bool $relationGenerated = false;
     private ?string $entityClass = null;
 
     public function __construct()
@@ -159,6 +160,26 @@ final class Field
     public function isReferenced(): bool
     {
         return $this->referenced;
+    }
+
+    /**
+     * Marks the field as created by a relation rather than declared by the user.
+     *
+     * @internal
+     */
+    public function setRelationGenerated(bool $relationGenerated): self
+    {
+        $this->relationGenerated = $relationGenerated;
+
+        return $this;
+    }
+
+    /**
+     * @internal
+     */
+    public function isRelationGenerated(): bool
+    {
+        return $this->relationGenerated;
     }
 
     public function getEntityClass(): ?string
