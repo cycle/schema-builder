@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.2](https://github.com/cycle/schema-builder/compare/2.12.1...2.12.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* Make relation-generated FK nullable when any relation sharing it asks for nullable ([#86](https://github.com/cycle/schema-builder/issues/86)) ([e97646f](https://github.com/cycle/schema-builder/commit/e97646f9255d2c3fe36a34782b5e462f3a126a64))
+
 ## [2.12.1](https://github.com/cycle/schema-builder/compare/v2.12.0...2.12.1) (2026-08-19)
 
 
