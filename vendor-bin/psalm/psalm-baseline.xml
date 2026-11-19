@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.12.1@e71404b0465be25cf7f8a631b298c01c5ddd864f">
+<files psalm-version="7.11.0@9e0d0f88bc0a4233357a9aeb4b32da060644e196">
   <file src="src/Compiler.php">
     <DocblockTypeContradiction>
-      <code><![CDATA[\var_export($generator, true)]]></code>
+      <code><![CDATA[$generator instanceof GeneratorInterface]]></code>
     </DocblockTypeContradiction>
+    <MixedArgument>
+      <code><![CDATA[\is_object($generator) ? $generator::class : \var_export($generator, true)]]></code>
+    </MixedArgument>
     <MixedArgumentTypeCoercion>
       <code><![CDATA[$defaults]]></code>
       <code><![CDATA[$name]]></code>
@@ -11,15 +14,18 @@
     <MixedAssignment>
       <code><![CDATA[$defaults]]></code>
     </MixedAssignment>
+    <RedundantCondition>
+      <code><![CDATA[\var_export($generator, true)]]></code>
+    </RedundantCondition>
     <RedundantConditionGivenDocblockType>
-      <code><![CDATA[\is_object($generator)]]></code>
+      <code><![CDATA[\assert($modifier instanceof SchemaModifierInterface)]]></code>
     </RedundantConditionGivenDocblockType>
     <RiskyTruthyFalsyComparison>
       <code><![CDATA[$inheritance->getOuterKey()]]></code>
     </RiskyTruthyFalsyComparison>
-    <UnusedClass>
-      <code><![CDATA[Compiler]]></code>
-    </UnusedClass>
+    <TypeDoesNotContainType>
+      <code><![CDATA[\is_object($generator)]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="src/Defaults.php">
     <MissingOverrideAttribute>
@@ -45,31 +51,8 @@
     <MixedReturnTypeCoercion>
       <code><![CDATA[\Traversable<array-key, SchemaModifierInterface>]]></code>
     </MixedReturnTypeCoercion>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-      <code><![CDATA[addSchemaModifier]]></code>
-      <code><![CDATA[getDatabase]]></code>
-      <code><![CDATA[getTableName]]></code>
-      <code><![CDATA[markAsChildOfSingleTableInheritance]]></code>
-      <code><![CDATA[setClass]]></code>
-      <code><![CDATA[setDatabase]]></code>
-      <code><![CDATA[setInheritance]]></code>
-      <code><![CDATA[setMapper]]></code>
-      <code><![CDATA[setPrimaryColumns]]></code>
-      <code><![CDATA[setRepository]]></code>
-      <code><![CDATA[setSchema]]></code>
-      <code><![CDATA[setScope]]></code>
-      <code><![CDATA[setSource]]></code>
-      <code><![CDATA[setTableName]]></code>
-      <code><![CDATA[setTypecast]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/Field.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getEntityClass]]></code>
-      <code><![CDATA[setGenerated]]></code>
-      <code><![CDATA[setPrimary]]></code>
-    </PossiblyUnusedMethod>
     <RiskyTruthyFalsyComparison>
       <code><![CDATA[empty($this->column)]]></code>
       <code><![CDATA[empty($this->type)]]></code>
@@ -83,24 +66,6 @@
       <code><![CDATA[$outerColumns]]></code>
       <code><![CDATA[$target]]></code>
     </MissingConstructor>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[createIndex]]></code>
-      <code><![CDATA[setAction]]></code>
-      <code><![CDATA[setInnerColumns]]></code>
-      <code><![CDATA[setOuterColumns]]></code>
-      <code><![CDATA[setTarget]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Definition/Inheritance/JoinedTable.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Definition/Inheritance/SingleTable.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[addChild]]></code>
-      <code><![CDATA[setDiscriminator]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/Map/FieldMap.php">
     <MissingOverrideAttribute>
@@ -109,61 +74,38 @@
     </MissingOverrideAttribute>
     <MixedReturnTypeCoercion>
       <code><![CDATA[$key]]></code>
+      <code><![CDATA[new \ArrayIterator($this->fields)]]></code>
       <code><![CDATA[string]]></code>
     </MixedReturnTypeCoercion>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getByColumnName]]></code>
-      <code><![CDATA[remove]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/Map/ForeignKeyMap.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function count(): int]]></code>
       <code><![CDATA[public function getIterator(): \Traversable]]></code>
     </MissingOverrideAttribute>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[remove]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/Map/OptionMap.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function getIterator(): \ArrayIterator]]></code>
     </MissingOverrideAttribute>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[new \ArrayIterator($this->options)]]></code>
+    </MixedReturnTypeCoercion>
   </file>
   <file src="src/Definition/Map/RelationMap.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function getIterator(): \Traversable]]></code>
     </MissingOverrideAttribute>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[remove]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Definition/Relation.php">
     <DocblockTypeContradiction>
       <code><![CDATA[$this->target === null]]></code>
-      <code><![CDATA[$this->target === null]]></code>
       <code><![CDATA[$this->type === null]]></code>
     </DocblockTypeContradiction>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-      <code><![CDATA[setInverse]]></code>
-      <code><![CDATA[setType]]></code>
-    </PossiblyUnusedMethod>
     <PropertyNotSetInConstructor>
       <code><![CDATA[$target]]></code>
       <code><![CDATA[$type]]></code>
     </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Exception/ColumnException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[ColumnException]]></code>
-    </ClassMustBeFinal>
-  </file>
-  <file src="src/Exception/EntityException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[EntityException]]></code>
-    </ClassMustBeFinal>
   </file>
   <file src="src/Exception/FieldException/EmbeddedPrimaryKeyException.php">
     <MissingOverrideAttribute>
@@ -171,30 +113,7 @@
       <code><![CDATA[public function getSolution(): ?string]]></code>
     </MissingOverrideAttribute>
   </file>
-  <file src="src/Exception/OptionException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[OptionException]]></code>
-    </ClassMustBeFinal>
-  </file>
-  <file src="src/Exception/RelationException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[RelationException]]></code>
-    </ClassMustBeFinal>
-  </file>
-  <file src="src/Exception/SchemaException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[SchemaException]]></code>
-    </ClassMustBeFinal>
-  </file>
-  <file src="src/Exception/SyncException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[SyncException]]></code>
-    </ClassMustBeFinal>
-  </file>
   <file src="src/Exception/TableInheritance/DiscriminatorColumnNotPresentException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[DiscriminatorColumnNotPresentException]]></code>
-    </ClassMustBeFinal>
     <MissingOverrideAttribute>
       <code><![CDATA[public function getName(): string]]></code>
       <code><![CDATA[public function getSolution(): ?string]]></code>
@@ -204,9 +123,6 @@
     </MixedArgumentTypeCoercion>
   </file>
   <file src="src/Exception/TableInheritance/WrongDiscriminatorColumnException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[WrongDiscriminatorColumnException]]></code>
-    </ClassMustBeFinal>
     <MissingOverrideAttribute>
       <code><![CDATA[public function getName(): string]]></code>
       <code><![CDATA[public function getSolution(): ?string]]></code>
@@ -216,9 +132,6 @@
     </MixedArgumentTypeCoercion>
   </file>
   <file src="src/Exception/TableInheritance/WrongParentKeyColumnException.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[WrongParentKeyColumnException]]></code>
-    </ClassMustBeFinal>
     <MissingOverrideAttribute>
       <code><![CDATA[public function getName(): string]]></code>
       <code><![CDATA[public function getSolution(): ?string]]></code>
@@ -231,17 +144,14 @@
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[ForeignKeys]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/GenerateModifiers.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[GenerateModifiers]]></code>
-    </UnusedClass>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[\assert($modifier instanceof SchemaModifierInterface)]]></code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Generator/GenerateRelations.php">
     <MissingOverrideAttribute>
@@ -251,17 +161,11 @@
       <code><![CDATA[empty($inverseName)]]></code>
       <code><![CDATA[empty($inverseType)]]></code>
     </RiskyTruthyFalsyComparison>
-    <UnusedClass>
-      <code><![CDATA[GenerateRelations]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/GenerateTypecast.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[GenerateTypecast]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/PrintChanges.php">
     <MissingOverrideAttribute>
@@ -295,25 +199,19 @@
       <code><![CDATA[getColumns]]></code>
       <code><![CDATA[getName]]></code>
     </MixedMethodCall>
-    <UnusedClass>
-      <code><![CDATA[PrintChanges]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/RenderModifiers.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[RenderModifiers]]></code>
-    </UnusedClass>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[\assert($modifier instanceof SchemaModifierInterface)]]></code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Generator/RenderRelations.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[RenderRelations]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/RenderTables.php">
     <MissingOverrideAttribute>
@@ -323,9 +221,6 @@
       <code><![CDATA[$this->reflector->sortedTables()]]></code>
       <code><![CDATA[AbstractTable[]]]></code>
     </MixedReturnTypeCoercion>
-    <UnusedClass>
-      <code><![CDATA[RenderTables]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/ResetTables.php">
     <DeprecatedMethod>
@@ -334,17 +229,11 @@
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[ResetTables]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/ResolveInterfaces.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[ResolveInterfaces]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/SyncTables.php">
     <MissingOverrideAttribute>
@@ -353,17 +242,11 @@
     <MixedAssignment>
       <code><![CDATA[$dbName]]></code>
     </MixedAssignment>
-    <UnusedClass>
-      <code><![CDATA[SyncTables]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Generator/ValidateEntities.php">
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <UnusedClass>
-      <code><![CDATA[ValidateEntities]]></code>
-    </UnusedClass>
   </file>
   <file src="src/Registry.php">
     <MissingOverrideAttribute>
@@ -385,11 +268,6 @@
       <code><![CDATA[$this->relations[$entity]]]></code>
       <code><![CDATA[$this->relations[$entity][$name]]]></code>
     </MixedReturnStatement>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[__construct]]></code>
-      <code><![CDATA[getChildren]]></code>
-      <code><![CDATA[registerChild]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Relation/BelongsTo.php">
     <MissingOverrideAttribute>
@@ -407,9 +285,6 @@
       <code><![CDATA[public function compute(Registry $registry): void]]></code>
       <code><![CDATA[public function render(Registry $registry): void]]></code>
     </MissingOverrideAttribute>
-    <UnnecessaryVarAnnotation>
-      <code><![CDATA[non-empty-string]]></code>
-    </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Relation/HasMany.php">
     <MissingOverrideAttribute>
@@ -474,6 +349,8 @@
       <code><![CDATA[$key]]></code>
       <code><![CDATA[$morphKey]]></code>
       <code><![CDATA[$outerField]]></code>
+      <code><![CDATA[$outerFields]]></code>
+      <code><![CDATA[$outerKeys]]></code>
     </MixedAssignment>
     <MixedMethodCall>
       <code><![CDATA[get]]></code>
@@ -500,6 +377,31 @@
       <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
       <code><![CDATA[$this->options->get(RelationSchema::MORPH_KEY_LENGTH)]]></code>
     </MixedArgument>
+  </file>
+  <file src="src/Relation/Morphed/RefersToMorphed.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function compute(Registry $registry): void]]></code>
+      <code><![CDATA[public function render(Registry $registry): void]]></code>
+    </MissingOverrideAttribute>
+    <MixedArgument>
+      <code><![CDATA[$innerKey]]></code>
+      <code><![CDATA[$key]]></code>
+      <code><![CDATA[$outerField]]></code>
+      <code><![CDATA[$outerKeys]]></code>
+      <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
+      <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
+      <code><![CDATA[$this->options->get(RelationSchema::MORPH_KEY_LENGTH)]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$innerKey]]></code>
+      <code><![CDATA[$key]]></code>
+      <code><![CDATA[$outerField]]></code>
+      <code><![CDATA[$outerFields]]></code>
+      <code><![CDATA[$outerKeys]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[get]]></code>
+    </MixedMethodCall>
   </file>
   <file src="src/Relation/OptionSchema.php">
     <MixedArgument>
@@ -530,9 +432,9 @@
       <code><![CDATA[$value]]></code>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <UnusedForeachValue>
-      <code><![CDATA[$value]]></code>
-    </UnusedForeachValue>
+    <PossiblyInvalidArrayOffset>
+      <code><![CDATA[$result[$alias]]]></code>
+    </PossiblyInvalidArrayOffset>
   </file>
   <file src="src/Relation/RefersTo.php">
     <MissingOverrideAttribute>
@@ -554,6 +456,8 @@
       <code><![CDATA[$name]]></code>
       <code><![CDATA[$name]]></code>
       <code><![CDATA[$name]]></code>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$options]]></code>
       <code><![CDATA[$options]]></code>
       <code><![CDATA[$options]]></code>
       <code><![CDATA[$options]]></code>
@@ -572,6 +476,8 @@
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
+      <code><![CDATA[$source]]></code>
+      <code><![CDATA[$target]]></code>
       <code><![CDATA[$target]]></code>
       <code><![CDATA[$target]]></code>
       <code><![CDATA[$target]]></code>
@@ -601,12 +507,6 @@
       <code><![CDATA[$schema[$option]]]></code>
       <code><![CDATA[$template]]></code>
     </MixedAssignment>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getOptions]]></code>
-    </PossiblyUnusedMethod>
-    <UnusedForeachValue>
-      <code><![CDATA[$template]]></code>
-    </UnusedForeachValue>
   </file>
   <file src="src/Relation/Traits/FieldTrait.php">
     <MixedArgument>
@@ -625,9 +525,10 @@
       <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
       <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
       <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
+      <code><![CDATA[$this->options->get(Relation::NULLABLE)]]></code>
     </MixedArgument>
     <MixedArgumentTypeCoercion>
-      <code><![CDATA[$k]]></code>
+      <code><![CDATA[$targetColumn]]></code>
       <code><![CDATA[$targetColumn]]></code>
       <code><![CDATA[$targetColumn]]></code>
       <code><![CDATA[$targetColumn]]></code>
@@ -653,16 +554,6 @@
       <code><![CDATA[$sourceFieldName]]></code>
       <code><![CDATA[$v]]></code>
     </MixedAssignment>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-      <code><![CDATA[getField]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Relation/Traits/ForeignKeyTrait.php">
     <MixedArgument>
@@ -672,14 +563,6 @@
     <MixedAssignment>
       <code><![CDATA[$fkAction]]></code>
     </MixedAssignment>
-    <PossiblyUnusedMethod>
-      <code><![CDATA[createForeignKey]]></code>
-      <code><![CDATA[createForeignKey]]></code>
-      <code><![CDATA[createForeignKey]]></code>
-      <code><![CDATA[createForeignKey]]></code>
-      <code><![CDATA[createForeignKey]]></code>
-      <code><![CDATA[createForeignKey]]></code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="src/Relation/Traits/MorphTrait.php">
     <MixedArgumentTypeCoercion>
@@ -691,13 +574,13 @@
     </PossiblyFalseArgument>
   </file>
   <file src="src/Table/Column.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[\iterator_to_array($this->field->getAttributes())]]></code>
+    </ArgumentTypeCoercion>
     <MissingConstructor>
       <code><![CDATA[$field]]></code>
       <code><![CDATA[$type]]></code>
     </MissingConstructor>
-    <MixedArgumentTypeCoercion>
-      <code><![CDATA[\iterator_to_array($this->field->getAttributes())]]></code>
-    </MixedArgumentTypeCoercion>
     <MixedReturnStatement>
       <code><![CDATA[$column->getEnumValues()[0]]]></code>
     </MixedReturnStatement>
