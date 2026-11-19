@@ -1,23 +1,49 @@
-# Cycle ORM - Schema Builder
+<div align="center">
+    <a href="https://cycle-orm.dev" target="_blank">
+        <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://github.com/cycle/.github/blob/main/logo/words-vector-dark.svg?raw=true">
+            <img width="50%" align="center" src="https://github.com/cycle/.github/blob/main/logo/words-vector-light.svg?raw=true" alt="CycleORM Logo">
+        </picture>
+    </a>
+</div>
 
-[![Latest Stable Version](https://poser.pugx.org/cycle/schema-builder/version)](https://packagist.org/packages/cycle/schema-builder)
-[![Build Status](https://github.com/cycle/schema-builder/workflows/build/badge.svg)](https://github.com/cycle/schema-builder/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cycle/schema-builder/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/cycle/schema-builder/?branch=2.x)
-[![Codecov](https://codecov.io/gh/cycle/schema-builder/graph/badge.svg)](https://codecov.io/gh/cycle/schema-builder)
+<p align="center">Cycle ORM Schema Builder</p>
 
-Schema Builder package provides a convenient way to configure your ORM and Database schema via 
-[annotations (attributes)](https://github.com/cycle/annotated) or custom generators.
+<div align="center">
 
-## Installation
+[![Documentation](https://img.shields.io/badge/Documentation-blue?style=for-the-badge&logo=gitbook&logoColor=white)](https://cycle-orm.dev/docs/schema-dynamic-schema)
+[![Sponsor](https://img.shields.io/static/v1?style=for-the-badge&label=&message=Sponsor&logo=githubsponsors&logoColor=white&color=%23EA4AAA)](https://github.com/sponsors/cycle)
+
+[![Psalm Level](https://shepherd.dev/github/cycle/schema-builder/level.svg)](https://shepherd.dev/github/cycle/schema-builder)
+[![Type Coverage](https://shepherd.dev/github/cycle/schema-builder/coverage.svg)](https://shepherd.dev/github/cycle/schema-builder)
+[![Codecov](https://codecov.io/gh/cycle/schema-builder/branch/2.x/graph/badge.svg)](https://codecov.io/gh/cycle/schema-builder)
+[![Discord](https://img.shields.io/discord/538114875570913290?style=flat-square&logo=discord&labelColor=7289d9&logoColor=white&color=39456d)](https://discord.gg/spiralphp)
+
+</div>
+
+<br />
+
+Schema Builder configures the Cycle ORM and database schema from entity definitions, produced by
+[annotations (attributes)](https://github.com/cycle/annotated) or by custom generators.
+
+## Get Started
+
+### Installation
 
 ```bash
 composer require cycle/schema-builder
 ```
 
-## Configuration
+[![PHP](https://img.shields.io/packagist/php-v/cycle/schema-builder.svg?style=flat-square&logo=php)](https://packagist.org/packages/cycle/schema-builder)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/cycle/schema-builder.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/cycle/schema-builder)
+[![License](https://img.shields.io/packagist/l/cycle/schema-builder.svg?style=flat-square)](LICENSE)
+[![Total Downloads](https://img.shields.io/packagist/dt/cycle/schema-builder.svg?style=flat-square)](https://packagist.org/packages/cycle/schema-builder/stats)
+
+Requires PHP 8.2+.
+
+### Configuration
 
 ```php
-use Cycle\Migrations;
 use Cycle\Database;
 use Cycle\Database\Config;
 
@@ -39,7 +65,9 @@ $dbal = new Database\DatabaseManager(new Config\DatabaseConfig([
 $registry = new \Cycle\Schema\Registry($dbal);
 ```
 
-We can now register our first entity, add its columns and link to a specific table:
+### Registering entities
+
+Register an entity, add its columns and link it to a table:
 
 ```php
 use Cycle\Schema\Definition;
@@ -56,24 +84,35 @@ $entity->getFields()
     ->set('name', (new Definition\Field())->setType('string(32)')->setColumn('user_name'));
 
 // register entity
-$r->register($entity);
+$registry->register($entity);
 
 // associate table
-$r->linkTable($entity, 'default', 'users');
+$registry->linkTable($entity, 'default', 'users');
 ```
-You can generate ORM schema immediately using `Cycle\Schema\Compiler`:
+
+### Compiling the schema
+
+Generate the ORM schema with `Cycle\Schema\Compiler`:
 
 ```php
 use Cycle\Schema\Compiler;
-$schema = (new Compiler())->compile($r);
+
+$schema = (new Compiler())->compile($registry);
 
 $orm = $orm->with(schema: new \Cycle\ORM\Schema($schema));
 ```
 
-You can find more information about Schema builder package [here](https://cycle-orm.dev/docs/schema-dynamic-schema#using-schema-builder).
+More about the Schema Builder is in the [documentation](https://cycle-orm.dev/docs/schema-dynamic-schema#using-schema-builder).
 
-License:
---------
-The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
-by [Spiral Scout](https://spiralscout.com).
+## Testing
 
+The driver tests need the databases from `tests/docker-compose.yml`:
+
+```bash
+cd tests
+docker compose up -d
+cd ..
+composer test
+```
+
+The SQLite tests run without containers: `vendor/bin/phpunit --group driver-sqlite`.
