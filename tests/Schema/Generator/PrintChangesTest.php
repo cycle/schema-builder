@@ -7,10 +7,10 @@ namespace Cycle\Schema\Tests\Generator;
 use Cycle\Database\Schema\AbstractForeignKey;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Generator\RenderTables;
-use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Generator\PrintChanges;
+use Cycle\Schema\Generator\RenderTables;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Tests\BaseTest;
 use Cycle\Schema\Tests\Fixtures\User;
 use Symfony\Component\Console\Output\BufferedOutput;
 

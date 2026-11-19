@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Cycle\Schema;
 
-use Cycle\Schema\Definition\Entity;
-use Cycle\Schema\Exception\RegistryException;
-use Cycle\Schema\Exception\RelationException;
 use Cycle\Database\DatabaseProviderInterface;
 use Cycle\Database\Exception\DBALException;
 use Cycle\Database\Schema\AbstractTable;
+use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Exception\RegistryException;
+use Cycle\Schema\Exception\RelationException;
 
 /**
  * @implements \IteratorAggregate<Entity>
