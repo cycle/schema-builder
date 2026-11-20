@@ -408,6 +408,74 @@ final class ColumnTest extends BaseTest
         ];
     }
 
+    #[Test]
+    public function trimsTypeOptions(): void
+    {
+        $field = (new Field())->setType('enum(a, b,  c)')->setColumn('name');
+        $table = $this->getStub();
+
+        Column::parse($field)->render($table->column('name'));
+
+        Assert::same($table->column('name')->getEnumValues(), ['a', 'b', 'c']);
+    }
+
+    #[Test]
+    public function passesOptionsOnlyToKnownTypeMethods(): void
+    {
+        $field = (new Field())->setType('ltree(5)')->setColumn('name');
+        $table = $this->getStub();
+
+        Column::parse($field)->render($table->column('name'));
+
+        Assert::same($table->column('name')->getDeclaredType(), 'ltree');
+    }
+
+    #[Test]
+    public function primaryColumnHasNoDefault(): void
+    {
+        $field = (new Field())->setType('primary')->setColumn('id');
+        $field->getOptions()->set(Column::OPT_DEFAULT, 1);
+
+        Assert::false(Column::parse($field)->hasDefault());
+    }
+
+    #[Test]
+    public function nullableColumnDropsThePreviousDefault(): void
+    {
+        $field = (new Field())->setType('string')->setColumn('name');
+        $field->getOptions()->set(Column::OPT_NULLABLE, true);
+        $table = $this->getStub();
+        $table->column('name')->string()->defaultValue('old');
+
+        Column::parse($field)->render($table->column('name'));
+
+        Assert::null($table->column('name')->getDefaultValue());
+    }
+
+    #[Test]
+    public function notNullableColumnKeepsThePreviousDefault(): void
+    {
+        $field = (new Field())->setType('string')->setColumn('name');
+        $table = $this->getStub();
+        $table->column('name')->string()->defaultValue('old');
+
+        Column::parse($field)->render($table->column('name'));
+
+        Assert::same($table->column('name')->getDefaultValue(), 'old');
+    }
+
+    #[Test]
+    public function castsTheDefaultOfADatetimeToTheEpoch(): void
+    {
+        $field = (new Field())->setType('datetime')->setColumn('name');
+        $field->getOptions()->set(Column::OPT_CAST_DEFAULT, true);
+        $table = $this->getStub();
+
+        Column::parse($field)->render($table->column('name'));
+
+        Assert::same($table->column('name')->getDefaultValue()->format('Y-m-d H:i:s'), '1970-01-01 00:00:00');
+    }
+
     protected function getStub(): AbstractTable
     {
         return $this->dbal->database('default')->table('sample')->getSchema();
