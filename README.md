@@ -106,13 +106,14 @@ More about the Schema Builder is in the [documentation](https://cycle-orm.dev/do
 
 ## Testing
 
-The driver tests need the databases from `tests/docker-compose.yml`:
+The tests run on [Testo](https://github.com/php-testo/testo) through the shared [cycle/testing](https://github.com/cycle/testing) harness: `tests/Unit` needs no database, and `tests/Feature` runs once per database driver.
 
 ```bash
-cd tests
-docker compose up -d
-cd ..
-composer test
+composer test:unit         # no database
+composer test:sqlite       # in-memory SQLite, no docker
+composer db:up             # MySQL, Postgres and SQL Server in docker
+composer test              # every suite; a driver whose server is down is skipped
+composer db:down
 ```
 
-The SQLite tests run without containers: `vendor/bin/phpunit --group driver-sqlite`.
+`composer test:mysql`, `test:postgres` and `test:sqlserver` run one driver.
