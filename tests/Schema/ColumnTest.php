@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
 
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\ColumnException;
 use Cycle\Schema\Table\Column;
-use Cycle\Database\Schema\AbstractTable;
 
 abstract class ColumnTest extends BaseTest
 {

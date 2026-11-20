@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests;
 
+use Cycle\Database\Config\DatabaseConfig;
+use Cycle\Database\Database;
+use Cycle\Database\DatabaseManager;
+use Cycle\Database\Driver\Driver;
+use Cycle\Database\Driver\Handler;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORM;
@@ -18,11 +23,6 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Tests\Fixtures\TestLogger;
 use PHPUnit\Framework\TestCase;
-use Cycle\Database\Config\DatabaseConfig;
-use Cycle\Database\Database;
-use Cycle\Database\DatabaseManager;
-use Cycle\Database\Driver\Driver;
-use Cycle\Database\Driver\Handler;
 
 abstract class BaseTest extends TestCase
 {

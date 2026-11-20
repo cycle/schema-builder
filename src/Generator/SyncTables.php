@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\Database\Schema\Reflector;
 use Cycle\Schema\Exception\SyncException;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Database\Schema\Reflector;
 
 /**
  * Sync table schemas with database.

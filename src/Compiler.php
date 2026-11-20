@@ -172,7 +172,7 @@ final class Compiler
             try {
                 $comparator->compare();
             } catch (\Throwable $e) {
-                throw new Exception\CompilerException(sprintf(
+                throw new CompilerException(sprintf(
                     "Error compiling the `%s` role.\n\n%s",
                     $entity->getRole() ?? 'unknown',
                     $e->getMessage(),

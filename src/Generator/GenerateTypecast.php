@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Generator;
 
+use Cycle\Database\Schema\AbstractColumn;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Database\Schema\AbstractColumn;
 
 /**
  * Must be run after RenderTable.
