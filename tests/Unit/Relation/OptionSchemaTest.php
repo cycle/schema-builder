@@ -9,6 +9,7 @@ use Cycle\Schema\Exception\OptionException;
 use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use Testo\Assert;
+use Testo\Data\DataSet;
 use Testo\Expect;
 use Testo\Test;
 
@@ -32,6 +33,18 @@ final class OptionSchemaTest
         ]);
 
         Assert::same($options->get(Relation::TYPE), 100);
+    }
+
+    #[DataSet(['uuid', 'post_uuid'], 'single key')]
+    #[DataSet([['id', 'slug'], ['post_id', 'post_slug']], 'composite key')]
+    public function injectsAnotherOptionIntoATemplate(string|array $innerKey, string|array $expected): void
+    {
+        $options = (new OptionSchema(['innerKey' => Relation::INNER_KEY]))
+            ->withTemplate([Relation::INNER_KEY => 'id', Relation::THROUGH_INNER_KEY => '{source:role}_{innerKey}'])
+            ->withContext(['source:role' => 'post'])
+            ->withOptions(['innerKey' => $innerKey]);
+
+        Assert::same($options->get(Relation::THROUGH_INNER_KEY), $expected);
     }
 
     public function testInvalidAlias(): void

@@ -13,6 +13,7 @@ use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Registry;
+use Cycle\Schema\Relation\HasOne;
 use Cycle\Schema\Tests\Feature\BaseTest;
 use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\LegacyDatabase;
@@ -20,11 +21,23 @@ use Cycle\Schema\Tests\Fixtures\Post;
 use Cycle\Schema\Tests\Fixtures\SpyDatabase;
 use Cycle\Schema\Tests\Fixtures\User;
 use Testo\Assert;
+use Testo\Data\DataProvider;
 use Testo\Expect;
 use Testo\Test;
 
 final class RegistryTest extends BaseTest
 {
+    public static function entityLookups(): iterable
+    {
+        yield 'getChildren' => [static fn(Registry $r, Entity $e) => $r->getChildren($e), 'Undefined entity `user`'];
+        yield 'registerRelation' => [
+            static fn(Registry $r, Entity $e) => $r->registerRelation($e, 'plain', new HasOne()),
+            'Undefined entity `user`',
+        ];
+        yield 'hasRelation' => [static fn(Registry $r, Entity $e) => $r->hasRelation($e, 'plain'), 'Undefined entity `user`'];
+        yield 'getRelations' => [static fn(Registry $r, Entity $e) => $r->getRelations($e), 'Undefined entity `user`'];
+    }
+
     #[Test]
     public function testHasRole(): void
     {
@@ -480,6 +493,27 @@ final class RegistryTest extends BaseTest
         Expect::exception(RegistryException::class);
 
         $r->registerChild($e, $c);
+    }
+
+    #[Test]
+    #[DataProvider('entityLookups')]
+    public function rejectsAnUnregisteredEntity(\Closure $lookup, string $message): never
+    {
+        Expect::exception(RegistryException::class)->withMessage($message);
+
+        $lookup(new Registry($this->dbal), User::define());
+    }
+
+    #[Test]
+    public function rejectsAnUnknownRelation(): never
+    {
+        $user = User::define();
+        $registry = new Registry($this->dbal);
+        $registry->register($user);
+
+        Expect::exception(RegistryException::class)->withMessage('Undefined relation `user`.`plain`');
+
+        $registry->getRelation($user, 'plain');
     }
 
     #[Test]
