@@ -106,7 +106,7 @@ More about the Schema Builder is in the [documentation](https://cycle-orm.dev/do
 
 ## Testing
 
-The tests run on [Testo](https://github.com/php-testo/testo) through the shared [cycle/testing](https://github.com/cycle/testing) harness: `tests/Schema/Unit` needs no database, and `tests/Schema/Feature` runs once per database driver.
+The tests run on [Testo](https://github.com/php-testo/testo) through the shared [cycle/testing](https://github.com/cycle/testing) harness: `tests/Unit` needs no database, and `tests/Feature` runs once per database driver.
 
 ```bash
 composer test:unit         # no database

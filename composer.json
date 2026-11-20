@@ -58,7 +58,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Cycle\\Schema\\Tests\\": "tests/Schema/"
+            "Cycle\\Schema\\Tests\\": "tests/"
         }
     },
     "scripts": {
