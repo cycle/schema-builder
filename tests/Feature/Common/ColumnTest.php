@@ -431,6 +431,17 @@ final class ColumnTest extends BaseTest
     }
 
     #[Test]
+    public function wrapsAFailureOfTheColumnTypeMethod(): never
+    {
+        $field = (new Field())->setType('decimal(abc)')->setColumn('price');
+        $table = $this->getStub();
+
+        Expect::exception(ColumnException::class)->withMessagePattern("/^Invalid column type definition in '(public\.)?sample'\.'price'$/");
+
+        Column::parse($field)->render($table->column('price'));
+    }
+
+    #[Test]
     public function primaryColumnHasNoDefault(): void
     {
         $field = (new Field())->setType('primary')->setColumn('id');
