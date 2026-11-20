@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Unit\Relation\Traits;
 
+use Cycle\ORM\Relation;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RelationException;
@@ -188,6 +189,52 @@ final class FieldTraitTest
         ];
     }
 
+    public function testEnsureFieldCopiesTheOuterFieldIntoTheTarget(): void
+    {
+        $target = (new Entity())->setClass(\stdClass::class);
+        $outer = (new Field())->setColumn('id')->setType('primary');
+        $outer->getAttributes()->set('unsigned', true);
+        $outer->getAttributes()->set('zerofill', false);
+
+        $this->ensureField($target, 'user_id', $outer);
+
+        $field = $target->getFields()->get('user_id');
+        Assert::same($field->getEntityClass(), \stdClass::class);
+        Assert::same(\iterator_to_array($field->getAttributes()), ['unsigned' => true, 'zerofill' => false]);
+    }
+
+    public function testNormalizeContextFieldsReplacesColumnsWithFieldNames(): void
+    {
+        $source = new Entity();
+        $source->getFields()->set('userName', (new Field())->setColumn('user_name'));
+        $target = new Entity();
+        $target->getFields()
+            ->set('authorId', (new Field())->setColumn('author_id'))
+            ->set('slug', (new Field())->setColumn('slug'));
+        $this->options = $this->contextOptions()->withOptions([
+            'innerKey' => 'user_name',
+            'outerKey' => ['author_id', 'slug', 'user_name'],
+        ]);
+
+        $this->normalizeContextFields($source, $target);
+
+        Assert::same($this->options->getOptions(), [
+            'innerKey' => ['userName'],
+            'outerKey' => ['authorId', 'slug', 'user_name'],
+        ]);
+    }
+
+    public function testNormalizeContextFieldsSkipsMissingKeys(): void
+    {
+        $target = new Entity();
+        $target->getFields()->set('authorId', (new Field())->setColumn('author_id'));
+        $this->options = $this->contextOptions()->withOptions(['outerKey' => 'author_id']);
+
+        $this->normalizeContextFields(new Entity(), $target);
+
+        Assert::same($this->options->getOptions(), ['outerKey' => ['authorId']]);
+    }
+
     #[BeforeTest]
     public function createOptions(): void
     {
@@ -202,5 +249,10 @@ final class FieldTraitTest
     protected function getOptions(): OptionSchema
     {
         return $this->options;
+    }
+
+    private function contextOptions(): OptionSchema
+    {
+        return new OptionSchema(['innerKey' => Relation::INNER_KEY, 'outerKey' => Relation::OUTER_KEY]);
     }
 }
