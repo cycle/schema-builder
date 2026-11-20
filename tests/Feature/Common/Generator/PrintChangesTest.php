@@ -201,6 +201,61 @@ final class PrintChangesTest extends BaseTest
         Assert::string($content)->contains('Schema changes:')->contains('default.users')->contains('- add foreign key on [some_id]')->contains('- drop foreign key on [partner_id]')->contains('- alter foreign key on [friend_id]')->notContains('default.users: 3 change(s) detected');
     }
 
+    #[Test]
+    public function printsOnlyTheNoChangesNotice(): void
+    {
+        $this->compiler->compile($this->registry, [new RenderTables()]);
+        $this->registry->getTableSchema($this->user)->save();
+
+        $this->generator->run($this->registry);
+
+        Assert::same($this->output->fetch(), "No database changes has been detected\n");
+    }
+
+    #[Test]
+    public function printsOnlyTheDropOfADroppedTable(): void
+    {
+        $this->compiler->compile($this->registry, [new RenderTables()]);
+        $this->registry->getTableSchema($this->user)->save();
+        $this->registry->getTableSchema($this->user)->declareDropped();
+
+        $this->generator->run($this->registry);
+
+        Assert::same($this->output->fetch(), "Schema changes:\n• default.users    - drop table\n");
+    }
+
+    #[Test]
+    public function startsTheVerboseDescriptionOnANewLine(): void
+    {
+        $this->compiler->compile($this->registry, [new RenderTables()]);
+
+        $this->output->setVerbosity(BufferedOutput::VERBOSITY_VERBOSE);
+        $this->generator->run($this->registry);
+
+        Assert::string($this->output->fetch())->contains("• default.users\n    - create table\n");
+    }
+
+    #[Test]
+    public function printsEveryChangedTable(): void
+    {
+        $post = (new Entity())->setRole('post');
+        $this->registry->register($post);
+        $this->registry->linkTable($post, 'default', 'posts');
+        $secondary = (new Entity())->setRole('secondaryUser');
+        $this->registry->register($secondary);
+        $this->registry->linkTable($secondary, 'secondary', 'users');
+        foreach ([$this->user, $post, $secondary] as $entity) {
+            $this->registry->getTableSchema($entity)->primary('id');
+        }
+
+        $this->generator->run($this->registry);
+
+        Assert::string($this->output->fetch())
+            ->contains('• default.users: 1 change(s) detected')
+            ->contains('• default.posts: 1 change(s) detected')
+            ->contains('• secondary.users: 1 change(s) detected');
+    }
+
     #[BeforeTest]
     public function createRegistry(): void
     {

@@ -121,6 +121,23 @@ final class FieldComparatorTest
         $comparator->addField('bar', $bar);
     }
 
+    public function describesEveryConflictingField(): never
+    {
+        $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => null])->setPrimary(true);
+        $bar = $this->createField('foo', 'bigInteger', ['nullable' => false, 'default' => 42]);
+        $comparator = $this->createComparator()
+            ->addField('foo', $foo)
+            ->addField('bar', $bar);
+
+        Expect::exception(\Exception::class)->withMessage(
+            "Different definitions are specified for the `foo` column:\n\n"
+            . "foo:\n  type=integer primary nullable=true default=NULL\n\n"
+            . "bar:\n  type=bigInteger nullable=false default=42",
+        );
+
+        $comparator->compare();
+    }
+
     private function createComparator(): FieldComparator
     {
         return new FieldComparator();

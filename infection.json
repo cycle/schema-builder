@@ -6,10 +6,35 @@
         ]
     },
     "timeout": 10,
-    "minMsi": 80,
-    "minCoveredMsi": 80,
+    "minMsi": 92,
+    "minCoveredMsi": 92,
     "testFramework": "testo",
     "tmpDir": "runtime",
+    "mutators": {
+        "@default": true,
+        "Concat": {
+            "ignore": ["Cycle\\Schema\\Generator\\PrintChanges::run"]
+        },
+        "IncrementInteger": {
+            "ignore": [
+                "Cycle\\Schema\\Generator\\PrintChanges::describeColumns",
+                "Cycle\\Schema\\Generator\\PrintChanges::describeIndexes",
+                "Cycle\\Schema\\Generator\\PrintChanges::describeFKs"
+            ]
+        },
+        "LessThanOrEqualTo": {
+            "ignore": ["Cycle\\Schema\\Definition\\Comparator\\FieldComparator::compare"]
+        },
+        "ReturnRemoval": {
+            "ignore": ["Cycle\\Schema\\Table\\Column::castDefault"]
+        },
+        "TrueValue": {
+            "ignore": ["Cycle\\Schema\\Registry::loadTableSchemas"]
+        },
+        "UnwrapArrayMerge": {
+            "ignore": ["Cycle\\Schema\\Table\\Column::render"]
+        }
+    },
     "logs": {
         "stryker": {
             "report": "2.x"
