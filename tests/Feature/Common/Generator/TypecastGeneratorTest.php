@@ -35,4 +35,34 @@ final class TypecastGeneratorTest extends BaseTest
 
         Assert::true(in_array($schema['user'][Schema::TYPECAST]['p_id'], ['int', 'bool']));
     }
+
+    #[Test]
+    public function leavesAnEntityWithoutATableAlone(): void
+    {
+        $e = User::define();
+        $r = new Registry($this->dbal);
+        $r->register($e);
+
+        (new GenerateTypecast())->run($r);
+
+        Assert::false($e->getFields()->get('p_id')->hasTypecast());
+    }
+
+    #[Test]
+    public function keepsADeclaredTypecastAndSkipsFieldsWithoutAColumn(): void
+    {
+        $e = User::define();
+        $e->getFields()->get('p_balance')->setTypecast('money');
+        $r = new Registry($this->dbal);
+        $r->register($e)->linkTable($e, 'default', 'user');
+        $table = $r->getTableSchema($e);
+        $table->column('id')->primary();
+        $table->column('balance')->float();
+
+        (new GenerateTypecast())->run($r);
+
+        Assert::same($e->getFields()->get('p_id')->getTypecast(), 'int');
+        Assert::same($e->getFields()->get('p_balance')->getTypecast(), 'money');
+        Assert::false($e->getFields()->get('p_name')->hasTypecast());
+    }
 }
