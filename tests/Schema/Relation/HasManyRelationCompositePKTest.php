@@ -23,6 +23,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class HasManyRelationCompositePKTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = Plain::defineCompositePK();
@@ -36,9 +37,10 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
 
         (new GenerateRelations(['hasMany' => new HasMany()]))->run($r);
 
-        $this->assertInstanceOf(HasMany::class, $r->getRelation($u, 'plain'));
+        \Testo\Assert::instanceOf($r->getRelation($u, 'plain'), HasMany::class);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $c = new Compiler();
@@ -55,19 +57,19 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         (new GenerateRelations(['hasMany' => new HasMany()]))->run($r);
         $schema = $c->compile($r);
 
-        $this->assertArrayHasKey('user', $schema);
-        $this->assertSame(Relation::HAS_MANY, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
+        \Testo\Assert::array($schema)->hasKeys('user');
+        \Testo\Assert::same($schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE], Relation::HAS_MANY);
 
-        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['user'][Schema::RELATIONS])->hasKeys('plain');
 
-        $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('user_p_id', $schema['plain'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('plain');
+        \Testo\Assert::array($schema['plain'][Schema::COLUMNS])->hasKeys('user_p_id');
     }
 
+    #[\Testo\Test]
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Inconsistent amount of related fields. '
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Inconsistent amount of related fields. '
             . 'Source entity: `user`; keys: `id`, `slug`. Target entity: `plain`; keys: `parent_id`.');
 
         $e = Plain::defineCompositePK();
@@ -86,6 +88,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testCustomKey(): void
     {
         $e = Plain::defineCompositePK();
@@ -103,14 +106,15 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
             new GenerateRelations(['hasMany' => new HasMany()]),
         ]);
 
-        $this->assertArrayHasKey('user', $schema);
-        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema)->hasKeys('user');
+        \Testo\Assert::array($schema['user'][Schema::RELATIONS])->hasKeys('plain');
 
-        $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('parent_id', $schema['plain'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_slug', $schema['plain'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('plain');
+        \Testo\Assert::array($schema['plain'][Schema::COLUMNS])->hasKeys('parent_id');
+        \Testo\Assert::array($schema['plain'][Schema::COLUMNS])->hasKeys('parent_slug');
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = Plain::defineCompositePK();
@@ -132,10 +136,11 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('plain');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['user_p_id', 'user_p_slug']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasForeignKey(['user_p_id', 'user_p_slug']));
     }
 
+    #[\Testo\Test]
     public function testRenderTableRedefined(): void
     {
         $e = Plain::defineCompositePK();
@@ -160,12 +165,13 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('plain');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertTrue($table->hasColumn('parent_slug'));
-        $this->assertFalse($table->hasForeignKey(['parent_id', 'parent_slug']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('parent_id'));
+        \Testo\Assert::true($table->hasColumn('parent_slug'));
+        \Testo\Assert::false($table->hasForeignKey(['parent_id', 'parent_slug']));
     }
 
+    #[\Testo\Test]
     public function testInverseInvalidType(): void
     {
         $c = new Compiler();
@@ -179,7 +185,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'plain');
         $r->register($u)->linkTable($u, 'default', 'user');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations([
             'hasMany' => new HasMany(),
@@ -187,6 +193,7 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         ]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testInverseToBelongsTo(): void
     {
         $c = new Compiler();
@@ -206,25 +213,17 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         ]))->run($r);
         $schema = $c->compile($r);
 
-        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
-        $this->assertSame(Relation::BELONGS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+        \Testo\Assert::array($schema['plain'][Schema::RELATIONS])->hasKeys('user');
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE], Relation::BELONGS_TO);
 
-        $this->assertSame(
-            'user',
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET], 'user');
 
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY], ['p_id', 'p_slug']);
 
-        $this->assertSame(
-            ['user_p_id', 'user_p_slug'],
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY], ['user_p_id', 'user_p_slug']);
     }
 
+    #[\Testo\Test]
     public function testInverseToRefersTo(): void
     {
         $c = new Compiler();
@@ -244,22 +243,13 @@ abstract class HasManyRelationCompositePKTest extends BaseTest
         ]))->run($r);
         $schema = $c->compile($r);
 
-        $this->assertArrayHasKey('user', $schema['plain'][Schema::RELATIONS]);
-        $this->assertSame(Relation::REFERS_TO, $schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE]);
+        \Testo\Assert::array($schema['plain'][Schema::RELATIONS])->hasKeys('user');
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::TYPE], Relation::REFERS_TO);
 
-        $this->assertSame(
-            'user',
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::TARGET], 'user');
 
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::OUTER_KEY], ['p_id', 'p_slug']);
 
-        $this->assertSame(
-            ['user_p_id', 'user_p_slug'],
-            $schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['plain'][Schema::RELATIONS]['user'][Relation::SCHEMA][Relation::INNER_KEY], ['user_p_id', 'user_p_slug']);
     }
 }

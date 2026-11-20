@@ -16,36 +16,41 @@ use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\SchemaModifierInterface;
 use PHPUnit\Framework\TestCase;
 
-class EntityTest extends TestCase
+class EntityTest
 {
+    #[\Testo\Test]
     public function testRole(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
     }
 
+    #[\Testo\Test]
     public function testTypecast(): void
     {
         $e = new Entity();
         $e->setTypecast('FooTypecaster');
-        $this->assertSame('FooTypecaster', $e->getTypecast());
+        \Testo\Assert::same($e->getTypecast(), 'FooTypecaster');
     }
 
+    #[\Testo\Test]
     public function testTypecastAsArray(): void
     {
         $e = new Entity();
         $e->setTypecast(['FooTypecaster', 'BarTypecaster']);
-        $this->assertSame(['FooTypecaster', 'BarTypecaster'], $e->getTypecast());
+        \Testo\Assert::same($e->getTypecast(), ['FooTypecaster', 'BarTypecaster']);
     }
 
+    #[\Testo\Test]
     public function testTypecastAsNull(): void
     {
         $e = new Entity();
         $e->setTypecast(null);
-        $this->assertNull($e->getTypecast());
+        \Testo\Assert::null($e->getTypecast());
     }
 
+    #[\Testo\Test]
     public function testFields(): void
     {
         $e = new Entity();
@@ -53,11 +58,12 @@ class EntityTest extends TestCase
 
         $e->getFields()->set('id', new Field());
 
-        $this->assertTrue($e->getFields()->has('id'));
+        \Testo\Assert::true($e->getFields()->has('id'));
         $e->getFields()->remove('id');
-        $this->assertFalse($e->getFields()->has('id'));
+        \Testo\Assert::false($e->getFields()->has('id'));
     }
 
+    #[\Testo\Test]
     public function testForeignKeys(): void
     {
         $entity = new Entity();
@@ -69,11 +75,12 @@ class EntityTest extends TestCase
 
         $entity->getForeignKeys()->set($key);
 
-        $this->assertTrue($entity->getForeignKeys()->has($key));
+        \Testo\Assert::true($entity->getForeignKeys()->has($key));
         $entity->getForeignKeys()->remove($key);
-        $this->assertFalse($entity->getForeignKeys()->has($key));
+        \Testo\Assert::false($entity->getForeignKeys()->has($key));
     }
 
+    #[\Testo\Test]
     public function testPrimaryFields(): void
     {
         $e = new Entity();
@@ -84,10 +91,11 @@ class EntityTest extends TestCase
         $e->getFields()->set('alternate_primary', (new Field())->setType('primary'));
         $e->getFields()->set('another_primary', (new Field())->setType('bigPrimary'));
 
-        $this->assertSame(['id', 'alternate_primary', 'another_primary'], $e->getPrimaryFields()->getNames());
-        $this->assertTrue($e->hasPrimaryKey());
+        \Testo\Assert::same($e->getPrimaryFields()->getNames(), ['id', 'alternate_primary', 'another_primary']);
+        \Testo\Assert::true($e->hasPrimaryKey());
     }
 
+    #[\Testo\Test]
     public function testSetPrimaryKeys(): void
     {
         $e = new Entity();
@@ -98,15 +106,15 @@ class EntityTest extends TestCase
 
         $e->setPrimaryColumns(['id', 'slug']);
 
-        $this->assertSame(['p_id', 'p_slug'], $e->getPrimaryFields()->getNames());
+        \Testo\Assert::same($e->getPrimaryFields()->getNames(), ['p_id', 'p_slug']);
 
-        $this->assertTrue($e->hasPrimaryKey());
+        \Testo\Assert::true($e->hasPrimaryKey());
     }
 
+    #[\Testo\Test]
     public function testSetPrimaryKeysShouldThrowAnExceptionWhenUsedNonExistsColumn(): void
     {
-        $this->expectException(FieldException::class);
-        $this->expectExceptionMessage('Undefined field with column name `test`.');
+        \Testo\Expect::exception(FieldException::class)->withMessageContaining('Undefined field with column name `test`.');
 
         $e = new Entity();
         $e->setRole('role');
@@ -117,6 +125,7 @@ class EntityTest extends TestCase
         $e->setPrimaryColumns(['test', 'test1', 'slug']);
     }
 
+    #[\Testo\Test]
     public function testPrimaryKeysShouldReturnEmptyArrayWithoutPK(): void
     {
         $e = new Entity();
@@ -124,14 +133,14 @@ class EntityTest extends TestCase
 
         $e->getFields()->set('id', new Field());
 
-        $this->assertSame([], $e->getPrimaryFields()->getNames());
-        $this->assertFalse($e->hasPrimaryKey());
+        \Testo\Assert::same($e->getPrimaryFields()->getNames(), []);
+        \Testo\Assert::false($e->hasPrimaryKey());
     }
 
+    #[\Testo\Test]
     public function testPrimaryKeysShouldThrowAnExceptionWhenNumberOfPKsNotMatches(): void
     {
-        $this->expectException(EntityException::class);
-        $this->expectExceptionMessage('Ambiguous primary key definition for `role`.');
+        \Testo\Expect::exception(EntityException::class)->withMessageContaining('Ambiguous primary key definition for `role`.');
 
         $e = new Entity();
         $e->setRole('role');
@@ -144,6 +153,7 @@ class EntityTest extends TestCase
         $e->getPrimaryFields();
     }
 
+    #[\Testo\Test]
     public function testFieldOptions(): void
     {
         $e = new Entity();
@@ -152,180 +162,197 @@ class EntityTest extends TestCase
         $e->getFields()->set('id', new Field());
 
         $e->getFields()->get('id')->getOptions()->set('name', 'value');
-        $this->assertSame('value', $e->getFields()->get('id')->getOptions()->get('name'));
+        \Testo\Assert::same($e->getFields()->get('id')->getOptions()->get('name'), 'value');
     }
 
+    #[\Testo\Test]
     public function testGetUndefinedOption(): void
     {
         $e = new Entity();
         $e->setRole('role');
         $e->getFields()->set('id', new Field());
 
-        $this->expectException(\Cycle\Schema\Exception\OptionException::class);
+        \Testo\Expect::exception(\Cycle\Schema\Exception\OptionException::class);
 
         $e->getFields()->get('id')->getOptions()->get('name');
     }
 
+    #[\Testo\Test]
     public function testSetRelation(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
 
         $e->getRelations()->set('test', new Relation());
 
-        $this->assertTrue($e->getRelations()->has('test'));
+        \Testo\Assert::true($e->getRelations()->has('test'));
     }
 
+    #[\Testo\Test]
     public function testGetUndefined(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         $e->getRelations()->get('test');
     }
 
+    #[\Testo\Test]
     public function testSetRelationDouble(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
         $e->getRelations()->set('test', new Relation());
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         $e->getRelations()->set('test', new Relation());
     }
 
+    #[\Testo\Test]
     public function testRelationNoTarget(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
         $e->getRelations()->set('test', new Relation());
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         $e->getRelations()->get('test')->getTarget();
     }
 
+    #[\Testo\Test]
     public function testRelationNoType(): void
     {
         $e = new Entity();
         $e->setRole('role');
-        $this->assertSame('role', $e->getRole());
+        \Testo\Assert::same($e->getRole(), 'role');
         $e->getRelations()->set('test', new Relation());
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         $e->getRelations()->get('test')->getType();
     }
 
+    #[\Testo\Test]
     public function testMapper(): void
     {
         $e = new Entity();
         $e->setMapper('mapper');
 
-        $this->assertSame('mapper', $e->getMapper());
+        \Testo\Assert::same($e->getMapper(), 'mapper');
     }
 
+    #[\Testo\Test]
     public function testSource(): void
     {
         $e = new Entity();
         $e->setSource('source');
 
-        $this->assertSame('source', $e->getSource());
+        \Testo\Assert::same($e->getSource(), 'source');
     }
 
+    #[\Testo\Test]
     public function testScope(): void
     {
         $e = new Entity();
         $e->setScope('constrain');
 
-        $this->assertSame('constrain', $e->getScope());
+        \Testo\Assert::same($e->getScope(), 'constrain');
     }
 
+    #[\Testo\Test]
     public function testRepository(): void
     {
         $e = new Entity();
         $e->setRepository('repository');
 
-        $this->assertSame('repository', $e->getRepository());
+        \Testo\Assert::same($e->getRepository(), 'repository');
     }
 
+    #[\Testo\Test]
     public function testDatabase(): void
     {
         $e = new Entity();
 
-        $this->assertNull($e->getDatabase());
+        \Testo\Assert::null($e->getDatabase());
 
         $e->setDatabase('database');
 
-        $this->assertSame('database', $e->getDatabase());
+        \Testo\Assert::same($e->getDatabase(), 'database');
     }
 
+    #[\Testo\Test]
     public function testTableName(): void
     {
         $e = new Entity();
 
-        $this->assertNull($e->getTableName());
+        \Testo\Assert::null($e->getTableName());
 
         $e->setTableName('table_name');
 
-        $this->assertSame('table_name', $e->getTableName());
+        \Testo\Assert::same($e->getTableName(), 'table_name');
     }
 
+    #[\Testo\Test]
     public function testSchema(): void
     {
         $e = new Entity();
         $e->setSchema(['schema']);
 
-        $this->assertSame(['schema'], $e->getSchema());
+        \Testo\Assert::same($e->getSchema(), ['schema']);
     }
 
+    #[\Testo\Test]
     public function testSingleTableInheritance(): void
     {
         $e = new Entity();
         $e->setInheritance($inheritance = new SingleTable());
 
-        $this->assertSame($inheritance, $e->getInheritance());
+        \Testo\Assert::same($e->getInheritance(), $inheritance);
     }
 
+    #[\Testo\Test]
     public function testJoinedTableInheritance(): void
     {
         $e = new Entity();
         $parent = new Entity();
         $e->setInheritance($inheritance = new JoinedTable($parent));
 
-        $this->assertSame($inheritance, $e->getInheritance());
+        \Testo\Assert::same($e->getInheritance(), $inheritance);
     }
 
+    #[\Testo\Test]
     public function testSchemaModifierWithRole(): void
     {
-        $modifier = $this->createMock(SchemaModifierInterface::class);
-        $modifier->expects($this->once())->method('withRole')->with('my-entity')->willReturnSelf();
+        $modifier = \Mockery::mock(SchemaModifierInterface::class)->shouldIgnoreMissing();
+        $modifier->shouldReceive('withRole')->once()->with('my-entity', \Mockery::andAnyOtherArgs())->andReturnSelf();
 
         $e = new Entity();
         $e->setRole('my-entity');
         $e->addSchemaModifier($modifier);
 
-        $this->assertSame([$modifier], iterator_to_array($e->getSchemaModifiers()));
+        \Testo\Assert::same(iterator_to_array($e->getSchemaModifiers()), [$modifier]);
     }
 
+    #[\Testo\Test]
     public function testSchemaModifier(): void
     {
-        $modifier = $this->createMock(SchemaModifierInterface::class);
+        $modifier = \Mockery::mock(SchemaModifierInterface::class)->shouldIgnoreMissing();
         $e = new Entity();
 
-        $this->expectException(EntityException::class);
-        $this->expectExceptionMessage('Entity must have a `role` to be able to add a modifier.');
+        \Testo\Expect::exception(EntityException::class)->withMessageContaining('Entity must have a `role` to be able to add a modifier.');
 
         $e->addSchemaModifier($modifier);
     }
 
+    #[\Testo\Test]
     public function testMergeTwoEntities(): void
     {
         $e = new Entity();
@@ -333,7 +360,7 @@ class EntityTest extends TestCase
         $e->getFields()->set('id', $idField = (new Field())->setType('int')->setColumn('id'));
         $e->getFields()->set('name', $nameField = (new Field())->setType('string')->setColumn('name'));
 
-        $this->assertSame(['id', 'name'], $e->getFields()->getNames());
+        \Testo\Assert::same($e->getFields()->getNames(), ['id', 'name']);
 
         $e2 = new Entity();
         $e2->getRelations()->set('test2', new Relation());
@@ -342,14 +369,14 @@ class EntityTest extends TestCase
 
         $e->merge($e2);
 
-        $this->assertSame($idField, $e->getFields()->get('id'));
-        $this->assertNotSame($idField2, $e->getFields()->get('id'));
-        $this->assertSame($nameField, $e->getFields()->get('name'));
-        $this->assertSame($typeField, $e->getFields()->get('type'));
+        \Testo\Assert::same($e->getFields()->get('id'), $idField);
+        \Testo\Assert::notSame($e->getFields()->get('id'), $idField2);
+        \Testo\Assert::same($e->getFields()->get('name'), $nameField);
+        \Testo\Assert::same($e->getFields()->get('type'), $typeField);
 
-        $this->assertSame($idField2, $e2->getFields()->get('id'));
+        \Testo\Assert::same($e2->getFields()->get('id'), $idField2);
 
-        $this->assertTrue($e->getRelations()->has('test'));
-        $this->assertTrue($e->getRelations()->has('test2'));
+        \Testo\Assert::true($e->getRelations()->has('test'));
+        \Testo\Assert::true($e->getRelations()->has('test2'));
     }
 }

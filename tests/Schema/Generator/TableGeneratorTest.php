@@ -19,6 +19,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class TableGeneratorTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = Plain::define();
@@ -30,12 +31,13 @@ abstract class TableGeneratorTest extends BaseTest
 
         $table = $r->getTableSchema($e);
 
-        $this->assertSame('plain', $table->getName());
-        $this->assertSame(['id'], $table->getPrimaryKeys());
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertSame('primary', $table->column('id')->getAbstractType());
+        \Testo\Assert::same($table->getName(), 'plain');
+        \Testo\Assert::same($table->getPrimaryKeys(), ['id']);
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::same($table->column('id')->getAbstractType(), 'primary');
     }
 
+    #[\Testo\Test]
     public function testCompiled(): void
     {
         $e = Plain::define();
@@ -51,7 +53,7 @@ abstract class TableGeneratorTest extends BaseTest
             ],
         );
 
-        $this->assertSame([
+        \Testo\Assert::same($schema, [
             'plain' => [
                 Schema::ENTITY => Plain::class,
                 Schema::MAPPER => Mapper::class,
@@ -69,9 +71,10 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST_HANDLER => [Typecaster::class, 'default_typecaster'],
                 Schema::GENERATED_FIELDS => [],
             ],
-        ], $schema);
+        ]);
     }
 
+    #[\Testo\Test]
     public function testCompiledWithPassedDefaultTypecastHandler(): void
     {
         $e = Post::define();
@@ -88,7 +91,7 @@ abstract class TableGeneratorTest extends BaseTest
             ],
         );
 
-        $this->assertSame([
+        \Testo\Assert::same($schema, [
             'post' => [
                 Schema::ENTITY => Post::class,
                 Schema::MAPPER => Mapper::class,
@@ -106,9 +109,10 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST_HANDLER => [Typecaster::class],
                 Schema::GENERATED_FIELDS => [],
             ],
-        ], $schema);
+        ]);
     }
 
+    #[\Testo\Test]
     public function testRenderUserTable(): void
     {
         $e = User::define();
@@ -120,25 +124,26 @@ abstract class TableGeneratorTest extends BaseTest
 
         $table = $r->getTableSchema($e);
 
-        $this->assertSame('user', $table->getName());
-        $this->assertSame(['id'], $table->getPrimaryKeys());
+        \Testo\Assert::same($table->getName(), 'user');
+        \Testo\Assert::same($table->getPrimaryKeys(), ['id']);
 
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertSame('primary', $table->column('id')->getAbstractType());
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::same($table->column('id')->getAbstractType(), 'primary');
 
-        $this->assertTrue($table->hasColumn('user_name'));
-        $this->assertSame('string', $table->column('user_name')->getType());
-        $this->assertSame(32, $table->column('user_name')->getSize());
+        \Testo\Assert::true($table->hasColumn('user_name'));
+        \Testo\Assert::same($table->column('user_name')->getType(), 'string');
+        \Testo\Assert::same($table->column('user_name')->getSize(), 32);
 
-        $this->assertTrue($table->hasColumn('active'));
-        $this->assertTrue(in_array($table->column('active')->getAbstractType(), ['boolean', 'integer']));
+        \Testo\Assert::true($table->hasColumn('active'));
+        \Testo\Assert::true(in_array($table->column('active')->getAbstractType(), ['boolean', 'integer']));
 
-        $this->assertTrue($table->hasColumn('balance'));
-        $this->assertSame('float', $table->column('balance')->getAbstractType());
+        \Testo\Assert::true($table->hasColumn('balance'));
+        \Testo\Assert::same($table->column('balance')->getAbstractType(), 'float');
 
-        $this->assertTrue($table->hasColumn('created_at'));
+        \Testo\Assert::true($table->hasColumn('created_at'));
     }
 
+    #[\Testo\Test]
     public function testCompiledUser(): void
     {
         $e = User::define();
@@ -149,7 +154,7 @@ abstract class TableGeneratorTest extends BaseTest
         $c = new Compiler();
         $c->compile($r, [new RenderTables()]);
 
-        $this->assertSame([
+        \Testo\Assert::same($c->getSchema(), [
             'user' => [
                 Schema::ENTITY => User::class,
                 Schema::MAPPER => Mapper::class,
@@ -175,9 +180,10 @@ abstract class TableGeneratorTest extends BaseTest
                 ],
                 Schema::GENERATED_FIELDS => [],
             ],
-        ], $c->getSchema());
+        ]);
     }
 
+    #[\Testo\Test]
     public function testCompiledPost(): void
     {
         $e = Post::define();
@@ -188,7 +194,7 @@ abstract class TableGeneratorTest extends BaseTest
         $c = new Compiler();
         $c->compile($r, [new RenderTables()]);
 
-        $this->assertSame([
+        \Testo\Assert::same($c->getSchema(), [
             'post' => [
                 Schema::ENTITY => Post::class,
                 Schema::MAPPER => Mapper::class,
@@ -208,6 +214,6 @@ abstract class TableGeneratorTest extends BaseTest
                 Schema::TYPECAST_HANDLER => null,
                 Schema::GENERATED_FIELDS => [],
             ],
-        ], $c->getSchema());
+        ]);
     }
 }

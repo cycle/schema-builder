@@ -17,6 +17,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class ForeignKeysTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testTableSchemaShouldBeModified(): void
     {
         $author = Author::defineWithUser();
@@ -28,7 +29,7 @@ abstract class ForeignKeysTest extends BaseTest
         $registry->register($user)->linkTable($user, 'default', 'users');
         $registry->register($plain)->linkTable($plain, 'default', 'plain');
 
-        $this->assertSame([], $registry->getTableSchema($author)->getForeignKeys());
+        \Testo\Assert::same($registry->getTableSchema($author)->getForeignKeys(), []);
 
         $fk = new ForeignKey();
         $fk->setTarget('user');
@@ -45,15 +46,16 @@ abstract class ForeignKeysTest extends BaseTest
         $foreignKeys = $registry->getTableSchema($author)->getForeignKeys();
         $expectedFk = array_shift($foreignKeys);
 
-        $this->assertStringContainsString('authors', $expectedFk->getTable());
-        $this->assertStringContainsString('users', $expectedFk->getForeignTable());
-        $this->assertSame(['user_id'], $expectedFk->getColumns());
-        $this->assertSame(['id'], $expectedFk->getForeignKeys());
-        $this->assertSame('CASCADE', $expectedFk->getDeleteRule());
-        $this->assertSame('CASCADE', $expectedFk->getUpdateRule());
-        $this->assertTrue($expectedFk->hasIndex());
+        \Testo\Assert::string($expectedFk->getTable())->contains('authors');
+        \Testo\Assert::string($expectedFk->getForeignTable())->contains('users');
+        \Testo\Assert::same($expectedFk->getColumns(), ['user_id']);
+        \Testo\Assert::same($expectedFk->getForeignKeys(), ['id']);
+        \Testo\Assert::same($expectedFk->getDeleteRule(), 'CASCADE');
+        \Testo\Assert::same($expectedFk->getUpdateRule(), 'CASCADE');
+        \Testo\Assert::true($expectedFk->hasIndex());
     }
 
+    #[\Testo\Test]
     public function testCreateIndex(): void
     {
         $author = Author::defineWithUser();
@@ -66,7 +68,7 @@ abstract class ForeignKeysTest extends BaseTest
         $registry->register($user)->linkTable($user, 'default', 'users');
         $registry->register($plain)->linkTable($plain, 'default', 'plain');
 
-        $this->assertSame([], $registry->getTableSchema($author)->getForeignKeys());
+        \Testo\Assert::same($registry->getTableSchema($author)->getForeignKeys(), []);
 
         $fk = new ForeignKey();
         $fk->setTarget('user');
@@ -80,9 +82,10 @@ abstract class ForeignKeysTest extends BaseTest
         $compiler = new Compiler();
         $compiler->compile($registry, [new RenderTables(), new ForeignKeys()]);
 
-        $this->assertCount(1, $registry->getTableSchema($user)->getIndexes());
+        \Testo\Assert::count($registry->getTableSchema($user)->getIndexes(), 1);
     }
 
+    #[\Testo\Test]
     public function testShouldNotCreateIndexOnPk(): void
     {
         $author = Author::defineWithUser();
@@ -94,7 +97,7 @@ abstract class ForeignKeysTest extends BaseTest
         $registry->register($user)->linkTable($user, 'default', 'users');
         $registry->register($plain)->linkTable($plain, 'default', 'plain');
 
-        $this->assertSame([], $registry->getTableSchema($author)->getForeignKeys());
+        \Testo\Assert::same($registry->getTableSchema($author)->getForeignKeys(), []);
 
         $fk = new ForeignKey();
         $fk->setTarget('user');
@@ -108,6 +111,6 @@ abstract class ForeignKeysTest extends BaseTest
         $compiler = new Compiler();
         $compiler->compile($registry, [new RenderTables(), new ForeignKeys()]);
 
-        $this->assertEmpty($registry->getTableSchema($user)->getIndexes());
+        \Testo\Assert::blank($registry->getTableSchema($user)->getIndexes());
     }
 }

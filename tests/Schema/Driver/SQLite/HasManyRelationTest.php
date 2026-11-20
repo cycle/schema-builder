@@ -14,14 +14,12 @@ use Cycle\Schema\Tests\Fixtures\Plain;
 use Cycle\Schema\Tests\Fixtures\User;
 use Cycle\Schema\Tests\Relation\HasManyRelationTest as BaseTest;
 
-/**
- * @group driver
- * @group driver-sqlite
- */
+#[\Testo\Filter\Group('driver', 'driver-sqlite')]
 class HasManyRelationTest extends BaseTest
 {
     public const DRIVER = 'sqlite';
 
+    #[\Testo\Test]
     public function testRenderWithoutIndex(): void
     {
         $e = Plain::define();
@@ -43,6 +41,6 @@ class HasManyRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('plain');
-        $this->assertFalse($table->hasIndex(['user_p_id']));
+        \Testo\Assert::false($table->hasIndex(['user_p_id']));
     }
 }

@@ -9,117 +9,128 @@ use Cycle\Schema\Definition\Map\FieldMap;
 use Cycle\Schema\Exception\FieldException;
 use PHPUnit\Framework\TestCase;
 
-class FieldsTest extends TestCase
+class FieldsTest
 {
+    #[\Testo\Test]
     public function testNoField(): void
     {
         $m = new FieldMap();
 
-        $this->expectException(FieldException::class);
+        \Testo\Expect::exception(FieldException::class);
 
         $m->get('id');
     }
 
+    #[\Testo\Test]
     public function testSetGet(): void
     {
         $m = new FieldMap();
 
-        $this->assertFalse($m->has('id'));
+        \Testo\Assert::false($m->has('id'));
         $m->set('id', $f = new Field());
-        $this->assertTrue($m->has('id'));
-        $this->assertSame($f, $m->get('id'));
+        \Testo\Assert::true($m->has('id'));
+        \Testo\Assert::same($m->get('id'), $f);
 
-        $this->assertSame(['id' => $f], iterator_to_array($m->getIterator()));
+        \Testo\Assert::same(iterator_to_array($m->getIterator()), ['id' => $f]);
     }
 
+    #[\Testo\Test]
     public function testSetTwice(): void
     {
         $m = new FieldMap();
         $m->set('id', $f = new Field());
 
-        $this->expectException(FieldException::class);
+        \Testo\Expect::exception(FieldException::class);
 
         $m->set('id', $f = new Field());
     }
 
+    #[\Testo\Test]
     public function testNoType(): void
     {
         $m = new FieldMap();
         $m->set('id', $f = new Field());
 
-        $this->expectException(FieldException::class);
+        \Testo\Expect::exception(FieldException::class);
 
         $m->get('id')->getType();
     }
 
+    #[\Testo\Test]
     public function testNoColumn(): void
     {
         $m = new FieldMap();
         $m->set('id', $f = new Field());
 
-        $this->expectException(FieldException::class);
+        \Testo\Expect::exception(FieldException::class);
 
         $m->get('id')->getColumn();
     }
 
+    #[\Testo\Test]
     public function testCount(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
         $m->set('p_name', (new Field())->setColumn('name'));
 
-        $this->assertSame(2, $m->count());
+        \Testo\Assert::same($m->count(), 2);
     }
 
+    #[\Testo\Test]
     public function testGetColumnNames(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
         $m->set('p_name', (new Field())->setColumn('name'));
 
-        $this->assertSame(['id', 'name'], $m->getColumnNames());
+        \Testo\Assert::same($m->getColumnNames(), ['id', 'name']);
     }
 
+    #[\Testo\Test]
     public function testGeEntityClass(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id')->setEntityClass('test'));
 
-        $this->assertSame('test', $m->get('p_id')->getEntityClass());
+        \Testo\Assert::same($m->get('p_id')->getEntityClass(), 'test');
     }
 
+    #[\Testo\Test]
     public function testGetNames(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
         $m->set('p_name', (new Field())->setColumn('name'));
 
-        $this->assertSame(['p_id', 'p_name'], $m->getNames());
+        \Testo\Assert::same($m->getNames(), ['p_id', 'p_name']);
     }
 
+    #[\Testo\Test]
     public function testHasColumn(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
 
-        $this->assertTrue($m->hasColumn('id'));
-        $this->assertFalse($m->hasColumn('p_id'));
+        \Testo\Assert::true($m->hasColumn('id'));
+        \Testo\Assert::false($m->hasColumn('p_id'));
     }
 
+    #[\Testo\Test]
     public function testGetKeyByColumnName(): void
     {
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
         $m->set('p_slug', (new Field())->setColumn('slug'));
 
-        $this->assertSame('p_id', $m->getKeyByColumnName('id'));
-        $this->assertSame('p_slug', $m->getKeyByColumnName('slug'));
+        \Testo\Assert::same($m->getKeyByColumnName('id'), 'p_id');
+        \Testo\Assert::same($m->getKeyByColumnName('slug'), 'p_slug');
     }
 
+    #[\Testo\Test]
     public function testGetKeyByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
-        $this->expectException(FieldException::class);
-        $this->expectExceptionMessage('Undefined field with column name `slug`.');
+        \Testo\Expect::exception(FieldException::class)->withMessageContaining('Undefined field with column name `slug`.');
 
         $m = new FieldMap();
         $m->set('p_id', (new Field())->setColumn('id'));
@@ -127,20 +138,21 @@ class FieldsTest extends TestCase
         $m->getKeyByColumnName('slug');
     }
 
+    #[\Testo\Test]
     public function testGetByColumnName(): void
     {
         $m = new FieldMap();
         $m->set('p_id', $id = (new Field())->setColumn('id'));
         $m->set('p_slug', $slug = (new Field())->setColumn('slug'));
 
-        $this->assertSame($id, $m->getByColumnName('id'));
-        $this->assertSame($slug, $m->getByColumnName('slug'));
+        \Testo\Assert::same($m->getByColumnName('id'), $id);
+        \Testo\Assert::same($m->getByColumnName('slug'), $slug);
     }
 
+    #[\Testo\Test]
     public function testGetByColumnNameShouldThrowAnExceptionWhenFieldNotFound(): void
     {
-        $this->expectException(FieldException::class);
-        $this->expectExceptionMessage('Undefined field with column name `slug`.');
+        \Testo\Expect::exception(FieldException::class)->withMessageContaining('Undefined field with column name `slug`.');
 
         $m = new FieldMap();
         $m->set('p_id', $id = (new Field())->setColumn('id'));
@@ -148,14 +160,13 @@ class FieldsTest extends TestCase
         $m->getByColumnName('slug');
     }
 
-    /**
-     * @dataProvider dataIsPrimary
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('dataIsPrimary')]
     public function testIsPrimary(string $type, bool $expected = true): void
     {
         $field = new Field();
         $field->setType($type);
-        $this->assertSame($expected, $field->isPrimary());
+        \Testo\Assert::same($field->isPrimary(), $expected);
     }
 
     public function dataIsPrimary(): iterable

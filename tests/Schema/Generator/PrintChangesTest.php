@@ -22,6 +22,7 @@ abstract class PrintChangesTest extends BaseTest
     private PrintChanges $generator;
     private Compiler $compiler;
 
+    #[\Testo\Test]
     public function testRunWithoutChanges(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -29,19 +30,20 @@ abstract class PrintChangesTest extends BaseTest
 
         $this->generator->run($this->registry);
 
-        $this->assertStringContainsString('No database changes has been detected', $this->output->fetch());
+        \Testo\Assert::string($this->output->fetch())->contains('No database changes has been detected');
     }
 
+    #[\Testo\Test]
     public function testRunCreateTable(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users: 5 change(s) detected', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users: 5 change(s) detected');
     }
 
+    #[\Testo\Test]
     public function testRunCreateTableVerbose(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -50,18 +52,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users', $content);
-        $this->assertStringContainsString('- create table', $content);
-        $this->assertStringContainsString('- add column [id]', $content);
-        $this->assertStringContainsString('- add column [user_name]', $content);
-        $this->assertStringContainsString('- add column [active]', $content);
-        $this->assertStringContainsString('- add column [balance]', $content);
-        $this->assertStringContainsString('- add column [created_at]', $content);
-
-        $this->assertStringNotContainsString('default.users: 5 change(s) detected', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users')->contains('- create table')->contains('- add column [id]')->contains('- add column [user_name]')->contains('- add column [active]')->contains('- add column [balance]')->contains('- add column [created_at]')->notContains('default.users: 5 change(s) detected');
     }
 
+    #[\Testo\Test]
     public function testRunDropTable(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -72,10 +66,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users    - drop table', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users    - drop table');
     }
 
+    #[\Testo\Test]
     public function testRunChangedColumns(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -88,14 +82,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
-
-        $this->assertStringNotContainsString('- add column [new_column]', $content);
-        $this->assertStringNotContainsString('- drop column [created_at]', $content);
-        $this->assertStringNotContainsString('- alter column [user_name]', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users: 3 change(s) detected')->notContains('- add column [new_column]')->notContains('- drop column [created_at]')->notContains('- alter column [user_name]');
     }
 
+    #[\Testo\Test]
     public function testRunChangedColumnsVerbose(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -109,15 +99,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users', $content);
-        $this->assertStringContainsString('- add column [new_column]', $content);
-        $this->assertStringContainsString('- drop column [created_at]', $content);
-        $this->assertStringContainsString('- alter column [user_name]', $content);
-
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users')->contains('- add column [new_column]')->contains('- drop column [created_at]')->contains('- alter column [user_name]')->notContains('default.users: 3 change(s) detected');
     }
 
+    #[\Testo\Test]
     public function testRunChangedIndexes(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -133,14 +118,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
-
-        $this->assertStringNotContainsString('- add index on [created_at]', $content);
-        $this->assertStringNotContainsString('- drop index on [balance]', $content);
-        $this->assertStringNotContainsString('- alter index on [user_name]', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users: 3 change(s) detected')->notContains('- add index on [created_at]')->notContains('- drop index on [balance]')->notContains('- alter index on [user_name]');
     }
 
+    #[\Testo\Test]
     public function testRunChangedIndexesVerbose(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -157,15 +138,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users', $content);
-        $this->assertStringContainsString('- add index on [created_at]', $content);
-        $this->assertStringContainsString('- drop index on [balance]', $content);
-        $this->assertStringContainsString('- alter index on [user_name]', $content);
-
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users')->contains('- add index on [created_at]')->contains('- drop index on [balance]')->contains('- alter index on [user_name]')->notContains('default.users: 3 change(s) detected');
     }
 
+    #[\Testo\Test]
     public function testRunChangedFk(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -190,14 +166,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users: 3 change(s) detected', $content);
-
-        $this->assertStringNotContainsString('- add foreign key on [some_id]', $content);
-        $this->assertStringNotContainsString('- drop foreign key on [partner_id]', $content);
-        $this->assertStringNotContainsString('- alter foreign key on [friend_id]', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users: 3 change(s) detected')->notContains('- add foreign key on [some_id]')->notContains('- drop foreign key on [partner_id]')->notContains('- alter foreign key on [friend_id]');
     }
 
+    #[\Testo\Test]
     public function testRunChangedFkVerbose(): void
     {
         $this->compiler->compile($this->registry, [new RenderTables()]);
@@ -223,15 +195,10 @@ abstract class PrintChangesTest extends BaseTest
         $this->generator->run($this->registry);
 
         $content = $this->output->fetch();
-        $this->assertStringContainsString('Schema changes:', $content);
-        $this->assertStringContainsString('default.users', $content);
-        $this->assertStringContainsString('- add foreign key on [some_id]', $content);
-        $this->assertStringContainsString('- drop foreign key on [partner_id]', $content);
-        $this->assertStringContainsString('- alter foreign key on [friend_id]', $content);
-
-        $this->assertStringNotContainsString('default.users: 3 change(s) detected', $content);
+        \Testo\Assert::string($content)->contains('Schema changes:')->contains('default.users')->contains('- add foreign key on [some_id]')->contains('- drop foreign key on [partner_id]')->contains('- alter foreign key on [friend_id]')->notContains('default.users: 3 change(s) detected');
     }
 
+    #[\Testo\Lifecycle\BeforeTest]
     public function setUp(): void
     {
         parent::setUp();

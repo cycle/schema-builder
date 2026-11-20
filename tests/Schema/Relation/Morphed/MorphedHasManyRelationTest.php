@@ -19,6 +19,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class MorphedHasManyRelationTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = Plain::define();
@@ -32,9 +33,10 @@ abstract class MorphedHasManyRelationTest extends BaseTest
 
         (new GenerateRelations(['hasMany' => new MorphedHasMany()]))->run($r);
 
-        $this->assertInstanceOf(MorphedHasMany::class, $r->getRelation($u, 'plain'));
+        \Testo\Assert::instanceOf($r->getRelation($u, 'plain'), MorphedHasMany::class);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $c = new Compiler();
@@ -55,21 +57,19 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         (new GenerateRelations(['hasMany' => new MorphedHasMany()]))->run($r);
         $schema = $c->compile($r);
 
-        $this->assertArrayHasKey('user', $schema);
-        $this->assertSame(Relation::MORPHED_HAS_MANY, $schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE]);
+        \Testo\Assert::array($schema)->hasKeys('user');
+        \Testo\Assert::same($schema['user'][Schema::RELATIONS]['plain'][Relation::TYPE], Relation::MORPHED_HAS_MANY);
 
-        $this->assertArrayHasKey('plain', $schema['user'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['user'][Schema::RELATIONS])->hasKeys('plain');
 
-        $this->assertArrayHasKey('plain', $schema);
-        $this->assertArrayHasKey('plain_p_id', $schema['plain'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('plain_role', $schema['plain'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('plain');
+        \Testo\Assert::array($schema['plain'][Schema::COLUMNS])->hasKeys('plain_p_id');
+        \Testo\Assert::array($schema['plain'][Schema::COLUMNS])->hasKeys('plain_role');
 
-        $this->assertSame(
-            ArrayCollectionFactory::class,
-            $schema['user'][Schema::RELATIONS]['plain'][Relation::SCHEMA][Relation::COLLECTION_TYPE],
-        );
+        \Testo\Assert::same($schema['user'][Schema::RELATIONS]['plain'][Relation::SCHEMA][Relation::COLLECTION_TYPE], ArrayCollectionFactory::class);
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = Plain::define();
@@ -91,9 +91,9 @@ abstract class MorphedHasManyRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('plain');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('plain_p_id'));
-        $this->assertTrue($table->hasColumn('plain_role'));
-        $this->assertTrue($table->hasIndex(['plain_p_id', 'plain_role']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('plain_p_id'));
+        \Testo\Assert::true($table->hasColumn('plain_role'));
+        \Testo\Assert::true($table->hasIndex(['plain_p_id', 'plain_role']));
     }
 }

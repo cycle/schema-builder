@@ -9,8 +9,9 @@ use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\TableInheritance\WrongDiscriminatorColumnException;
 use PHPUnit\Framework\TestCase;
 
-class WrongDiscriminatorColumnExceptionTest extends TestCase
+class WrongDiscriminatorColumnExceptionTest
 {
+    #[\Testo\Test]
     public function testGetsSolution()
     {
         $author = new Entity();
@@ -21,13 +22,7 @@ class WrongDiscriminatorColumnExceptionTest extends TestCase
 
         $e = new WrongDiscriminatorColumnException($author, 'test');
 
-        $this->assertSame(
-            'Discriminator column is not found among the entity fields.',
-            $e->getName(),
-        );
-        $this->assertSame(
-            'You have to specify one of the defined fields of the `author` role: `id`, `name`',
-            $e->getSolution(),
-        );
+        \Testo\Assert::same($e->getName(), 'Discriminator column is not found among the entity fields.');
+        \Testo\Assert::same($e->getSolution(), 'You have to specify one of the defined fields of the `author` role: `id`, `name`');
     }
 }

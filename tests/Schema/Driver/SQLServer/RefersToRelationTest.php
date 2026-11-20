@@ -14,14 +14,12 @@ use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\Post;
 use Cycle\Schema\Tests\Relation\RefersToRelationTest as BaseTest;
 
-/**
- * @group driver
- * @group driver-sqlserver
- */
+#[\Testo\Filter\Group('driver', 'driver-sqlserver')]
 class RefersToRelationTest extends BaseTest
 {
     public const DRIVER = 'sqlserver';
 
+    #[\Testo\Test]
     public function testRenderWithoutIndex(): void
     {
         $e = Post::define();
@@ -43,6 +41,6 @@ class RefersToRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertFalse($table->hasIndex(['author_p_id']));
+        \Testo\Assert::false($table->hasIndex(['author_p_id']));
     }
 }

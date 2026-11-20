@@ -18,12 +18,13 @@ use Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier;
 use Cycle\Schema\Tests\Fixtures\User;
 use PHPUnit\Framework\TestCase;
 
-class GenerateModifiersTest extends TestCase
+class GenerateModifiersTest
 {
+    #[\Testo\Test]
     public function testEntityShouldBeModified()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();
@@ -64,25 +65,18 @@ class GenerateModifiersTest extends TestCase
         $c = new Compiler();
         $schema = $c->compile($r, [new GenerateModifiers()]);
 
-        $this->assertSame(Author::class, $schema['user'][SchemaInterface::PARENT]);
-        $this->assertSame(
-            ['foo_bar' => 'id', 'type' => 'type'],
-            $schema['user'][SchemaInterface::COLUMNS],
-        );
+        \Testo\Assert::same($schema['user'][SchemaInterface::PARENT], Author::class);
+        \Testo\Assert::same($schema['user'][SchemaInterface::COLUMNS], ['foo_bar' => 'id', 'type' => 'type']);
     }
 
-    /**
-     * @dataProvider brokenMethodsDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('brokenMethodsDataProvider')]
     public function testErrorInsideModifierShouldThrowAnException(string $method)
     {
-        $this->expectException(SchemaException::class);
-        $this->expectExceptionMessage(
-            'Unable to compute modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` for the `user` role.',
-        );
+        \Testo\Expect::exception(SchemaException::class)->withMessageContaining('Unable to compute modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` for the `user` role.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();

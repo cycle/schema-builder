@@ -40,8 +40,12 @@
         "buggregator/trap": "^1.20",
         "cycle/testing": "1.x-dev",
         "llm/skills": "^1.20",
+        "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6",
+        "rector/rector": "^2.8",
         "roxblnfk/unpoly": "^1.8",
+        "testo/bridge-mockery": "^0.1.2",
+        "testo/bridge-rector": "^0.3.6",
         "testo/testo": "^0.10.60"
     },
     "repositories": [

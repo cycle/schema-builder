@@ -14,6 +14,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class TypecastGeneratorTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testCompiledUser(): void
     {
         $e = User::define();
@@ -25,11 +26,11 @@ abstract class TypecastGeneratorTest extends BaseTest
         $schema = $c->compile($r, [new RenderTables(), new GenerateTypecast()]);
 
 
-        $this->assertSame('int', $schema['user'][Schema::TYPECAST]['p_id']);
-        $this->assertSame('float', $schema['user'][Schema::TYPECAST]['p_balance']);
-        $this->assertSame('datetime', $schema['user'][Schema::TYPECAST]['p_created_at']);
-        $this->assertSame('string', $schema['user'][Schema::TYPECAST]['p_name']);
+        \Testo\Assert::same($schema['user'][Schema::TYPECAST]['p_id'], 'int');
+        \Testo\Assert::same($schema['user'][Schema::TYPECAST]['p_balance'], 'float');
+        \Testo\Assert::same($schema['user'][Schema::TYPECAST]['p_created_at'], 'datetime');
+        \Testo\Assert::same($schema['user'][Schema::TYPECAST]['p_name'], 'string');
 
-        $this->assertTrue(in_array($schema['user'][Schema::TYPECAST]['p_id'], ['int', 'bool']));
+        \Testo\Assert::true(in_array($schema['user'][Schema::TYPECAST]['p_id'], ['int', 'bool']));
     }
 }

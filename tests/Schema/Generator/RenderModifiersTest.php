@@ -16,27 +16,25 @@ use Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier;
 use Cycle\Schema\Tests\Fixtures\User;
 use PHPUnit\Framework\TestCase;
 
-class RenderModifiersTest extends TestCase
+class RenderModifiersTest
 {
+    #[\Testo\Test]
     public function testEntityShouldBeRendered()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();
         $user->setRole('user')->setClass(User::class);
         $user->getFields()->set('foo_bar', (new Field())->setType('primary')->setColumn('id'));
 
-        $mock = $this->createMock(SchemaModifierInterface::class);
-        $mock->expects(self::once())->method('withRole')->with('user')->willReturnSelf();
+        $mock = \Mockery::mock(SchemaModifierInterface::class)->shouldIgnoreMissing();
+        $mock->shouldReceive('withRole')->once()->with('user', \Mockery::andAnyOtherArgs())->andReturnSelf();
 
         $user->addSchemaModifier($mock);
 
-        $mock
-            ->expects($this->atLeastOnce())
-            ->method('render')
-            ->with($this->equalTo($r));
+        $mock->shouldReceive('render')->atLeast()->once()->with($r, \Mockery::andAnyOtherArgs());
 
         $r->register($user);
 
@@ -44,18 +42,14 @@ class RenderModifiersTest extends TestCase
         $c->compile($r, [new RenderModifiers()]);
     }
 
-    /**
-     * @dataProvider brokenMethodsDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('brokenMethodsDataProvider')]
     public function testErrorInsideModifierShouldThrowAnException(string $method)
     {
-        $this->expectException(SchemaException::class);
-        $this->expectExceptionMessage(
-            'Unable to render modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` for the `user` role.',
-        );
+        \Testo\Expect::exception(SchemaException::class)->withMessageContaining('Unable to render modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` for the `user` role.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();

@@ -9,8 +9,9 @@ use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\TableInheritance\DiscriminatorColumnNotPresentException;
 use PHPUnit\Framework\TestCase;
 
-class DiscriminatorColumnNotPresentExceptionTest extends TestCase
+class DiscriminatorColumnNotPresentExceptionTest
 {
+    #[\Testo\Test]
     public function testGetsSolution()
     {
         $author = new Entity();
@@ -21,14 +22,8 @@ class DiscriminatorColumnNotPresentExceptionTest extends TestCase
 
         $e = new DiscriminatorColumnNotPresentException($author, 'test');
 
-        $this->assertSame(
-            'Discriminator column is not present.',
-            $e->getName(),
-        );
-        $this->assertSame(
-            "Discriminator column is required for Single Table Inheritance schema.\n" .
-            'You have to specify one of the defined fields of the `author` role: `id`, `name`',
-            $e->getSolution(),
-        );
+        \Testo\Assert::same($e->getName(), 'Discriminator column is not present.');
+        \Testo\Assert::same($e->getSolution(), "Discriminator column is required for Single Table Inheritance schema.\n" .
+        'You have to specify one of the defined fields of the `author` role: `id`, `name`');
     }
 }

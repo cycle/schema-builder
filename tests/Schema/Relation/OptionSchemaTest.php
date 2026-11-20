@@ -10,8 +10,9 @@ use Cycle\Schema\Relation\OptionSchema;
 use Cycle\Schema\Relation\RelationSchema;
 use PHPUnit\Framework\TestCase;
 
-class OptionSchemaTest extends TestCase
+class OptionSchemaTest
 {
+    #[\Testo\Test]
     public function testAliases(): void
     {
         $options = new OptionSchema([
@@ -22,15 +23,16 @@ class OptionSchemaTest extends TestCase
             Relation::TYPE => 200,
         ]);
 
-        $this->assertSame(200, $options->get(Relation::TYPE));
+        \Testo\Assert::same($options->get(Relation::TYPE), 200);
 
         $options = $options->withOptions([
             'alias' => 100,
         ]);
 
-        $this->assertSame(100, $options->get(Relation::TYPE));
+        \Testo\Assert::same($options->get(Relation::TYPE), 100);
     }
 
+    #[\Testo\Test]
     public function testInvalidAlias(): void
     {
         $options = new OptionSchema([
@@ -41,13 +43,14 @@ class OptionSchemaTest extends TestCase
             Relation::TYPE => 200,
         ]);
 
-        $this->expectException(OptionException::class);
+        \Testo\Expect::exception(OptionException::class);
 
         $options->withOptions([
             'unknown' => 100,
         ]);
     }
 
+    #[\Testo\Test]
     public function testInvalidAlias2(): void
     {
         $options = new OptionSchema([
@@ -60,11 +63,12 @@ class OptionSchemaTest extends TestCase
             'alias' => 100,
         ]);
 
-        $this->expectException(OptionException::class);
+        \Testo\Expect::exception(OptionException::class);
 
         $options->get(RelationSchema::FK_ACTION);
     }
 
+    #[\Testo\Test]
     public function testDebugInfo(): void
     {
         $options = new OptionSchema([
@@ -77,8 +81,8 @@ class OptionSchemaTest extends TestCase
             'alias' => 100,
         ]);
 
-        $this->assertSame([
+        \Testo\Assert::same($options->__debugInfo(), [
             'alias' => 100,
-        ], $options->__debugInfo());
+        ]);
     }
 }

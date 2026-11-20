@@ -16,14 +16,12 @@ use Cycle\Schema\Tests\Fixtures\Tag;
 use Cycle\Schema\Tests\Fixtures\TagContext;
 use Cycle\Schema\Tests\Relation\ManyToManyRelationTest as BaseTest;
 
-/**
- * @group driver
- * @group driver-postgres
- */
+#[\Testo\Filter\Group('driver', 'driver-postgres')]
 class ManyToManyRelationTest extends BaseTest
 {
     public const DRIVER = 'postgres';
 
+    #[\Testo\Test]
     public function testRenderWithoutIndex(): void
     {
         $post = Post::define();
@@ -54,7 +52,7 @@ class ManyToManyRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('tag_context');
-        $this->assertFalse($table->hasIndex(['tag_p_id']));
-        $this->assertFalse($table->hasIndex(['post_p_id']));
+        \Testo\Assert::false($table->hasIndex(['tag_p_id']));
+        \Testo\Assert::false($table->hasIndex(['post_p_id']));
     }
 }

@@ -12,7 +12,7 @@ use Cycle\Schema\Relation\Traits\FieldTrait;
 use Cycle\Schema\Table\Column;
 use PHPUnit\Framework\TestCase;
 
-class FieldTraitTest extends TestCase
+class FieldTraitTest
 {
     use FieldTrait;
 
@@ -22,25 +22,27 @@ class FieldTraitTest extends TestCase
     /** @var string */
     private $source;
 
+    #[\Testo\Test]
     public function testGetsFieldShouldReturnFieldIfItExists(): void
     {
         $entity = new Entity();
         $entity->getFields()->set('id', $field = new Field());
 
-        $this->assertSame($field, $this->getField($entity, 123));
+        \Testo\Assert::same($this->getField($entity, 123), $field);
     }
 
+    #[\Testo\Test]
     public function testGetsFieldShouldThrowAnExceptionIdFieldNotExists(): void
     {
         $entity = new Entity();
         $entity->setRole('post');
 
-        $this->expectException(RelationException::class);
-        $this->expectExceptionMessage('Field `post`.`id` does not exists, referenced by `test`');
+        \Testo\Expect::exception(RelationException::class)->withMessageContaining('Field `post`.`id` does not exists, referenced by `test`');
 
         $this->getField($entity, 123);
     }
 
+    #[\Testo\Test]
     public function testGetsFieldsShouldReturnFieldsMapForSingleField(): void
     {
         $entity = new Entity();
@@ -48,10 +50,11 @@ class FieldTraitTest extends TestCase
 
         $fields = $this->getFields($entity, 123);
 
-        $this->assertCount(1, $fields);
-        $this->assertSame($field, $fields->get('id'));
+        \Testo\Assert::count($fields, 1);
+        \Testo\Assert::same($fields->get('id'), $field);
     }
 
+    #[\Testo\Test]
     public function testGetsFieldsShouldReturnFieldsMapForMultipleField(): void
     {
         $entity = new Entity();
@@ -61,11 +64,12 @@ class FieldTraitTest extends TestCase
 
         $fields = $this->getFields($entity, 234);
 
-        $this->assertCount(2, $fields);
-        $this->assertSame($fieldId, $fields->get('id'));
-        $this->assertSame($fieldSlug, $fields->get('slug'));
+        \Testo\Assert::count($fields, 2);
+        \Testo\Assert::same($fields->get('id'), $fieldId);
+        \Testo\Assert::same($fields->get('slug'), $fieldSlug);
     }
 
+    #[\Testo\Test]
     public function testGetsFieldsShouldThrowAnExcpetionIfFieldNotExists(): void
     {
         $entity = new Entity();
@@ -73,30 +77,29 @@ class FieldTraitTest extends TestCase
         $entity->getFields()
             ->set('id', $fieldId = (new Field())->setColumn('id'));
 
-        $this->expectException(RelationException::class);
-        $this->expectExceptionMessage('Field `post`.`slug` does not exists, referenced by `test`');
+        \Testo\Expect::exception(RelationException::class)->withMessageContaining('Field `post`.`slug` does not exists, referenced by `test`');
 
         $this->getFields($entity, 234);
     }
 
+    #[\Testo\Test]
     public function testEnsureFieldIfFieldExistsItShouldNotBeCreated(): void
     {
         $target = new Entity();
 
         $outer = (new Field())->setColumn('id');
-        $this->assertFalse($outer->isReferenced());
+        \Testo\Assert::false($outer->isReferenced());
 
         $target->getFields()->set('id', $fieldId = (new Field())->setColumn('id'));
 
         $this->ensureField($target, 'id', $outer);
 
-        $this->assertTrue($outer->isReferenced());
-        $this->assertCount(1, $target->getFields());
+        \Testo\Assert::true($outer->isReferenced());
+        \Testo\Assert::count($target->getFields(), 1);
     }
 
-    /**
-     * @dataProvider nullableOrders
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('nullableOrders')]
     public function testEnsureFieldMergesNullableOfRelationGeneratedField(bool $first, bool $second): void
     {
         $target = new Entity();
@@ -106,8 +109,8 @@ class FieldTraitTest extends TestCase
         $this->ensureField($target, 'user_id', $outer, $second);
 
         $field = $target->getFields()->get('user_id');
-        $this->assertTrue($field->isRelationGenerated());
-        $this->assertTrue($field->getOptions()->get(Column::OPT_NULLABLE));
+        \Testo\Assert::true($field->isRelationGenerated());
+        \Testo\Assert::true($field->getOptions()->get(Column::OPT_NULLABLE));
     }
 
     public function nullableOrders(): iterable
@@ -116,6 +119,7 @@ class FieldTraitTest extends TestCase
         yield 'nullable first' => [true, false];
     }
 
+    #[\Testo\Test]
     public function testEnsureFieldDoesNotChangeUserDefinedField(): void
     {
         $target = new Entity();
@@ -124,13 +128,12 @@ class FieldTraitTest extends TestCase
 
         $this->ensureField($target, 'user_id', $outer, true);
 
-        $this->assertFalse($userField->isRelationGenerated());
-        $this->assertFalse($userField->getOptions()->has(Column::OPT_NULLABLE));
+        \Testo\Assert::false($userField->isRelationGenerated());
+        \Testo\Assert::false($userField->getOptions()->has(Column::OPT_NULLABLE));
     }
 
-    /**
-     * @dataProvider outerFieldTypes
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('outerFieldTypes')]
     public function testEnsureFieldIfFieldNotExistsItShouldBeCreated(
         string $originalType,
         string $type,
@@ -143,25 +146,25 @@ class FieldTraitTest extends TestCase
             ->setType($originalType)
             ->setTypecast('typecast');
 
-        $this->assertFalse($outer->isReferenced());
+        \Testo\Assert::false($outer->isReferenced());
 
         $target->getFields()->set('id', $fieldId = (new Field())->setColumn('id'));
 
         $this->ensureField($target, 'name', $outer, $nullable);
 
-        $this->assertTrue($outer->isReferenced());
-        $this->assertCount(2, $target->getFields());
+        \Testo\Assert::true($outer->isReferenced());
+        \Testo\Assert::count($target->getFields(), 2);
 
         $resultField = $target->getFields()->get('name');
 
-        $this->assertSame($type, $resultField->getType());
-        $this->assertSame('typecast', $resultField->getTypecast());
-        $this->assertSame($outer->getColumn(), $resultField->getColumn());
+        \Testo\Assert::same($resultField->getType(), $type);
+        \Testo\Assert::same($resultField->getTypecast(), 'typecast');
+        \Testo\Assert::same($resultField->getColumn(), $outer->getColumn());
 
         if ($nullable) {
-            $this->assertTrue($resultField->getOptions()->get(Column::OPT_NULLABLE));
+            \Testo\Assert::true($resultField->getOptions()->get(Column::OPT_NULLABLE));
         } else {
-            $this->assertFalse($resultField->getOptions()->has(Column::OPT_NULLABLE));
+            \Testo\Assert::false($resultField->getOptions()->has(Column::OPT_NULLABLE));
         }
     }
 
@@ -189,10 +192,9 @@ class FieldTraitTest extends TestCase
         ];
     }
 
+    #[\Testo\Lifecycle\BeforeTest]
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->options = (new OptionSchema([]))->withTemplate([
             123 => 'id',
             234 => ['id', 'slug'],

@@ -24,7 +24,7 @@ use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Tests\Fixtures\TestLogger;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseTest extends TestCase
+abstract class BaseTest
 {
     // currently active driver
     public const DRIVER = null;
@@ -78,10 +78,9 @@ abstract class BaseTest extends TestCase
     /**
      * Init all we need.
      */
+    #[\Testo\Lifecycle\BeforeTest]
     public function setUp(): void
     {
-        parent::setUp();
-
         $this->dbal = new DatabaseManager(new DatabaseConfig());
         $this->dbal->addDatabase(
             new Database(
@@ -125,6 +124,7 @@ abstract class BaseTest extends TestCase
     /**
      * Cleanup.
      */
+    #[\Testo\Lifecycle\AfterTest]
     public function tearDown(): void
     {
         $this->disableProfiling();

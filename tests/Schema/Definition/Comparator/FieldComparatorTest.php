@@ -8,10 +8,11 @@ use Cycle\Schema\Definition\Comparator\FieldComparator;
 use Cycle\Schema\Definition\Field;
 use PHPUnit\Framework\TestCase;
 
-final class FieldComparatorTest extends TestCase
+final class FieldComparatorTest
 {
     protected const EXCEPTION_MESSAGE_PREFIX = '/Different definitions are specified.*/';
 
+    #[\Testo\Test]
     public function testCompareSameObject(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => null]);
@@ -23,9 +24,10 @@ final class FieldComparatorTest extends TestCase
             ->compare();
 
         // No exception
-        $this->assertTrue(true);
+        \Testo\Assert::true(true);
     }
 
+    #[\Testo\Test]
     public function testCompareMoreObjects(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => null]);
@@ -43,17 +45,19 @@ final class FieldComparatorTest extends TestCase
             ->compare();
 
         // No exception
-        $this->assertTrue(true);
+        \Testo\Assert::true(true);
     }
 
+    #[\Testo\Test]
     public function testCompareWithoutFields(): void
     {
         $this->createComparator()->compare();
 
         // No exception
-        $this->assertTrue(true);
+        \Testo\Assert::true(true);
     }
 
+    #[\Testo\Test]
     public function testDifferentTypes(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => null]);
@@ -62,12 +66,12 @@ final class FieldComparatorTest extends TestCase
             ->addField('foo', $foo)
             ->addField('bar', $bar);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches(self::EXCEPTION_MESSAGE_PREFIX);
+        \Testo\Expect::exception(\Exception::class)->withMessageMatchingRegex(self::EXCEPTION_MESSAGE_PREFIX);
 
         $comparator->compare();
     }
 
+    #[\Testo\Test]
     public function testDifferentOptions(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => null]);
@@ -76,12 +80,12 @@ final class FieldComparatorTest extends TestCase
             ->addField('foo', $foo)
             ->addField('bar', $bar);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches(self::EXCEPTION_MESSAGE_PREFIX);
+        \Testo\Expect::exception(\Exception::class)->withMessageMatchingRegex(self::EXCEPTION_MESSAGE_PREFIX);
 
         $comparator->compare();
     }
 
+    #[\Testo\Test]
     public function testDifferentOptionsItemsCount(): void
     {
         $foo = $this->createField('foo', 'integer', ['default' => null]);
@@ -90,12 +94,12 @@ final class FieldComparatorTest extends TestCase
             ->addField('foo', $foo)
             ->addField('bar', $bar);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches(self::EXCEPTION_MESSAGE_PREFIX);
+        \Testo\Expect::exception(\Exception::class)->withMessageMatchingRegex(self::EXCEPTION_MESSAGE_PREFIX);
 
         $comparator->compare();
     }
 
+    #[\Testo\Test]
     public function testDifferentPrimaryFlag(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => 42])->setPrimary(true);
@@ -106,9 +110,10 @@ final class FieldComparatorTest extends TestCase
             ->compare();
 
         // No exception
-        $this->assertTrue(true);
+        \Testo\Assert::true(true);
     }
 
+    #[\Testo\Test]
     public function testDifferentColumnName(): void
     {
         $foo = $this->createField('foo', 'integer', ['nullable' => true, 'default' => 42]);
@@ -116,8 +121,7 @@ final class FieldComparatorTest extends TestCase
         $comparator = $this->createComparator()
             ->addField('foo', $foo);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The field comparator only accepts fields with the same column name.');
+        \Testo\Expect::exception(\InvalidArgumentException::class)->withMessageContaining('The field comparator only accepts fields with the same column name.');
 
         $comparator->addField('bar', $bar);
     }

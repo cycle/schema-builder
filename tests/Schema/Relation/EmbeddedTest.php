@@ -21,6 +21,7 @@ use Cycle\Schema\Tests\Fixtures\EmbeddedEntity;
 
 abstract class EmbeddedTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $c = Composite::define();
@@ -37,13 +38,13 @@ abstract class EmbeddedTest extends BaseTest
 
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
 
-        $this->assertInstanceOf(Embedded::class, $r->getRelation($c, 'embedded'));
+        \Testo\Assert::instanceOf($r->getRelation($c, 'embedded'), Embedded::class);
     }
 
+    #[\Testo\Test]
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `composite` must have defined primary key');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `composite` must have defined primary key');
 
         $c = Composite::defineWithoutPk();
         $e = EmbeddedEntity::define();
@@ -60,6 +61,7 @@ abstract class EmbeddedTest extends BaseTest
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $cc = new Compiler();
@@ -79,29 +81,24 @@ abstract class EmbeddedTest extends BaseTest
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
         $schema = $cc->compile($r);
 
-        $this->assertArrayHasKey('composite', $schema);
-        $this->assertArrayHasKey('embedded', $schema['composite'][Schema::RELATIONS]);
-        $this->assertSame(
-            \Cycle\ORM\Relation::EMBEDDED,
-            $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::TYPE],
-        );
+        \Testo\Assert::array($schema)->hasKeys('composite');
+        \Testo\Assert::array($schema['composite'][Schema::RELATIONS])->hasKeys('embedded');
+        \Testo\Assert::same($schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::TYPE], \Cycle\ORM\Relation::EMBEDDED);
 
-        $this->assertSame(
-            \Cycle\ORM\Relation::LOAD_EAGER,
-            $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD],
-        );
+        \Testo\Assert::same($schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD], \Cycle\ORM\Relation::LOAD_EAGER);
 
-        $this->assertArrayHasKey('composite:embedded:embedded', $schema);
-        $this->assertSame(['p_id'], $schema['composite:embedded:embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite:embedded:embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite:embedded:embedded'][Schema::TABLE]);
+        \Testo\Assert::array($schema)->hasKeys('composite:embedded:embedded');
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::PRIMARY_KEY], ['p_id']);
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::DATABASE], 'default');
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::TABLE], 'composite');
 
-        $this->assertSame([
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::COLUMNS], [
             'p_embedded' => 'embedded_column',
             'p_id' => 'id',
-        ], $schema['composite:embedded:embedded'][Schema::COLUMNS]);
+        ]);
     }
 
+    #[\Testo\Test]
     public function testPackSchemaLazyLoad(): void
     {
         $cc = new Compiler();
@@ -123,29 +120,24 @@ abstract class EmbeddedTest extends BaseTest
         (new GenerateRelations(['embedded' => new Embedded()]))->run($r);
         $schema = $cc->compile($r);
 
-        $this->assertArrayHasKey('composite', $schema);
-        $this->assertArrayHasKey('embedded', $schema['composite'][Schema::RELATIONS]);
-        $this->assertSame(
-            \Cycle\ORM\Relation::EMBEDDED,
-            $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::TYPE],
-        );
+        \Testo\Assert::array($schema)->hasKeys('composite');
+        \Testo\Assert::array($schema['composite'][Schema::RELATIONS])->hasKeys('embedded');
+        \Testo\Assert::same($schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::TYPE], \Cycle\ORM\Relation::EMBEDDED);
 
-        $this->assertSame(
-            \Cycle\ORM\Relation::LOAD_PROMISE,
-            $schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD],
-        );
+        \Testo\Assert::same($schema['composite'][Schema::RELATIONS]['embedded'][\Cycle\ORM\Relation::LOAD], \Cycle\ORM\Relation::LOAD_PROMISE);
 
-        $this->assertArrayHasKey('composite:embedded:embedded', $schema);
-        $this->assertSame(['p_id'], $schema['composite:embedded:embedded'][Schema::PRIMARY_KEY]);
-        $this->assertSame('default', $schema['composite:embedded:embedded'][Schema::DATABASE]);
-        $this->assertSame('composite', $schema['composite:embedded:embedded'][Schema::TABLE]);
+        \Testo\Assert::array($schema)->hasKeys('composite:embedded:embedded');
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::PRIMARY_KEY], ['p_id']);
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::DATABASE], 'default');
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::TABLE], 'composite');
 
-        $this->assertSame([
+        \Testo\Assert::same($schema['composite:embedded:embedded'][Schema::COLUMNS], [
             'p_embedded' => 'embedded_column',
             'p_id' => 'id',
-        ], $schema['composite:embedded:embedded'][Schema::COLUMNS]);
+        ]);
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $c = Composite::define();
@@ -172,11 +164,12 @@ abstract class EmbeddedTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('composite');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('embedded_column'));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::true($table->hasColumn('embedded_column'));
     }
 
+    #[\Testo\Test]
     public function testEmbedIdFieldWithPrefix(): void
     {
         $c = Composite::define();
@@ -193,8 +186,7 @@ abstract class EmbeddedTest extends BaseTest
         $r->register($c)->linkTable($c, 'default', 'composite');
         $r->register($e);
 
-        $this->expectException(EmbeddedPrimaryKeyException::class);
-        $this->expectExceptionMessage('Entity `composite:embedded:embedded` has conflicted field `p_id`.');
+        \Testo\Expect::exception(EmbeddedPrimaryKeyException::class)->withMessageContaining('Entity `composite:embedded:embedded` has conflicted field `p_id`.');
 
         (new Compiler())->compile(
             $r,
@@ -206,6 +198,7 @@ abstract class EmbeddedTest extends BaseTest
         );
     }
 
+    #[\Testo\Test]
     public function testEmbeddedPrefix(): void
     {
         $c = Composite::define();
@@ -232,7 +225,7 @@ abstract class EmbeddedTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('composite');
 
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('prefix_embedded_column'));
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::true($table->hasColumn('prefix_embedded_column'));
     }
 }

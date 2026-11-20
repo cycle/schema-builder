@@ -14,14 +14,12 @@ use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\Post;
 use Cycle\Schema\Tests\Relation\BelongsToRelationTest as BaseTest;
 
-/**
- * @group driver
- * @group driver-sqlite
- */
+#[\Testo\Filter\Group('driver', 'driver-sqlite')]
 class BelongsToRelationTest extends BaseTest
 {
     public const DRIVER = 'sqlite';
 
+    #[\Testo\Test]
     public function testRenderWithoutIndex(): void
     {
         $e = Post::define();
@@ -42,6 +40,6 @@ class BelongsToRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertFalse($table->hasIndex(['author_p_id']));
+        \Testo\Assert::false($table->hasIndex(['author_p_id']));
     }
 }

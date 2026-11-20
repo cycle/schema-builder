@@ -24,9 +24,8 @@ abstract class RenderRelationsTest extends BaseTest
         ];
     }
 
-    /**
-     * @dataProvider fkActionDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('fkActionDataProvider')]
     public function testFkActionAndFkOnDelete(
         null|false|string $fkActionOption,
         null|false|string $onDeleteOption,
@@ -57,9 +56,9 @@ abstract class RenderRelationsTest extends BaseTest
         $table = $r->getTableSchema($plain);
 
         $fks = $table->getForeignKeys();
-        $this->assertCount(1, $fks);
+        \Testo\Assert::count($fks, 1);
         $fk = reset($fks);
-        $this->assertSame($onUpdateExpected, $fk->getUpdateRule());
-        $this->assertSame($onDeleteExpected, $fk->getDeleteRule());
+        \Testo\Assert::same($fk->getUpdateRule(), $onUpdateExpected);
+        \Testo\Assert::same($fk->getDeleteRule(), $onDeleteExpected);
     }
 }

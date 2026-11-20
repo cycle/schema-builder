@@ -19,6 +19,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class ResolveInterfacesTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testResolveInterfaceDependency(): void
     {
         $e = Post::define();
@@ -36,13 +37,14 @@ abstract class ResolveInterfacesTest extends BaseTest
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema)->hasKeys('post');
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('author');
 
-        $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('author');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('author_p_id');
     }
 
+    #[\Testo\Test]
     public function testUnableResolveInterfaceDependency(): void
     {
         $e = Post::define();
@@ -54,7 +56,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),
@@ -62,6 +64,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testInvalidStaticLink(): void
     {
         $e = Post::define();
@@ -73,7 +76,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r = new Registry($this->dbal);
         $r->register($e)->linkTable($e, 'default', 'post');
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),
@@ -81,6 +84,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testAmbiguousDependency(): void
     {
         $e = Post::define();
@@ -95,7 +99,7 @@ abstract class ResolveInterfacesTest extends BaseTest
         $r->register($u)->linkTable($u, 'default', 'author');
         $r->register($u1)->linkTable($u1, 'default', 'user');
 
-        $this->expectException(RelationException::class);
+        \Testo\Expect::exception(RelationException::class);
 
         (new Compiler())->compile($r, [
             new ResolveInterfaces(),

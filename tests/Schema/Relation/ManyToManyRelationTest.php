@@ -26,6 +26,7 @@ use Cycle\Schema\Tests\Fixtures\TagContext;
 
 abstract class ManyToManyRelationTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $post = Post::define();
@@ -47,13 +48,13 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
 
-        $this->assertInstanceOf(ManyToMany::class, $r->getRelation($post, 'tags'));
+        \Testo\Assert::instanceOf($r->getRelation($post, 'tags'), ManyToMany::class);
     }
 
+    #[\Testo\Test]
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `post` must have defined primary key');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `post` must have defined primary key');
 
         $post = Post::defineWithoutPK();
         $tag = Tag::define();
@@ -75,10 +76,10 @@ abstract class ManyToManyRelationTest extends BaseTest
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `tag` must have defined primary key');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `tag` must have defined primary key');
 
         $post = Post::define();
         $tag = Tag::defineWithoutPK();
@@ -100,6 +101,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testDifferentDatabases(): void
     {
         $post = Post::define();
@@ -119,11 +121,12 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tag)->linkTable($tag, 'secondary', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testDifferentDatabases2(): void
     {
         $post = Post::define();
@@ -143,11 +146,12 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tag)->linkTable($tag, 'default', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'secondary', 'tag_context');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $post = Post::define();
@@ -172,49 +176,27 @@ abstract class ManyToManyRelationTest extends BaseTest
         (new GenerateRelations(['manyToMany' => new ManyToMany()]))->run($r);
         $schema = (new Compiler())->compile($r);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('tag', $schema);
-        $this->assertArrayHasKey('tagContext', $schema);
+        \Testo\Assert::array($schema)->hasKeys('post')->hasKeys('tag')->hasKeys('tagContext');
 
-        $this->assertArrayHasKey('tags', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('tags');
 
-        $this->assertSame('tag', $schema['post'][Schema::RELATIONS]['tags'][Relation::TARGET]);
-        $this->assertSame(
-            Relation::MANY_TO_MANY,
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::TYPE],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::TARGET], 'tag');
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::TYPE], Relation::MANY_TO_MANY);
 
-        $this->assertSame(
-            ArrayCollectionFactory::class,
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::COLLECTION_TYPE],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::COLLECTION_TYPE], ArrayCollectionFactory::class);
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id']);
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::OUTER_KEY], ['p_id']);
 
-        $this->assertSame(
-            'post_p_id',
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY], 'post_p_id');
 
-        $this->assertSame(
-            'tag_p_id',
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY], 'tag_p_id');
 
-        $this->assertSame(
-            'tagContext',
-            $schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_ENTITY],
-        );
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['tags'][Relation::SCHEMA][Relation::THROUGH_ENTITY], 'tagContext');
     }
 
+    #[\Testo\Test]
     public function testRenderTables(): void
     {
         $post = Post::define();
@@ -244,17 +226,18 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         $table = $this->getDriver()->getSchema('tag_context');
 
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('post_p_id'));
-        $this->assertTrue($table->hasColumn('tag_p_id'));
-        $this->assertTrue($table->hasIndex(['post_p_id', 'tag_p_id']));
-        $this->assertTrue($table->hasForeignKey(['post_p_id']));
-        $this->assertTrue($table->hasForeignKey(['tag_p_id']));
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::true($table->hasColumn('post_p_id'));
+        \Testo\Assert::true($table->hasColumn('tag_p_id'));
+        \Testo\Assert::true($table->hasIndex(['post_p_id', 'tag_p_id']));
+        \Testo\Assert::true($table->hasForeignKey(['post_p_id']));
+        \Testo\Assert::true($table->hasForeignKey(['tag_p_id']));
     }
 
     /**
      * Unique indexes shouldn't be duplicated. Second unique index should be converted into not unique index
      */
+    #[\Testo\Test]
     public function testDuplicatedUniqueIndexes(): void
     {
         $tag = Tag::define();
@@ -297,18 +280,19 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         $uniques = array_filter($table->getIndexes(), static fn(AbstractIndex $index): bool => $index->isUnique());
 
-        $this->assertTrue($table->hasColumn('id'));
-        $this->assertTrue($table->hasColumn('post_p_id'));
-        $this->assertTrue($table->hasColumn('tag_p_id'));
-        $this->assertTrue($table->hasIndex(['post_p_id', 'tag_p_id']));
-        $this->assertTrue($table->hasIndex(['tag_p_id', 'post_p_id']));
-        $this->assertTrue($table->hasForeignKey(['post_p_id']));
-        $this->assertTrue($table->hasForeignKey(['tag_p_id']));
+        \Testo\Assert::true($table->hasColumn('id'));
+        \Testo\Assert::true($table->hasColumn('post_p_id'));
+        \Testo\Assert::true($table->hasColumn('tag_p_id'));
+        \Testo\Assert::true($table->hasIndex(['post_p_id', 'tag_p_id']));
+        \Testo\Assert::true($table->hasIndex(['tag_p_id', 'post_p_id']));
+        \Testo\Assert::true($table->hasForeignKey(['post_p_id']));
+        \Testo\Assert::true($table->hasForeignKey(['tag_p_id']));
         // Unique indexes shouldn't be duplicated
-        $this->assertCount(1, $uniques);
-        $this->assertCount(4, $table->getIndexes());
+        \Testo\Assert::count($uniques, 1);
+        \Testo\Assert::count($table->getIndexes(), 4);
     }
 
+    #[\Testo\Test]
     public function testInverseInvalidType(): void
     {
         $post = Post::define();
@@ -329,7 +313,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $r->register($tag)->linkTable($tag, 'default', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations([
             'manyToMany' => new ManyToMany(),
@@ -337,6 +321,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         ]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testInverse(): void
     {
         $post = Post::define();
@@ -363,44 +348,25 @@ abstract class ManyToManyRelationTest extends BaseTest
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('tag', $schema);
-        $this->assertArrayHasKey('tagContext', $schema);
+        \Testo\Assert::array($schema)->hasKeys('post')->hasKeys('tag')->hasKeys('tagContext');
 
-        $this->assertArrayHasKey('posts', $schema['tag'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['tag'][Schema::RELATIONS])->hasKeys('posts');
 
-        $this->assertSame('post', $schema['tag'][Schema::RELATIONS]['posts'][Relation::TARGET]);
-        $this->assertSame(
-            Relation::MANY_TO_MANY,
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::TYPE],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::TARGET], 'post');
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::TYPE], Relation::MANY_TO_MANY);
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id']);
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::OUTER_KEY], ['p_id']);
 
-        $this->assertSame(
-            'tag_p_id',
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_INNER_KEY], 'tag_p_id');
 
-        $this->assertSame(
-            'post_p_id',
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_OUTER_KEY], 'post_p_id');
 
-        $this->assertSame(
-            'tagContext',
-            $schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_ENTITY],
-        );
+        \Testo\Assert::same($schema['tag'][Schema::RELATIONS]['posts'][Relation::SCHEMA][Relation::THROUGH_ENTITY], 'tagContext');
     }
 
+    #[\Testo\Test]
     public function testRenderWithIndex(): void
     {
         $post = Post::define();
@@ -429,7 +395,7 @@ abstract class ManyToManyRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('tag_context');
-        $this->assertTrue($table->hasIndex(['tag_p_id']));
-        $this->assertTrue($table->hasIndex(['post_p_id']));
+        \Testo\Assert::true($table->hasIndex(['tag_p_id']));
+        \Testo\Assert::true($table->hasIndex(['post_p_id']));
     }
 }

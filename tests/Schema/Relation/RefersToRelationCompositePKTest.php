@@ -19,6 +19,7 @@ use Cycle\Schema\Tests\Fixtures\Post;
 
 abstract class RefersToRelationCompositePKTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = Post::defineCompositePK();
@@ -32,9 +33,10 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
 
         (new GenerateRelations(['refersTo' => new RefersTo()]))->run($r);
 
-        $this->assertInstanceOf(RefersTo::class, $r->getRelation($e, 'author'));
+        \Testo\Assert::instanceOf($r->getRelation($e, 'author'), RefersTo::class);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $e = Post::defineCompositePK();
@@ -50,20 +52,20 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
             new GenerateRelations(['refersTo' => new RefersTo()]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertSame(Relation::REFERS_TO, $schema['post'][Schema::RELATIONS]['author'][Relation::TYPE]);
+        \Testo\Assert::array($schema)->hasKeys('post');
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['author'][Relation::TYPE], Relation::REFERS_TO);
 
-        $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('author');
 
-        $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('author_p_slug', $schema['post'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('author');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('author_p_id');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('author_p_slug');
     }
 
+    #[\Testo\Test]
     public function testInconsistentAmountOfPKsShouldThrowAndException(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Inconsistent amount of related fields. '
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Inconsistent amount of related fields. '
             . 'Source entity: `author`; keys: `id`, `slug`. Target entity: `post`; keys: `parent_id`.');
 
         $e = Post::defineCompositePK();
@@ -82,6 +84,7 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testCustomKey(): void
     {
         $e = Post::defineCompositePK();
@@ -99,14 +102,15 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
             new GenerateRelations(['refersTo' => new RefersTo()]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema)->hasKeys('post');
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('author');
 
-        $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('parent_id', $schema['post'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_slug', $schema['post'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('author');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('parent_id');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('parent_slug');
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = Post::defineCompositePK();
@@ -128,10 +132,11 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_p_id', 'author_p_slug']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasForeignKey(['author_p_id', 'author_p_slug']));
     }
 
+    #[\Testo\Test]
     public function testRenderTableRedefined(): void
     {
         $e = Post::defineCompositePK();
@@ -156,9 +161,9 @@ abstract class RefersToRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertTrue($table->hasColumn('parent_slug'));
-        $this->assertFalse($table->hasForeignKey(['parent_id', 'parent_slug']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('parent_id'));
+        \Testo\Assert::true($table->hasColumn('parent_slug'));
+        \Testo\Assert::false($table->hasForeignKey(['parent_id', 'parent_slug']));
     }
 }

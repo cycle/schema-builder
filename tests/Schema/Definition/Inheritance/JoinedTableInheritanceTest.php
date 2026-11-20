@@ -16,12 +16,13 @@ use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\User;
 use PHPUnit\Framework\TestCase;
 
-class JoinedTableInheritanceTest extends TestCase
+class JoinedTableInheritanceTest
 {
+    #[\Testo\Test]
     public function testJoinedTableShouldBeAddedToSchema()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();
@@ -38,14 +39,15 @@ class JoinedTableInheritanceTest extends TestCase
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertSame('user', $schema['author'][SchemaInterface::PARENT]);
-        $this->assertSame('foo_bar', $schema['author'][SchemaInterface::PARENT_KEY] ?? null);
+        \Testo\Assert::same($schema['author'][SchemaInterface::PARENT], 'user');
+        \Testo\Assert::same($schema['author'][SchemaInterface::PARENT_KEY] ?? null, 'foo_bar');
     }
 
+    #[\Testo\Test]
     public function testJoinedTableWithoutOuterKeyShouldBeAddedToSchema()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();
@@ -62,17 +64,17 @@ class JoinedTableInheritanceTest extends TestCase
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertSame('user', $schema['author'][SchemaInterface::PARENT]);
+        \Testo\Assert::same($schema['author'][SchemaInterface::PARENT], 'user');
         $this->assertEmpty($schema['author'][SchemaInterface::PARENT_KEY] ?? null);
     }
 
+    #[\Testo\Test]
     public function testJoinedTableWithNonExistsOuterKeyShouldThrowAnException()
     {
-        $this->expectException(WrongParentKeyColumnException::class);
-        $this->expectExceptionMessage('Outer key column `foo_bar` is not found among fields of the `user` role.');
+        \Testo\Expect::exception(WrongParentKeyColumnException::class)->withMessageContaining('Outer key column `foo_bar` is not found among fields of the `user` role.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();

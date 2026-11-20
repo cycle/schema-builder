@@ -19,7 +19,7 @@ use Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier;
 use Cycle\Schema\Tests\Fixtures\Typecaster;
 use PHPUnit\Framework\TestCase;
 
-final class CompilerTest extends TestCase
+final class CompilerTest
 {
     public static function renderTypecastDataProvider(): \Traversable
     {
@@ -38,16 +38,14 @@ final class CompilerTest extends TestCase
         ];
     }
 
+    #[\Testo\Test]
     public function testWrongGeneratorShouldThrowAnException(): void
     {
-        $this->expectException(CompilerException::class);
-        $this->expectExceptionMessage(
-            'Invalid generator `\'Cycle\\\\Schema\\\\Tests\\\\Fixtures\\\\Author\'`. '
-            . 'It should implement `Cycle\Schema\GeneratorInterface` interface.',
-        );
+        \Testo\Expect::exception(CompilerException::class)->withMessageContaining('Invalid generator `\'Cycle\\\\Schema\\\\Tests\\\\Fixtures\\\\Author\'`. '
+        . 'It should implement `Cycle\Schema\GeneratorInterface` interface.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $author = new Entity();
@@ -61,16 +59,14 @@ final class CompilerTest extends TestCase
         ]);
     }
 
+    #[\Testo\Test]
     public function testWrongEntitySchemaModifierShouldThrowAnException(): void
     {
-        $this->expectException(SchemaModifierException::class);
-        $this->expectExceptionMessage(
-            'Unable to apply schema modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` '
-            . 'for the `author` role. Something went wrong',
-        );
+        \Testo\Expect::exception(SchemaModifierException::class)->withMessageContaining('Unable to apply schema modifier `Cycle\Schema\Tests\Fixtures\BrokenSchemaModifier` '
+        . 'for the `author` role. Something went wrong');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $author = new Entity();
@@ -84,9 +80,8 @@ final class CompilerTest extends TestCase
         (new Compiler())->compile($r);
     }
 
-    /**
-     * @dataProvider renderTypecastDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('renderTypecastDataProvider')]
     public function testRenderTypecast(mixed $expected, array $defaults, mixed $entityTypecast = null): void
     {
         $entity = new Entity();
@@ -96,14 +91,15 @@ final class CompilerTest extends TestCase
             $entity->setTypecast($entityTypecast);
         }
 
-        $r = new Registry($this->createMock(DatabaseProviderInterface::class));
+        $r = new Registry(\Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing());
         $r->register($entity);
 
         $schema = (new Compiler())->compile($r, [], $defaults);
 
-        $this->assertSame($expected, $schema['author'][SchemaInterface::TYPECAST_HANDLER]);
+        \Testo\Assert::same($schema['author'][SchemaInterface::TYPECAST_HANDLER], $expected);
     }
 
+    #[\Testo\Test]
     public function testRenderGeneratedFields(): void
     {
         $entity = new Entity();
@@ -132,15 +128,15 @@ final class CompilerTest extends TestCase
                 ->setGenerated(GeneratedField::ON_INSERT),
         );
 
-        $r = new Registry($this->createMock(DatabaseProviderInterface::class));
+        $r = new Registry(\Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing());
         $r->register($entity);
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertSame([
+        \Testo\Assert::same($schema['author'][SchemaInterface::GENERATED_FIELDS], [
             'createdAt' => GeneratedField::BEFORE_INSERT,
             'updatedAt' => GeneratedField::BEFORE_INSERT | GeneratedField::BEFORE_UPDATE,
             'sequence' => GeneratedField::ON_INSERT,
-        ], $schema['author'][SchemaInterface::GENERATED_FIELDS]);
+        ]);
     }
 }

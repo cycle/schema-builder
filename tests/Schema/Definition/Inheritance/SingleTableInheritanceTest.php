@@ -17,12 +17,13 @@ use Cycle\Schema\Tests\Fixtures\Author;
 use Cycle\Schema\Tests\Fixtures\User;
 use PHPUnit\Framework\TestCase;
 
-class SingleTableInheritanceTest extends TestCase
+class SingleTableInheritanceTest
 {
+    #[\Testo\Test]
     public function testSingleTableShouldBeAddedToSchema()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $author = new Entity();
@@ -45,16 +46,17 @@ class SingleTableInheritanceTest extends TestCase
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertSame(['foo' => 'bar', 'author' => 'author'], $schema['user'][SchemaInterface::CHILDREN]);
-        $this->assertSame('type', $schema['user'][SchemaInterface::DISCRIMINATOR]);
+        \Testo\Assert::same($schema['user'][SchemaInterface::CHILDREN], ['foo' => 'bar', 'author' => 'author']);
+        \Testo\Assert::same($schema['user'][SchemaInterface::DISCRIMINATOR], 'type');
 
-        $this->assertSame([SchemaInterface::ENTITY => Author::class], $schema['author']);
+        \Testo\Assert::same($schema['author'], [SchemaInterface::ENTITY => Author::class]);
     }
 
+    #[\Testo\Test]
     public function testSingleTableWithExplicitPkShouldBeAddedToSchema()
     {
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $author = new Entity();
@@ -78,19 +80,19 @@ class SingleTableInheritanceTest extends TestCase
 
         $schema = (new Compiler())->compile($r);
 
-        $this->assertSame(['foo' => 'bar', 'author' => 'author'], $schema['user'][SchemaInterface::CHILDREN]);
-        $this->assertSame('type', $schema['user'][SchemaInterface::DISCRIMINATOR]);
+        \Testo\Assert::same($schema['user'][SchemaInterface::CHILDREN], ['foo' => 'bar', 'author' => 'author']);
+        \Testo\Assert::same($schema['user'][SchemaInterface::DISCRIMINATOR], 'type');
 
-        $this->assertSame([SchemaInterface::ENTITY => Author::class], $schema['author']);
+        \Testo\Assert::same($schema['author'], [SchemaInterface::ENTITY => Author::class]);
     }
 
+    #[\Testo\Test]
     public function testSingleTableWithoutDiscriminatorColumnShouldThrowAnException()
     {
-        $this->expectException(DiscriminatorColumnNotPresentException::class);
-        $this->expectExceptionMessage('Discriminator column for the `user` role should be defined.');
+        \Testo\Expect::exception(DiscriminatorColumnNotPresentException::class)->withMessageContaining('Discriminator column for the `user` role should be defined.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();
@@ -104,13 +106,13 @@ class SingleTableInheritanceTest extends TestCase
         (new Compiler())->compile($r);
     }
 
+    #[\Testo\Test]
     public function testSingleTableWithNonExistsDiscriminatorColumnShouldThrowAnException()
     {
-        $this->expectException(WrongDiscriminatorColumnException::class);
-        $this->expectExceptionMessage('Discriminator column `type` is not found among fields of the `user` role.');
+        \Testo\Expect::exception(WrongDiscriminatorColumnException::class)->withMessageContaining('Discriminator column `type` is not found among fields of the `user` role.');
 
         $r = new Registry(
-            $this->createMock(DatabaseProviderInterface::class),
+            \Mockery::mock(DatabaseProviderInterface::class)->shouldIgnoreMissing(),
         );
 
         $user = new Entity();

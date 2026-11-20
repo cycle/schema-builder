@@ -34,9 +34,8 @@ abstract class GenerateRelationsTest extends BaseTest
         ];
     }
 
-    /**
-     * @dataProvider relationOptionsDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('relationOptionsDataProvider')]
     public function testHasManyToManyRelationOptions(
         string $optionKey,
         array|string $optionValue,
@@ -65,15 +64,11 @@ abstract class GenerateRelationsTest extends BaseTest
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
         // phpcs:ignore
-        $this->assertSame(
-            $optionValue,
-            $schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey],
-        );
+        \Testo\Assert::same($schema['post'][SchemaInterface::RELATIONS]['tags'][Relation::SCHEMA][$relationKey], $optionValue);
     }
 
-    /**
-     * @dataProvider relationOptionsDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('relationOptionsDataProvider')]
     public function testHasManyRelationOptions(string $optionKey, array|string $optionValue, int $relationKey): void
     {
         $e = Plain::define();
@@ -91,12 +86,10 @@ abstract class GenerateRelationsTest extends BaseTest
         $schema = $c->compile($r, [new RenderTables(), new GenerateRelations()]);
 
         // phpcs:ignore
-        $this->assertSame(
-            $optionValue,
-            $schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey],
-        );
+        \Testo\Assert::same($schema['user'][SchemaInterface::RELATIONS]['plain'][Relation::SCHEMA][$relationKey], $optionValue);
     }
 
+    #[\Testo\Test]
     public function testHasManyToManyWithoutThroughEntity(): void
     {
         $post = Post::define();
@@ -116,16 +109,13 @@ abstract class GenerateRelationsTest extends BaseTest
         $r->register($tag)->linkTable($tag, 'default', 'tag');
         $r->register($tagContext)->linkTable($tagContext, 'default', 'tag_context');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         try {
             (new Compiler())->compile($r, [new RenderTables(), new GenerateRelations()]);
         } catch (\Exception $e) {
-            $this->assertInstanceOf(RelationException::class, $e->getPrevious());
-            $this->assertStringContainsString(
-                'Relation ManyToMany must have the throughEntity declaration',
-                $e->getPrevious()->getMessage(),
-            );
+            \Testo\Assert::instanceOf($e->getPrevious(), RelationException::class);
+            \Testo\Assert::string($e->getPrevious()->getMessage())->contains('Relation ManyToMany must have the throughEntity declaration');
             throw $e;
         }
     }

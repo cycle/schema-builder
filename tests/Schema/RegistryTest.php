@@ -18,6 +18,7 @@ use Cycle\Schema\Tests\Fixtures\User;
 
 abstract class RegistryTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testHasRole(): void
     {
         $r = new Registry($this->dbal);
@@ -26,17 +27,17 @@ abstract class RegistryTest extends BaseTest
 
         $r->register($e);
 
-        $this->assertTrue($r->hasEntity('user'));
-        $this->assertTrue($r->hasEntity(User::class));
+        \Testo\Assert::true($r->hasEntity('user'));
+        \Testo\Assert::true($r->hasEntity(User::class));
 
-        $this->assertFalse($r->hasEntity('post'));
-        $this->assertFalse($r->hasEntity(Post::class));
+        \Testo\Assert::false($r->hasEntity('post'));
+        \Testo\Assert::false($r->hasEntity(Post::class));
     }
 
+    #[\Testo\Test]
     public function testDuplicateRoleShouldThrowAnException(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Duplicate entity `user`');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Duplicate entity `user`');
 
         $r = new Registry($this->dbal);
 
@@ -51,6 +52,7 @@ abstract class RegistryTest extends BaseTest
         $r->register($e2);
     }
 
+    #[\Testo\Test]
     public function testGetEntity(): void
     {
         $r = new Registry($this->dbal);
@@ -59,63 +61,70 @@ abstract class RegistryTest extends BaseTest
 
         $r->register($e);
 
-        $this->assertSame($e, $r->getEntity('user'));
+        \Testo\Assert::same($r->getEntity('user'), $e);
     }
 
+    #[\Testo\Test]
     public function testGetEntityException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->getEntity('user');
     }
 
+    #[\Testo\Test]
     public function testLinkTableException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->linkTable(new Entity(), 'default', 'table');
     }
 
+    #[\Testo\Test]
     public function testHasTableException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->hasTable(new Entity());
     }
 
+    #[\Testo\Test]
     public function testGetTableException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->getTable(new Entity());
     }
 
+    #[\Testo\Test]
     public function testGetDatabaseException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->getDatabase(new Entity());
     }
 
+    #[\Testo\Test]
     public function testGetTableSchemaException(): void
     {
         $r = new Registry($this->dbal);
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->getTableSchema(new Entity());
     }
 
+    #[\Testo\Test]
     public function testGetTableNotLinked(): void
     {
         $r = new Registry($this->dbal);
@@ -124,12 +133,12 @@ abstract class RegistryTest extends BaseTest
         $e->setRole('user')->setClass(User::class);
         $r->register($e);
 
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `user` has no assigned table');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `user` has no assigned table');
 
         $r->getTable($e);
     }
 
+    #[\Testo\Test]
     public function testLinkTableDoesNotLoadSchema(): void
     {
         $r = new Registry($this->dbal);
@@ -138,11 +147,12 @@ abstract class RegistryTest extends BaseTest
         $e->setRole('user')->setClass(User::class);
         $r->register($e)->linkTable($e, 'default', 'user');
 
-        $this->assertTrue($r->hasTable($e));
-        $this->assertSame('default', $r->getDatabase($e));
-        $this->assertSame('user', $r->getTable($e));
+        \Testo\Assert::true($r->hasTable($e));
+        \Testo\Assert::same($r->getDatabase($e), 'default');
+        \Testo\Assert::same($r->getTable($e), 'user');
     }
 
+    #[\Testo\Test]
     public function testEntitiesOnSameTableShareSchema(): void
     {
         $r = new Registry($this->dbal);
@@ -156,9 +166,10 @@ abstract class RegistryTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
         $r->register($e2)->linkTable($e2, 'default', 'user');
 
-        $this->assertSame($r->getTableSchema($e), $r->getTableSchema($e2));
+        \Testo\Assert::same($r->getTableSchema($e2), $r->getTableSchema($e));
     }
 
+    #[\Testo\Test]
     public function testLateLinkedEntityReusesLoadedSchema(): void
     {
         $r = new Registry($this->dbal);
@@ -175,9 +186,10 @@ abstract class RegistryTest extends BaseTest
         $e2->setRole('author')->setClass(Author::class);
         $r->register($e2)->linkTable($e2, 'default', 'user');
 
-        $this->assertSame($schema, $r->getTableSchema($e2));
+        \Testo\Assert::same($r->getTableSchema($e2), $schema);
     }
 
+    #[\Testo\Test]
     public function testLinkTableDefersIntrospectionUntilFirstSchemaRequest(): void
     {
         $spy = new SpyDatabase($this->dbal->database('default'));
@@ -193,18 +205,19 @@ abstract class RegistryTest extends BaseTest
         $r->register($e2)->linkTable($e2, 'default', 'post');
 
         // linking alone must not introspect anything
-        $this->assertSame([], $spy->getSchemasCalls);
+        \Testo\Assert::same($spy->getSchemasCalls, []);
 
         // the first schema request loads every pending table in a single batched call
         $r->getTableSchema($e);
-        $this->assertCount(1, $spy->getSchemasCalls);
-        $this->assertEqualsCanonicalizing(['user', 'post'], $spy->getSchemasCalls[0]);
+        \Testo\Assert::count($spy->getSchemasCalls, 1);
+        \Testo\Assert::array($spy->getSchemasCalls[0])->sameElementsAs(['user', 'post']);
 
         // schemas for the other tables are already resolved, no further introspection
         $r->getTableSchema($e2);
-        $this->assertCount(1, $spy->getSchemasCalls);
+        \Testo\Assert::count($spy->getSchemasCalls, 1);
     }
 
+    #[\Testo\Test]
     public function testLateLinkedTableTriggersOnlyOneAdditionalBatch(): void
     {
         $spy = new SpyDatabase($this->dbal->database('default'));
@@ -215,7 +228,7 @@ abstract class RegistryTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
         $r->getTableSchema($e);
 
-        $this->assertSame([['user']], $spy->getSchemasCalls);
+        \Testo\Assert::same($spy->getSchemasCalls, [['user']]);
 
         // a table linked after the first load must be introspected on its own, and only it
         $e2 = new Entity();
@@ -223,9 +236,10 @@ abstract class RegistryTest extends BaseTest
         $r->register($e2)->linkTable($e2, 'default', 'post');
         $r->getTableSchema($e2);
 
-        $this->assertSame([['user'], ['post']], $spy->getSchemasCalls);
+        \Testo\Assert::same($spy->getSchemasCalls, [['user'], ['post']]);
     }
 
+    #[\Testo\Test]
     public function testBulkLoadResolvesDistinctTablesIndependently(): void
     {
         $r = new Registry($this->dbal);
@@ -242,11 +256,12 @@ abstract class RegistryTest extends BaseTest
         $userSchema = $r->getTableSchema($e);
         $postSchema = $r->getTableSchema($e2);
 
-        $this->assertNotSame($userSchema, $postSchema);
-        $this->assertSame('user', $userSchema->getName());
-        $this->assertSame('post', $postSchema->getName());
+        \Testo\Assert::notSame($postSchema, $userSchema);
+        \Testo\Assert::same($userSchema->getName(), 'user');
+        \Testo\Assert::same($postSchema->getName(), 'post');
     }
 
+    #[\Testo\Test]
     public function testBulkLoadAcrossMultipleDatabases(): void
     {
         $r = new Registry($this->dbal);
@@ -263,11 +278,12 @@ abstract class RegistryTest extends BaseTest
         $defaultSchema = $r->getTableSchema($e);
         $secondarySchema = $r->getTableSchema($e2);
 
-        $this->assertNotSame($defaultSchema, $secondarySchema);
-        $this->assertSame('default', $r->getDatabase($e));
-        $this->assertSame('secondary', $r->getDatabase($e2));
+        \Testo\Assert::notSame($secondarySchema, $defaultSchema);
+        \Testo\Assert::same($r->getDatabase($e), 'default');
+        \Testo\Assert::same($r->getDatabase($e2), 'secondary');
     }
 
+    #[\Testo\Test]
     public function testBulkLoadDoesNotReloadAlreadyLoadedTable(): void
     {
         $r = new Registry($this->dbal);
@@ -286,11 +302,12 @@ abstract class RegistryTest extends BaseTest
         // triggers a second bulk load, only 'post' is pending this time
         $postSchema = $r->getTableSchema($e2);
 
-        $this->assertNotSame($userSchema, $postSchema);
+        \Testo\Assert::notSame($postSchema, $userSchema);
         // the already loaded 'user' schema must not have been replaced/reloaded
-        $this->assertSame($userSchema, $r->getTableSchema($e));
+        \Testo\Assert::same($r->getTableSchema($e), $userSchema);
     }
 
+    #[\Testo\Test]
     public function testLinkTableWithoutGetSchemasSupport(): void
     {
         $r = new Registry(new LegacyDatabase($this->dbal->database('default')));
@@ -304,10 +321,11 @@ abstract class RegistryTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'user');
         $r->register($e2)->linkTable($e2, 'default', 'user');
 
-        $this->assertInstanceOf(AbstractTable::class, $r->getTableSchema($e));
-        $this->assertSame($r->getTableSchema($e), $r->getTableSchema($e2));
+        \Testo\Assert::instanceOf($r->getTableSchema($e), AbstractTable::class);
+        \Testo\Assert::same($r->getTableSchema($e2), $r->getTableSchema($e));
     }
 
+    #[\Testo\Test]
     public function testLinkTableWithoutGetSchemasSupportResolvesDistinctTables(): void
     {
         $r = new Registry(new LegacyDatabase($this->dbal->database('default')));
@@ -324,11 +342,12 @@ abstract class RegistryTest extends BaseTest
         $userSchema = $r->getTableSchema($e);
         $postSchema = $r->getTableSchema($e2);
 
-        $this->assertNotSame($userSchema, $postSchema);
-        $this->assertSame('user', $userSchema->getName());
-        $this->assertSame('post', $postSchema->getName());
+        \Testo\Assert::notSame($postSchema, $userSchema);
+        \Testo\Assert::same($userSchema->getName(), 'user');
+        \Testo\Assert::same($postSchema->getName(), 'post');
     }
 
+    #[\Testo\Test]
     public function testLinkTableWithoutSchemaSupportThrowsAnException(): void
     {
         $r = new Registry(new LegacyDatabase($this->dbal->database('default'), bareTables: true));
@@ -337,12 +356,12 @@ abstract class RegistryTest extends BaseTest
         $e->setRole('user')->setClass(User::class);
         $r->register($e)->linkTable($e, 'default', 'user');
 
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Unable to retrieve table schema.');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Unable to retrieve table schema.');
 
         $r->getTableSchema($e);
     }
 
+    #[\Testo\Test]
     public function testRegisterChildNoEntity(): void
     {
         $e = new Entity();
@@ -370,11 +389,12 @@ abstract class RegistryTest extends BaseTest
             (new Field())->setType('string')->setColumn('name'),
         );
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         $r->registerChild($e, $c);
     }
 
+    #[\Testo\Test]
     public function testRegisterChild(): void
     {
         $e = new Entity();
@@ -404,11 +424,12 @@ abstract class RegistryTest extends BaseTest
         );
 
         $r->registerChild($e, $c);
-        $this->assertTrue($e->getFields()->has('name'));
+        \Testo\Assert::true($e->getFields()->has('name'));
 
         $schema = (new Compiler())->compile($r, []);
     }
 
+    #[\Testo\Test]
     public function testRegisterChildWithoutMerge(): void
     {
         $parent = new Entity();
@@ -424,6 +445,6 @@ abstract class RegistryTest extends BaseTest
 
         $registry->registerChildWithoutMerge($parent, $child);
 
-        $this->assertSame([$child], $registry->getChildren($parent));
+        \Testo\Assert::same($registry->getChildren($parent), [$child]);
     }
 }

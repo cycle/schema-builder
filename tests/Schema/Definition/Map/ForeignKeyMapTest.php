@@ -8,15 +8,17 @@ use Cycle\Schema\Definition\ForeignKey;
 use Cycle\Schema\Definition\Map\ForeignKeyMap;
 use PHPUnit\Framework\TestCase;
 
-final class ForeignKeyMapTest extends TestCase
+final class ForeignKeyMapTest
 {
+    #[\Testo\Test]
     public function testEmptyForeignKeys(): void
     {
         $map = new ForeignKeyMap();
 
-        $this->assertSame([], \iterator_to_array($map->getIterator()));
+        \Testo\Assert::same(\iterator_to_array($map->getIterator()), []);
     }
 
+    #[\Testo\Test]
     public function testHas(): void
     {
         $key = new ForeignKey();
@@ -26,12 +28,13 @@ final class ForeignKeyMapTest extends TestCase
 
         $map = new ForeignKeyMap();
 
-        $this->assertFalse($map->has($key));
+        \Testo\Assert::false($map->has($key));
 
         $map->set($key);
-        $this->assertTrue($map->has($key));
+        \Testo\Assert::true($map->has($key));
     }
 
+    #[\Testo\Test]
     public function testSet(): void
     {
         $key = new ForeignKey();
@@ -41,12 +44,13 @@ final class ForeignKeyMapTest extends TestCase
 
         $map = new ForeignKeyMap();
 
-        $this->assertFalse($map->has($key));
+        \Testo\Assert::false($map->has($key));
 
         $map->set($key);
-        $this->assertSame(['foo:field:field' => $key], \iterator_to_array($map->getIterator()));
+        \Testo\Assert::same(\iterator_to_array($map->getIterator()), ['foo:field:field' => $key]);
     }
 
+    #[\Testo\Test]
     public function testRemove(): void
     {
         $key = new ForeignKey();
@@ -56,15 +60,16 @@ final class ForeignKeyMapTest extends TestCase
 
         $map = new ForeignKeyMap();
 
-        $this->assertFalse($map->has($key));
+        \Testo\Assert::false($map->has($key));
 
         $map->set($key);
-        $this->assertTrue($map->has($key));
+        \Testo\Assert::true($map->has($key));
 
         $map->remove($key);
-        $this->assertFalse($map->has($key));
+        \Testo\Assert::false($map->has($key));
     }
 
+    #[\Testo\Test]
     public function testCount(): void
     {
         $key = new ForeignKey();
@@ -74,9 +79,9 @@ final class ForeignKeyMapTest extends TestCase
 
         $map = new ForeignKeyMap();
 
-        $this->assertSame(0, $map->count());
+        \Testo\Assert::same($map->count(), 0);
 
         $map->set($key);
-        $this->assertSame(1, $map->count());
+        \Testo\Assert::same($map->count(), 1);
     }
 }

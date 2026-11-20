@@ -23,6 +23,7 @@ use Cycle\Schema\Tests\Fixtures\Post;
 
 abstract class BelongsToRelationTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = Post::define();
@@ -34,13 +35,13 @@ abstract class BelongsToRelationTest extends BaseTest
 
         (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
 
-        $this->assertInstanceOf(BelongsTo::class, $r->getRelation($e, 'author'));
+        \Testo\Assert::instanceOf($r->getRelation($e, 'author'), BelongsTo::class);
     }
 
+    #[\Testo\Test]
     public function testThrowAnExceptionWhenPkNotDefinedInSource(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `post` must have defined primary key');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `post` must have defined primary key');
 
         $e = Post::defineWithoutPK();
         $u = Author::define();
@@ -52,10 +53,10 @@ abstract class BelongsToRelationTest extends BaseTest
         (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testThrowAnExceptionWhenPkNotDefinedInTarget(): void
     {
-        $this->expectException(RegistryException::class);
-        $this->expectExceptionMessage('Entity `author` must have defined primary key');
+        \Testo\Expect::exception(RegistryException::class)->withMessageContaining('Entity `author` must have defined primary key');
 
         $e = Post::define();
         $u = Author::defineWithoutPK();
@@ -67,6 +68,7 @@ abstract class BelongsToRelationTest extends BaseTest
         (new GenerateRelations(['belongsTo' => new BelongsTo()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $e = Post::define();
@@ -81,15 +83,16 @@ abstract class BelongsToRelationTest extends BaseTest
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertSame(Relation::BELONGS_TO, $schema['post'][Schema::RELATIONS]['author'][Relation::TYPE]);
+        \Testo\Assert::array($schema)->hasKeys('post');
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['author'][Relation::TYPE], Relation::BELONGS_TO);
 
-        $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('author');
 
-        $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('author_p_id', $schema['post'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('author');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('author_p_id');
     }
 
+    #[\Testo\Test]
     public function testCustomKey(): void
     {
         $e = Post::define();
@@ -105,13 +108,14 @@ abstract class BelongsToRelationTest extends BaseTest
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('author', $schema['post'][Schema::RELATIONS]);
+        \Testo\Assert::array($schema)->hasKeys('post');
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('author');
 
-        $this->assertArrayHasKey('author', $schema);
-        $this->assertArrayHasKey('parent_id', $schema['post'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('author');
+        \Testo\Assert::array($schema['post'][Schema::COLUMNS])->hasKeys('parent_id');
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = Post::define();
@@ -131,10 +135,11 @@ abstract class BelongsToRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasForeignKey(['author_p_id']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasForeignKey(['author_p_id']));
     }
 
+    #[\Testo\Test]
     public function testRenderTableRedefined(): void
     {
         $e = Post::define();
@@ -157,11 +162,12 @@ abstract class BelongsToRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_id'));
-        $this->assertFalse($table->hasForeignKey(['parent_id']));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('parent_id'));
+        \Testo\Assert::false($table->hasForeignKey(['parent_id']));
     }
 
+    #[\Testo\Test]
     public function testInverseUnknownType(): void
     {
         $e = Post::define();
@@ -173,13 +179,14 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $this->expectException(RegistryException::class);
+        \Testo\Expect::exception(RegistryException::class);
 
         (new Compiler())->compile($r, [
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
     }
 
+    #[\Testo\Test]
     public function testInverseInvalidType(): void
     {
         $e = Post::define();
@@ -191,7 +198,7 @@ abstract class BelongsToRelationTest extends BaseTest
         $r->register($e)->linkTable($e, 'default', 'post');
         $r->register($u)->linkTable($u, 'default', 'author');
 
-        $this->expectException(\Cycle\Schema\Exception\SchemaException::class);
+        \Testo\Expect::exception(\Cycle\Schema\Exception\SchemaException::class);
 
         (new Compiler())->compile($r, [
             new GenerateRelations([
@@ -201,6 +208,7 @@ abstract class BelongsToRelationTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testInverseToHasOne(): void
     {
         $e = Post::define();
@@ -219,25 +227,17 @@ abstract class BelongsToRelationTest extends BaseTest
             ]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema['author'][Schema::RELATIONS]);
-        $this->assertSame(Relation::HAS_ONE, $schema['author'][Schema::RELATIONS]['post'][Relation::TYPE]);
+        \Testo\Assert::array($schema['author'][Schema::RELATIONS])->hasKeys('post');
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::TYPE], Relation::HAS_ONE);
 
-        $this->assertSame(
-            'post',
-            $schema['author'][Schema::RELATIONS]['post'][Relation::TARGET],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::TARGET], 'post');
 
-        $this->assertSame(
-            'author_p_id',
-            $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY], 'author_p_id');
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id']);
     }
 
+    #[\Testo\Test]
     public function testInverseToHasMany(): void
     {
         $e = Post::define();
@@ -256,25 +256,17 @@ abstract class BelongsToRelationTest extends BaseTest
             ]),
         ]);
 
-        $this->assertArrayHasKey('post', $schema['author'][Schema::RELATIONS]);
-        $this->assertSame(Relation::HAS_MANY, $schema['author'][Schema::RELATIONS]['post'][Relation::TYPE]);
+        \Testo\Assert::array($schema['author'][Schema::RELATIONS])->hasKeys('post');
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::TYPE], Relation::HAS_MANY);
 
-        $this->assertSame(
-            'post',
-            $schema['author'][Schema::RELATIONS]['post'][Relation::TARGET],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::TARGET], 'post');
 
-        $this->assertSame(
-            'author_p_id',
-            $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::OUTER_KEY], 'author_p_id');
 
-        $this->assertSame(
-            ['p_id'],
-            $schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['post'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id']);
     }
 
+    #[\Testo\Test]
     public function testRenderWithIndex(): void
     {
         $e = Post::define();
@@ -293,6 +285,6 @@ abstract class BelongsToRelationTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('post');
-        $this->assertTrue($table->hasIndex(['author_p_id']));
+        \Testo\Assert::true($table->hasIndex(['author_p_id']));
     }
 }

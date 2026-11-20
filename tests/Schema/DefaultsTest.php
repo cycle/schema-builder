@@ -11,7 +11,7 @@ use Cycle\ORM\Select\Source;
 use Cycle\Schema\Defaults;
 use PHPUnit\Framework\TestCase;
 
-final class DefaultsTest extends TestCase
+final class DefaultsTest
 {
     public static function mergeDataProvider(): \Traversable
     {
@@ -64,20 +64,20 @@ final class DefaultsTest extends TestCase
         ];
     }
 
+    #[\Testo\Test]
     public function testDefaultValues(): void
     {
         $defaults = new Defaults();
 
-        $this->assertSame(Mapper::class, $defaults[SchemaInterface::MAPPER]);
-        $this->assertSame(Repository::class, $defaults[SchemaInterface::REPOSITORY]);
-        $this->assertSame(Source::class, $defaults[SchemaInterface::SOURCE]);
-        $this->assertNull($defaults[SchemaInterface::SCOPE]);
-        $this->assertNull($defaults[SchemaInterface::TYPECAST_HANDLER]);
+        \Testo\Assert::same($defaults[SchemaInterface::MAPPER], Mapper::class);
+        \Testo\Assert::same($defaults[SchemaInterface::REPOSITORY], Repository::class);
+        \Testo\Assert::same($defaults[SchemaInterface::SOURCE], Source::class);
+        \Testo\Assert::null($defaults[SchemaInterface::SCOPE]);
+        \Testo\Assert::null($defaults[SchemaInterface::TYPECAST_HANDLER]);
     }
 
-    /**
-     * @dataProvider mergeDataProvider
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('mergeDataProvider')]
     public function testMerge(array $expected, array $values): void
     {
         $defaults = new Defaults();
@@ -86,38 +86,42 @@ final class DefaultsTest extends TestCase
         $ref = new \ReflectionProperty($defaults, 'defaults');
         $ref->setAccessible(true);
 
-        $this->assertEquals($expected, $ref->getValue($defaults));
+        \Testo\Assert::equals($ref->getValue($defaults), $expected);
     }
 
+    #[\Testo\Test]
     public function testOffsetExists(): void
     {
         $defaults = new Defaults();
 
-        $this->assertTrue($defaults->offsetExists(SchemaInterface::MAPPER));
-        $this->assertFalse($defaults->offsetExists('foo'));
+        \Testo\Assert::true($defaults->offsetExists(SchemaInterface::MAPPER));
+        \Testo\Assert::false($defaults->offsetExists('foo'));
     }
 
+    #[\Testo\Test]
     public function testOffsetGet(): void
     {
         $defaults = new Defaults();
 
-        $this->assertSame(Mapper::class, $defaults->offsetGet(SchemaInterface::MAPPER));
+        \Testo\Assert::same($defaults->offsetGet(SchemaInterface::MAPPER), Mapper::class);
     }
 
+    #[\Testo\Test]
     public function testOffsetSet(): void
     {
         $defaults = new Defaults();
         $defaults->offsetSet('foo', 'bar');
 
-        $this->assertSame('bar', $defaults->offsetGet('foo'));
+        \Testo\Assert::same($defaults->offsetGet('foo'), 'bar');
     }
 
+    #[\Testo\Test]
     public function testOffsetUnset(): void
     {
         $defaults = new Defaults();
 
-        $this->assertTrue($defaults->offsetExists(SchemaInterface::MAPPER));
+        \Testo\Assert::true($defaults->offsetExists(SchemaInterface::MAPPER));
         $defaults->offsetUnset(SchemaInterface::MAPPER);
-        $this->assertFalse($defaults->offsetExists(SchemaInterface::MAPPER));
+        \Testo\Assert::false($defaults->offsetExists(SchemaInterface::MAPPER));
     }
 }

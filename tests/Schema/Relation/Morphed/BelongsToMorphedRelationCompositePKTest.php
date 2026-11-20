@@ -24,6 +24,7 @@ use Cycle\Schema\Tests\Fixtures\Post;
 
 abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = MorphedTo::define();
@@ -40,9 +41,10 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
 
         (new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]))->run($r);
 
-        $this->assertInstanceOf(BelongsToMorphed::class, $r->getRelation($e, 'parent'));
+        \Testo\Assert::instanceOf($r->getRelation($e, 'parent'), BelongsToMorphed::class);
     }
 
+    #[\Testo\Test]
     public function testGenerateInconsistentName(): void
     {
         $e = MorphedTo::define();
@@ -54,11 +56,12 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'in2');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $e = MorphedTo::define();
@@ -77,18 +80,16 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             new GenerateRelations(['belongsToMorphed' => new BelongsToMorphed()]),
         ]);
 
-        $this->assertArrayHasKey('morphed', $schema);
-        $this->assertSame(
-            Relation::BELONGS_TO_MORPHED,
-            $schema['morphed'][Schema::RELATIONS]['parent'][Relation::TYPE],
-        );
+        \Testo\Assert::array($schema)->hasKeys('morphed');
+        \Testo\Assert::same($schema['morphed'][Schema::RELATIONS]['parent'][Relation::TYPE], Relation::BELONGS_TO_MORPHED);
 
-        $this->assertArrayHasKey('morphed', $schema);
-        $this->assertArrayHasKey('parent_p_slug', $schema['morphed'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_p_id', $schema['morphed'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_role', $schema['morphed'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('morphed');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_p_slug');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_p_id');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_role');
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = MorphedTo::define();
@@ -113,18 +114,19 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('morphed');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_p_id'));
-        $this->assertTrue($table->hasColumn('parent_p_slug'));
-        $this->assertTrue($table->hasColumn('parent_role'));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('parent_p_id'));
+        \Testo\Assert::true($table->hasColumn('parent_p_slug'));
+        \Testo\Assert::true($table->hasColumn('parent_role'));
 
-        $this->assertTrue($table->hasColumn('parent_p_id'));
-        $this->assertTrue($table->column('parent_role')->getType() == 'string');
-        $this->assertTrue($table->column('parent_role')->getSize() == 32);
+        \Testo\Assert::true($table->hasColumn('parent_p_id'));
+        \Testo\Assert::true($table->column('parent_role')->getType() == 'string');
+        \Testo\Assert::true($table->column('parent_role')->getSize() == 32);
 
-        $this->assertTrue($table->hasIndex(['parent_p_id', 'parent_p_slug', 'parent_role']));
+        \Testo\Assert::true($table->hasIndex(['parent_p_id', 'parent_p_slug', 'parent_role']));
     }
 
+    #[\Testo\Test]
     public function testInverseToInvalidType(): void
     {
         $e = MorphedTo::define();
@@ -140,7 +142,7 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'post');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new Compiler())->compile($r, [
             new GenerateRelations([
@@ -150,6 +152,7 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
         ]);
     }
 
+    #[\Testo\Test]
     public function testInverseHasOne(): void
     {
         $e = MorphedTo::define();
@@ -172,39 +175,19 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             ]),
         ]);
 
-        $this->assertArrayHasKey('morphed', $schema['author'][Schema::RELATIONS]);
-        $this->assertSame(
-            Relation::MORPHED_HAS_ONE,
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE],
-        );
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
-        $this->assertSame(
-            'parent_role',
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY],
-        );
+        \Testo\Assert::array($schema['author'][Schema::RELATIONS])->hasKeys('morphed');
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE], Relation::MORPHED_HAS_ONE);
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id', 'p_slug']);
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY], 'parent_role');
 
-        $this->assertArrayHasKey('morphed', $schema['post'][Schema::RELATIONS]);
-        $this->assertSame(
-            Relation::MORPHED_HAS_ONE,
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE],
-        );
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
-        $this->assertSame(
-            ['parent_p_id', 'parent_p_slug'],
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::OUTER_KEY],
-        );
-        $this->assertSame(
-            'parent_role',
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY],
-        );
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('morphed');
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE], Relation::MORPHED_HAS_ONE);
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id', 'p_slug']);
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::OUTER_KEY], ['parent_p_id', 'parent_p_slug']);
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY], 'parent_role');
     }
 
+    #[\Testo\Test]
     public function testInverseHasMany(): void
     {
         $e = MorphedTo::define();
@@ -227,32 +210,14 @@ abstract class BelongsToMorphedRelationCompositePKTest extends BaseTest
             ]),
         ]);
 
-        $this->assertArrayHasKey('morphed', $schema['author'][Schema::RELATIONS]);
-        $this->assertSame(
-            Relation::MORPHED_HAS_MANY,
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE],
-        );
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
-        $this->assertSame(
-            'parent_role',
-            $schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY],
-        );
+        \Testo\Assert::array($schema['author'][Schema::RELATIONS])->hasKeys('morphed');
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::TYPE], Relation::MORPHED_HAS_MANY);
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id', 'p_slug']);
+        \Testo\Assert::same($schema['author'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY], 'parent_role');
 
-        $this->assertArrayHasKey('morphed', $schema['post'][Schema::RELATIONS]);
-        $this->assertSame(
-            Relation::MORPHED_HAS_MANY,
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE],
-        );
-        $this->assertSame(
-            ['p_id', 'p_slug'],
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY],
-        );
-        $this->assertSame(
-            'parent_role',
-            $schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY],
-        );
+        \Testo\Assert::array($schema['post'][Schema::RELATIONS])->hasKeys('morphed');
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::TYPE], Relation::MORPHED_HAS_MANY);
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::INNER_KEY], ['p_id', 'p_slug']);
+        \Testo\Assert::same($schema['post'][Schema::RELATIONS]['morphed'][Relation::SCHEMA][Relation::MORPH_KEY], 'parent_role');
     }
 }

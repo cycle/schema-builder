@@ -21,6 +21,7 @@ use Cycle\Schema\Tests\Fixtures\RefersToMorphedTo;
 
 abstract class RefersToMorphedRelationCompositePKTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testGenerate(): void
     {
         $e = RefersToMorphedTo::define();
@@ -37,9 +38,10 @@ abstract class RefersToMorphedRelationCompositePKTest extends BaseTest
 
         (new GenerateRelations(['refersToMorphed' => new RefersToMorphed()]))->run($r);
 
-        $this->assertInstanceOf(RefersToMorphed::class, $r->getRelation($e, 'parent'));
+        \Testo\Assert::instanceOf($r->getRelation($e, 'parent'), RefersToMorphed::class);
     }
 
+    #[\Testo\Test]
     public function testGenerateInconsistentName(): void
     {
         $e = RefersToMorphedTo::define();
@@ -51,11 +53,12 @@ abstract class RefersToMorphedRelationCompositePKTest extends BaseTest
         $r->register($a)->linkTable($a, 'default', 'author');
         $r->register($p)->linkTable($p, 'default', 'in2');
 
-        $this->expectException(SchemaException::class);
+        \Testo\Expect::exception(SchemaException::class);
 
         (new GenerateRelations(['refersToMorphed' => new RefersToMorphed()]))->run($r);
     }
 
+    #[\Testo\Test]
     public function testPackSchema(): void
     {
         $e = RefersToMorphedTo::define();
@@ -74,18 +77,16 @@ abstract class RefersToMorphedRelationCompositePKTest extends BaseTest
             new GenerateRelations(['refersToMorphed' => new RefersToMorphed()]),
         ]);
 
-        $this->assertArrayHasKey('morphed', $schema);
-        $this->assertSame(
-            Relation::REFERS_TO_MORPHED,
-            $schema['morphed'][Schema::RELATIONS]['parent'][Relation::TYPE],
-        );
+        \Testo\Assert::array($schema)->hasKeys('morphed');
+        \Testo\Assert::same($schema['morphed'][Schema::RELATIONS]['parent'][Relation::TYPE], Relation::REFERS_TO_MORPHED);
 
-        $this->assertArrayHasKey('morphed', $schema);
-        $this->assertArrayHasKey('parent_p_slug', $schema['morphed'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_p_id', $schema['morphed'][Schema::COLUMNS]);
-        $this->assertArrayHasKey('parent_role', $schema['morphed'][Schema::COLUMNS]);
+        \Testo\Assert::array($schema)->hasKeys('morphed');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_p_slug');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_p_id');
+        \Testo\Assert::array($schema['morphed'][Schema::COLUMNS])->hasKeys('parent_role');
     }
 
+    #[\Testo\Test]
     public function testRenderTable(): void
     {
         $e = RefersToMorphedTo::define();
@@ -110,15 +111,15 @@ abstract class RefersToMorphedRelationCompositePKTest extends BaseTest
         $t->getReflector()->run();
 
         $table = $this->getDriver()->getSchema('morphed');
-        $this->assertTrue($table->exists());
-        $this->assertTrue($table->hasColumn('parent_p_id'));
-        $this->assertTrue($table->hasColumn('parent_p_slug'));
-        $this->assertTrue($table->hasColumn('parent_role'));
+        \Testo\Assert::true($table->exists());
+        \Testo\Assert::true($table->hasColumn('parent_p_id'));
+        \Testo\Assert::true($table->hasColumn('parent_p_slug'));
+        \Testo\Assert::true($table->hasColumn('parent_role'));
 
-        $this->assertTrue($table->hasColumn('parent_p_id'));
-        $this->assertTrue($table->column('parent_role')->getType() == 'string');
-        $this->assertTrue($table->column('parent_role')->getSize() == 32);
+        \Testo\Assert::true($table->hasColumn('parent_p_id'));
+        \Testo\Assert::true($table->column('parent_role')->getType() == 'string');
+        \Testo\Assert::true($table->column('parent_role')->getSize() == 32);
 
-        $this->assertTrue($table->hasIndex(['parent_p_id', 'parent_p_slug', 'parent_role']));
+        \Testo\Assert::true($table->hasIndex(['parent_p_id', 'parent_p_slug', 'parent_role']));
     }
 }

@@ -11,6 +11,7 @@ use Cycle\Schema\Table\Column;
 
 abstract class ColumnTest extends BaseTest
 {
+    #[\Testo\Test]
     public function testColumn(): void
     {
         $field = new Field();
@@ -19,24 +20,26 @@ abstract class ColumnTest extends BaseTest
 
         $column = Column::parse($field);
 
-        $this->assertSame('name', $column->getName());
-        $this->assertSame('string', $column->getType());
+        \Testo\Assert::same($column->getName(), 'name');
+        \Testo\Assert::same($column->getType(), 'string');
 
-        $this->assertFalse($column->hasDefault());
-        $this->assertFalse($column->isNullable());
+        \Testo\Assert::false($column->hasDefault());
+        \Testo\Assert::false($column->isNullable());
     }
 
+    #[\Testo\Test]
     public function testInvalidDeclaration(): void
     {
         $field = new Field();
         $field->setType('7');
         $field->setColumn('name');
 
-        $this->expectException(ColumnException::class);
+        \Testo\Expect::exception(ColumnException::class);
 
         Column::parse($field);
     }
 
+    #[\Testo\Test]
     public function testColumnNullableStrict(): void
     {
         $field = new Field();
@@ -46,13 +49,14 @@ abstract class ColumnTest extends BaseTest
 
         $column = Column::parse($field);
 
-        $this->assertSame('name', $column->getName());
-        $this->assertSame('string', $column->getType());
+        \Testo\Assert::same($column->getName(), 'name');
+        \Testo\Assert::same($column->getType(), 'string');
 
-        $this->assertFalse($column->hasDefault());
-        $this->assertTrue($column->isNullable());
+        \Testo\Assert::false($column->hasDefault());
+        \Testo\Assert::true($column->isNullable());
     }
 
+    #[\Testo\Test]
     public function testNoDefaultValue(): void
     {
         $field = new Field();
@@ -60,12 +64,13 @@ abstract class ColumnTest extends BaseTest
         $field->setColumn('name');
         $column = Column::parse($field);
 
-        $this->assertFalse($column->hasDefault());
-        $this->expectException(ColumnException::class);
+        \Testo\Assert::false($column->hasDefault());
+        \Testo\Expect::exception(ColumnException::class);
 
         $column->getDefault();
     }
 
+    #[\Testo\Test]
     public function testColumnNullableThoughtDefault(): void
     {
         $field = new Field();
@@ -75,14 +80,15 @@ abstract class ColumnTest extends BaseTest
 
         $column = Column::parse($field);
 
-        $this->assertSame('name', $column->getName());
-        $this->assertSame('string', $column->getType());
+        \Testo\Assert::same($column->getName(), 'name');
+        \Testo\Assert::same($column->getType(), 'string');
 
-        $this->assertTrue($column->isNullable());
-        $this->assertTrue($column->hasDefault());
-        $this->assertSame(null, $column->getDefault());
+        \Testo\Assert::true($column->isNullable());
+        \Testo\Assert::true($column->hasDefault());
+        \Testo\Assert::same($column->getDefault(), null);
     }
 
+    #[\Testo\Test]
     public function testRenderSimple(): void
     {
         $field = new Field();
@@ -97,12 +103,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('string', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'string');
 
-        $this->assertFalse($table->column('name')->isNullable());
+        \Testo\Assert::false($table->column('name')->isNullable());
     }
 
+    #[\Testo\Test]
     public function testNullable(): void
     {
         $field = new Field();
@@ -118,12 +125,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('string', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'string');
 
-        $this->assertTrue($table->column('name')->isNullable());
+        \Testo\Assert::true($table->column('name')->isNullable());
     }
 
+    #[\Testo\Test]
     public function testNullableAndDefault(): void
     {
         $field = new Field();
@@ -140,13 +148,14 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('string', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'string');
 
-        $this->assertTrue($table->column('name')->isNullable());
-        $this->assertSame('value', $table->column('name')->getDefaultValue());
+        \Testo\Assert::true($table->column('name')->isNullable());
+        \Testo\Assert::same($table->column('name')->getDefaultValue(), 'value');
     }
 
+    #[\Testo\Test]
     public function testRenderWithOption(): void
     {
         $field = new Field();
@@ -161,11 +170,12 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('string', $table->column('name')->getType());
-        $this->assertSame(32, $table->column('name')->getSize());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'string');
+        \Testo\Assert::same($table->column('name')->getSize(), 32);
     }
 
+    #[\Testo\Test]
     public function testDecimal(): void
     {
         $field = new Field();
@@ -180,12 +190,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('decimal', $table->column('name')->getAbstractType());
-        $this->assertSame(10, $table->column('name')->getPrecision());
-        $this->assertSame(5, $table->column('name')->getScale());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getAbstractType(), 'decimal');
+        \Testo\Assert::same($table->column('name')->getPrecision(), 10);
+        \Testo\Assert::same($table->column('name')->getScale(), 5);
     }
 
+    #[\Testo\Test]
     public function testAttributes(): void
     {
         $field = new Field();
@@ -202,13 +213,14 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('integer', $table->column('name')->getAbstractType());
-        $this->assertTrue($table->column('name')->isNullable());
-        $this->assertTrue($table->column('name')->getAttributes()['nullable']);
-        $this->assertSame(5, $table->column('name')->getDefaultValue());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getAbstractType(), 'integer');
+        \Testo\Assert::true($table->column('name')->isNullable());
+        \Testo\Assert::true($table->column('name')->getAttributes()['nullable']);
+        \Testo\Assert::same($table->column('name')->getDefaultValue(), 5);
     }
 
+    #[\Testo\Test]
     public function testCastDefaultString(): void
     {
         $field = new Field();
@@ -224,13 +236,14 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('string', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'string');
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertSame('', $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::same($table->column('name')->getDefaultValue(), '');
     }
 
+    #[\Testo\Test]
     public function testCastDefaultInteger(): void
     {
         $field = new Field();
@@ -246,13 +259,14 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('int', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'int');
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertSame(0, $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::same($table->column('name')->getDefaultValue(), 0);
     }
 
+    #[\Testo\Test]
     public function testCastDefaultFloat(): void
     {
         $field = new Field();
@@ -268,13 +282,14 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('float', $table->column('name')->getType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getType(), 'float');
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertSame(0.0, $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::same($table->column('name')->getDefaultValue(), 0.0);
     }
 
+    #[\Testo\Test]
     public function testCastDefaultBool(): void
     {
         $field = new Field();
@@ -290,12 +305,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
+        \Testo\Assert::true($table->hasColumn('name'));
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertEquals(false, $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::equals($table->column('name')->getDefaultValue(), false);
     }
 
+    #[\Testo\Test]
     public function testCastDefaultEnum(): void
     {
         $field = new Field();
@@ -311,12 +327,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
+        \Testo\Assert::true($table->hasColumn('name'));
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertEquals('a', $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::equals($table->column('name')->getDefaultValue(), 'a');
     }
 
+    #[\Testo\Test]
     public function testCastDefaultDatetime(): void
     {
         $field = new Field();
@@ -332,12 +349,13 @@ abstract class ColumnTest extends BaseTest
         $table->save();
 
         $table = $this->getStub();
-        $this->assertTrue($table->hasColumn('name'));
+        \Testo\Assert::true($table->hasColumn('name'));
 
-        $this->assertFalse($table->column('name')->isNullable());
-        $this->assertInstanceOf(\DateTimeInterface::class, $table->column('name')->getDefaultValue());
+        \Testo\Assert::false($table->column('name')->isNullable());
+        \Testo\Assert::instanceOf($table->column('name')->getDefaultValue(), \DateTimeInterface::class);
     }
 
+    #[\Testo\Test]
     public function testRenderWithCustomType(): void
     {
         $field = new Field();
@@ -349,13 +367,12 @@ abstract class ColumnTest extends BaseTest
 
         $column->render($table->column('name'));
 
-        $this->assertTrue($table->hasColumn('name'));
-        $this->assertSame('ltree', $table->column('name')->getDeclaredType());
+        \Testo\Assert::true($table->hasColumn('name'));
+        \Testo\Assert::same($table->column('name')->getDeclaredType(), 'ltree');
     }
 
-    /**
-     * @dataProvider dataIsPrimary
-     */
+    #[\Testo\Test]
+    #[\Testo\Data\DataProvider('dataIsPrimary')]
     public function testIsPrimary(string $type, bool $expected = true): void
     {
         $field = new Field();
@@ -363,7 +380,7 @@ abstract class ColumnTest extends BaseTest
         $field->setColumn('id');
 
         $column = Column::parse($field);
-        $this->assertSame($expected, $column->isPrimary());
+        \Testo\Assert::same($column->isPrimary(), $expected);
     }
 
     public function dataIsPrimary(): iterable
