@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Cycle\Schema\Tests\Feature\Common;
 
+use Cycle\Database\DatabaseInterface;
+use Cycle\Database\DatabaseProviderInterface;
 use Cycle\Database\Schema\AbstractTable;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Defaults;
 use Cycle\Schema\Definition\Entity;
 use Cycle\Schema\Definition\Field;
 use Cycle\Schema\Exception\RegistryException;
@@ -140,6 +143,87 @@ final class RegistryTest extends BaseTest
         Expect::exception(RegistryException::class)->withMessageContaining('Entity `user` has no assigned table');
 
         $r->getTable($e);
+    }
+
+    #[Test]
+    public function usesTheGivenDefaults(): void
+    {
+        $defaults = new Defaults();
+
+        Assert::same((new Registry($this->dbal, $defaults))->getDefaults(), $defaults);
+    }
+
+    #[Test]
+    public function loadsSchemasPastAnEntityWithoutTable(): void
+    {
+        $r = new Registry($this->dbal);
+        $embedded = (new Entity())->setRole('embedded');
+        $user = (new Entity())->setRole('user')->setClass(User::class);
+        $r->register($embedded);
+        $r->register($user)->linkTable($user, 'default', 'user');
+
+        Assert::same($r->getTableSchema($user)->getName(), 'user');
+    }
+
+    #[Test]
+    public function loadsEveryDatabaseInOneRequest(): void
+    {
+        $spies = [
+            'default' => new SpyDatabase($this->dbal->database('default')),
+            'secondary' => new SpyDatabase($this->dbal->database('secondary')),
+        ];
+        $provider = new class($spies) implements DatabaseProviderInterface {
+            public function __construct(private readonly array $spies) {}
+
+            public function database(?string $database = null): DatabaseInterface
+            {
+                return $this->spies[$database];
+            }
+        };
+        $r = new Registry($provider);
+        $user = (new Entity())->setRole('user')->setClass(User::class);
+        $post = (new Entity())->setRole('post')->setClass(Post::class);
+        $r->register($user)->linkTable($user, 'default', 'user');
+        $r->register($post)->linkTable($post, 'secondary', 'post');
+
+        $r->getTableSchema($user);
+
+        Assert::same($spies['default']->getSchemasCalls, [['user']]);
+        Assert::same($spies['secondary']->getSchemasCalls, [['post']]);
+    }
+
+    #[Test]
+    public function loadsOnlyTheTablesNotLoadedYet(): void
+    {
+        $spy = new SpyDatabase($this->dbal->database('default'));
+        $r = new Registry($spy);
+        $user = (new Entity())->setRole('user')->setClass(User::class);
+        $r->register($user)->linkTable($user, 'default', 'user');
+        $userSchema = $r->getTableSchema($user);
+        $author = (new Entity())->setRole('author')->setClass(Author::class);
+        $post = (new Entity())->setRole('post')->setClass(Post::class);
+        $r->register($author)->linkTable($author, 'default', 'user');
+        $r->register($post)->linkTable($post, 'default', 'post');
+
+        Assert::same($r->getTableSchema($author), $userSchema);
+        Assert::same($r->getTableSchema($post)->getName(), 'post');
+        Assert::same($spy->getSchemasCalls, [['user'], ['post']]);
+    }
+
+    #[Test]
+    public function loadsTheNextDatabaseWhenTheFirstIsLoaded(): void
+    {
+        $r = new Registry($this->dbal);
+        $user = (new Entity())->setRole('user')->setClass(User::class);
+        $r->register($user)->linkTable($user, 'default', 'user');
+        $userSchema = $r->getTableSchema($user);
+        $author = (new Entity())->setRole('author')->setClass(Author::class);
+        $post = (new Entity())->setRole('post')->setClass(Post::class);
+        $r->register($author)->linkTable($author, 'default', 'user');
+        $r->register($post)->linkTable($post, 'secondary', 'post');
+
+        Assert::same($r->getTableSchema($post)->getName(), 'secondary_post');
+        Assert::same($r->getTableSchema($author), $userSchema);
     }
 
     #[Test]
