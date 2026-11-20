@@ -1,14 +1,18 @@
 {
-    "timeout": 10,
+    "$schema": "vendor-bin/infection/vendor/infection/infection/resources/schema.json",
     "source": {
         "directories": [
             "src"
         ]
     },
+    "timeout": 10,
+    "minMsi": 80,
+    "minCoveredMsi": 80,
+    "testFramework": "testo",
+    "tmpDir": "runtime",
     "logs": {
-        "text": "infection.log"
-    },
-    "mutators": {
-        "@default": true
+        "stryker": {
+            "report": "2.x"
+        }
     }
 }
