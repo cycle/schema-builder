@@ -326,6 +326,88 @@ final class EntityTest
         $e->addSchemaModifier($modifier);
     }
 
+    public function testMergeAddsForeignKeys(): void
+    {
+        $key = (new ForeignKey())->setTarget('foo')->setInnerColumns(['a'])->setOuterColumns(['b']);
+        $e = new Entity();
+        $e2 = new Entity();
+        $e2->getForeignKeys()->set($key);
+
+        $e->merge($e2);
+
+        Assert::same(\iterator_to_array($e->getForeignKeys()), \iterator_to_array($e2->getForeignKeys()));
+    }
+
+    public function testPrimaryColumnsMatchingThePrimaryFields(): void
+    {
+        $e = new Entity();
+        $e->getFields()->set('p_id', $id = (new Field())->setColumn('id')->setPrimary(true));
+
+        $e->setPrimaryColumns(['id']);
+
+        Assert::same(\iterator_to_array($e->getPrimaryFields()), ['p_id' => $id]);
+    }
+
+    public function testPrimaryColumnsDifferingFromThePrimaryFields(): never
+    {
+        $e = new Entity();
+        $e->setRole('role');
+        $e->getFields()->set('p_id', (new Field())->setColumn('id')->setPrimary(true));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+
+        $e->setPrimaryColumns(['slug']);
+
+        Expect::exception(EntityException::class)->withMessage('Ambiguous primary key definition for `role`.');
+
+        $e->getPrimaryFields();
+    }
+
+    public function testCloneIsIndependentOfTheOriginal(): void
+    {
+        $e = new Entity();
+        $e->getOptions()->set('option', 1);
+        $e->getFields()->set('p_id', (new Field())->setColumn('id'));
+        $e->getFields()->set('p_slug', (new Field())->setColumn('slug'));
+        $e->setPrimaryColumns(['id']);
+        $e->getRelations()->set('author', (new Relation())->setTarget('author')->setType('belongsTo'));
+        $e->getForeignKeys()->set((new ForeignKey())->setTarget('foo')->setInnerColumns(['a'])->setOuterColumns(['b']));
+
+        $clone = clone $e;
+        $clone->getOptions()->set('option', 2);
+        $clone->getFields()->get('p_id')->getOptions()->set('nullable', true);
+        $clone->getFields()->get('p_id')->getAttributes()->set('unsigned', true);
+        $clone->getFields()->remove('p_slug');
+        $clone->getPrimaryFields()->remove('p_id');
+        $clone->getRelations()->get('author')->getOptions()->set('nullable', true);
+        foreach ($clone->getForeignKeys() as $foreignKey) {
+            $foreignKey->setTarget('bar');
+        }
+        $clone->getForeignKeys()->set((new ForeignKey())->setTarget('baz')->setInnerColumns(['c'])->setOuterColumns(['d']));
+
+        Assert::same($e->getOptions()->get('option'), 1);
+        Assert::false($e->getFields()->get('p_id')->getOptions()->has('nullable'));
+        Assert::false($e->getFields()->get('p_id')->getAttributes()->has('unsigned'));
+        Assert::true($e->getFields()->has('p_slug'));
+        Assert::same($e->getPrimaryFields()->getNames(), ['p_id']);
+        Assert::false($e->getRelations()->get('author')->getOptions()->has('nullable'));
+        Assert::same(\array_map(
+            static fn(ForeignKey $key): string => $key->getTarget(),
+            \array_values(\iterator_to_array($e->getForeignKeys())),
+        ), ['foo']);
+    }
+
+    public function testRelatedClassNamesLoseTheLeadingBackslash(): void
+    {
+        $e = new Entity();
+
+        $e->setMapper('\App\Mapper')->setSource('\App\Source')->setScope('\App\Scope')->setRepository('\App\Repository');
+
+        Assert::same(
+            [$e->getMapper(), $e->getSource(), $e->getScope(), $e->getRepository()],
+            ['App\Mapper', 'App\Source', 'App\Scope', 'App\Repository'],
+        );
+    }
+
     public function testMergeTwoEntities(): void
     {
         $e = new Entity();
