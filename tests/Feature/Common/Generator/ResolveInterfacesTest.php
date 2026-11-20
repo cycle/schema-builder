@@ -6,6 +6,8 @@ namespace Cycle\Schema\Tests\Feature\Common\Generator;
 
 use Cycle\ORM\Schema;
 use Cycle\Schema\Compiler;
+use Cycle\Schema\Definition\Entity;
+use Cycle\Schema\Exception\RegistryException;
 use Cycle\Schema\Exception\RelationException;
 use Cycle\Schema\Generator\GenerateRelations;
 use Cycle\Schema\Generator\ResolveInterfaces;
@@ -108,5 +110,57 @@ final class ResolveInterfacesTest extends BaseTest
             new ResolveInterfaces(),
             new GenerateRelations(['belongsTo' => new BelongsTo()]),
         ]);
+    }
+
+    #[Test]
+    public function keepsAStaticLinkToARegisteredEntity(): void
+    {
+        $post = Post::define();
+        $post->getRelations()->get('author')->getOptions()->set(ResolveInterfaces::STATIC_LINK, true);
+        $r = new Registry($this->dbal);
+        $r->register($post);
+        $r->register(Author::define());
+
+        (new ResolveInterfaces())->run($r);
+
+        $author = $post->getRelations()->get('author');
+        Assert::same($author->getTarget(), Author::class);
+        Assert::true($author->getOptions()->has(ResolveInterfaces::STATIC_LINK));
+    }
+
+    #[Test]
+    public function skipsEntitiesWithoutAClass(): void
+    {
+        $post = Post::define();
+        $post->getRelations()->get('author')->setTarget(AuthorInterface::class);
+        $post->getRelations()->get('author')->getOptions()->set(ResolveInterfaces::STATIC_LINK, true);
+        $classless = new Entity();
+        $classless->setRole('classless');
+        $r = new Registry($this->dbal);
+        $r->register($post);
+        $r->register($classless);
+        $r->register(Author::define());
+
+        (new ResolveInterfaces())->run($r);
+
+        Assert::same($post->getRelations()->get('author')->getTarget(), Author::class);
+    }
+
+    #[Test]
+    public function rejectsAnEntityOfAMissingClass(): never
+    {
+        $post = Post::define();
+        $post->getRelations()->get('author')->setTarget(AuthorInterface::class);
+        $post->getRelations()->get('author')->getOptions()->set(ResolveInterfaces::STATIC_LINK, true);
+        $missing = new Entity();
+        $missing->setRole('missing');
+        $missing->setClass('Cycle\Schema\Tests\Fixtures\MissingClass');
+        $r = new Registry($this->dbal);
+        $r->register($missing);
+        $r->register($post);
+
+        Expect::exception(RegistryException::class)->withMessageContaining('MissingClass');
+
+        (new ResolveInterfaces())->run($r);
     }
 }
