@@ -239,9 +239,6 @@
     <MissingOverrideAttribute>
       <code><![CDATA[public function run(Registry $registry): Registry]]></code>
     </MissingOverrideAttribute>
-    <MixedAssignment>
-      <code><![CDATA[$dbName]]></code>
-    </MixedAssignment>
   </file>
   <file src="src/Generator/ValidateEntities.php">
     <MissingOverrideAttribute>
